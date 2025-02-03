@@ -1,0 +1,42 @@
+import * as Yup from "yup";
+
+export const formSchema = Yup.object({
+  firstName: Yup.string().min(2).required("Please enter first name"),
+  middleName: Yup.string(),
+  lastName: Yup.string(),
+  studentName: Yup.string().min(2).required("Please enter student name"),
+  dateOfBirth: Yup.date().required("Please enter date of birth"),
+  dataOfAdmission: Yup.date().required("Please enter date of admission"),
+  grnNumber: Yup.string().required("Please enter grn number"),
+  studentIdNumber: Yup.string(),
+  studentAadharNumber: Yup.string()
+    .min(12)
+    .max(12)
+    .required("Please enter aadhar number"),
+  studentClass: Yup.string().required("Please select class"),
+  division: Yup.string().required("Please select division"),
+  rollNumber: Yup.string(),
+  house: Yup.string(),
+  admittedInClass: Yup.string().required("Please select class"),
+  gender: Yup.string().required("Please select gender"),
+  bloodGroup: Yup.string(),
+  address: Yup.string().required("Please enter address"),
+  city: Yup.string().required("Please enter city"),
+  state: Yup.string().required("Please enter code"),
+  pincode: Yup.string(),
+  religion: Yup.string().required("Please select religion"),
+  caste: Yup.string(),
+  category: Yup.string().required("Please select category"),
+  nationality: Yup.string().required("Please enter nationality"),
+  birthPlace: Yup.string(),
+  motherTongue: Yup.string().required("Please enter mother tongue"),
+  emergencyName: Yup.string(),
+  emergencyAddress: Yup.string(),
+  emergencyContact: Yup.string().min(10).max(10),
+  transportMode: Yup.string(),
+  vehicleNumber: Yup.string(),
+  allergies: Yup.string(),
+  height: Yup.string(),
+  weight: Yup.string(),
+  hasSpectacles: Yup.string(),
+});

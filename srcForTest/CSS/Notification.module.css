@@ -1,0 +1,77 @@
+.notification {
+  width: 50%;
+  height: 70vh;
+  background: rgba(225, 225, 225, 0.3);
+  backdrop-filter: blur(5px);
+  overflow-x: hidden;
+  overflow-y: scroll;
+  margin: 20px 0 20px 0;
+}
+
+.notification::-webkit-scrollbar {
+  width: 5px;
+  height: 5px;
+  border-radius: 50%;
+}
+
+.notification::-webkit-scrollbar-thumb {
+  background-color: brown;
+}
+
+.notification::-webkit-scrollbar-track {
+  background-color: rgb(19, 26, 90);
+}
+
+.notificationHeading {
+  background-color: rgba(163, 40, 40, 0.945);
+  width: 100%;
+  text-align: center;
+  font-weight: 600;
+  color: rgb(0, 0, 0);
+  padding: 10px;
+  position: sticky;
+  top: 0;
+}
+
+.list {
+  width: 90%;
+  margin: auto;
+  list-style-type: disc;
+}
+
+.list li {
+  padding-top: 10px;
+  font-size: 1rem;
+  word-wrap: break-word;
+  text-align: start;
+  color: rgb(16, 21, 48);
+}
+
+/* Responsive adjustments */
+@media (max-width: 768px) {
+  .notification {
+    width: 100vw;
+    height: 99vh;
+    margin-top: 2px;
+    margin-bottom: 0px;
+
+    /* height: 50vh; */
+  }
+  .notificationHeading {
+    color: white;
+    font-size: 1.6em;
+  }
+  .list {
+    width: 90%;
+    margin: auto;
+    list-style-type: disc;
+  }
+
+  .list li {
+    padding-top: 10px;
+    font-size: 1.2rem;
+    word-wrap: break-word;
+    text-align: start;
+    color: rgb(0, 0, 0);
+  }
+}

@@ -1,0 +1,41 @@
+.spinner {
+  position: relative;
+  width: 22.4px;
+  height: 22.4px;
+}
+
+.spinner::before,
+.spinner::after {
+  content: "";
+  width: 100%;
+  height: 100%;
+  display: block;
+  animation: spinner-b4c8mmmd 0.5s backwards,
+    spinner-49opz7md 1.25s 0.5s infinite ease;
+  border: 5.6px solid;
+  border-radius: 50%;
+  position: absolute;
+}
+
+.spinner::before {
+  border-color: #ff4747; /* First circle color (red) */
+  box-shadow: 0 -33.6px 0 -5.6px #1276c9;
+}
+
+.spinner::after {
+  border-color: #e12267; /* Second circle color (green) */
+  box-shadow: 0 -33.6px 0 -5.6px #a04997;
+  animation-delay: 0s, 1.25s;
+}
+
+@keyframes spinner-b4c8mmmd {
+  from {
+    box-shadow: 0 0 0 -5.6px;
+  }
+}
+
+@keyframes spinner-49opz7md {
+  to {
+    transform: rotate(360deg);
+  }
+}

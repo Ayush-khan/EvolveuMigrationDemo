@@ -1,0 +1,106 @@
+.scroll-bar::-webkit-scrollbar {
+  width: 5px;
+  height: 5px;
+}
+
+.scroll-bar::-webkit-scrollbar-track {
+  background: #2b2b2b;
+  border-radius: 30px;
+}
+
+.scroll-bar::-webkit-scrollbar-thumb {
+  background: #201cd9;
+  border-radius: 30px;
+  border: 0px solid #555777;
+}
+
+.eventCardContainer {
+  width: 100%; /* Adjust width as needed */
+  margin: auto;
+  font-family: Arial, Helvetica, sans-serif;
+  overflow-y: hidden;
+}
+
+.header {
+  width: 30%;
+  margin: auto;
+  text-align: center;
+  /* margin-bottom: 10px; */
+  /* font-weight: 600; */
+}
+
+.eventsList {
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+  height: 270px;
+  overflow-y: auto; /* Enable scrolling for overflow */
+}
+
+.eventCard {
+  display: flex;
+
+  box-sizing: border-box;
+  width: 100%;
+  line-height: 1.4em;
+  justify-content: center;
+  align-items: center;
+  gap: 10px;
+  background-color: #fff;
+  border-radius: 1px;
+  font-size: 12px;
+  box-shadow: rgba(0, 0, 0, 0.16) 0px 3px 6px, rgba(0, 0, 0, 0.23) 0px 3px 6px;
+  margin: 0 12px 0 12px;
+  /* height: 55%; */
+}
+
+.date {
+  font-weight: 500;
+
+  font-size: 1.2em;
+
+  color: white;
+
+  min-width: 118px; /* Ensure date area has sufficient width */
+}
+
+.details {
+  flex-grow: 1; /* Allow details area to fill remaining space */
+  line-height: 1.2em;
+}
+/* for responsive ness */
+.details h5 {
+  /* margin-top: -2px; */
+  font-size: 1.2em;
+  /* background: #000; */
+  font-weight: 550;
+  margin-top: 5px;
+  color: #00ffff;
+}
+
+.details h5 span {
+  font-size: 0.7em;
+  color: #c334a2;
+}
+
+/* Media query for screens smaller than 640px (typical mobile devices) */
+@media (max-width: 640px) {
+  .details h5 {
+    font-size: 0.9em; /* Adjust font size for mobile view */
+  }
+
+  .details h5 span {
+    text-wrap: wrap;
+    font-size: 0.8em; /* Adjust span font size for mobile view */
+  }
+
+  .discription {
+    font-size: 0.4em;
+    background: #000;
+  }
+}
+
+.discription {
+  font-size: 1em;
+  background: #000;
+}

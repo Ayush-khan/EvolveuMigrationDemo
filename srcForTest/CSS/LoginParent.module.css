@@ -1,0 +1,151 @@
+/* .loginContainer {
+  background: url("../../public/sch.jpg") center center/cover no-repeat fixed;
+  height: 100vh;
+  width: 100vw;
+  overflow-y: auto;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+}
+
+.loginContainerChild {
+  width: 95vw;
+
+  height: auto;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  margin: auto;
+  flex-direction: row;
+  border-radius: 10px;
+}
+
+@media (max-width: 768px) {
+  .loginContainerChild {
+    flex-direction: column;
+    width: 85vw;
+  }
+}
+
+@media (max-width: 480px) {
+  .loginContainerChild {
+    width: 80vw;
+  }
+} */
+
+/* add responsive */
+/* Base styles */
+
+/* .loginContainer {
+  background: url("../../public/sch.jpg") center center/cover no-repeat fixed;
+  height: 100vh;
+  width: 100vw;
+  overflow-y: auto;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+}
+
+.loginContainerChild {
+  width: 95vw;
+
+  height: auto;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  margin: auto;
+  flex-direction: row;
+  border-radius: 10px;
+}
+
+.notificationButton {
+  position: fixed;
+  top: 20px;
+  right: 20px;
+  z-index: 1000;
+  background-color: #007bff;
+  color: white;
+  border: none;
+  padding: 10px 20px;
+  border-radius: 5px;
+  cursor: pointer;
+}
+
+@media (max-width: 768px) {
+  .loginContainerChild {
+    flex-direction: column;
+    width: 85vw;
+  }
+}
+
+@media (max-width: 480px) {
+  .loginContainerChild {
+    width: 80vw;
+  }
+} */
+.loginContainer {
+  background: url("../../public/sch.jpg") center center/cover no-repeat fixed;
+  height: 100vh;
+  width: 100vw;
+  overflow-y: auto;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 20px;
+}
+
+.loginContainerChild {
+  width: 90%;
+  max-width: 1200px;
+  height: auto;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  margin: auto;
+  flex-direction: row;
+  border-radius: 10px;
+  /* Added for better contrast */
+  padding: 20px;
+  /* box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1); Added for better design */
+}
+
+.notificationButton {
+  position: fixed;
+  top: 69px;
+  right: -3%;
+  /* z-index: 1000; */
+  background-color: #7699ae;
+  color: white;
+  font-size: 0.9em;
+  font-weight: 600;
+  border: none;
+  padding: 5px 10px;
+  border-radius: 30%;
+  border-left: 80%;
+  padding-right: 14px;
+  cursor: pointer;
+}
+
+@media (max-width: 1200px) {
+  .loginContainerChild {
+    flex-direction: row;
+    /* background: #000; */
+    justify-content: space-between;
+    width: 95%;
+  }
+}
+
+@media (max-width: 768px) {
+  .loginContainerChild {
+    flex-direction: column;
+    width: 85%;
+    padding: 15px;
+  }
+}
+
+@media (max-width: 480px) {
+  .loginContainerChild {
+    width: 80%;
+    padding: 10px;
+  }
+}

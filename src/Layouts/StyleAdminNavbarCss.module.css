@@ -1,0 +1,44 @@
+.navDropdownTitle {
+  color: black;
+  font-weight: 700;
+}
+
+.customDropdown {
+  color: black;
+  font-size: 16px;
+  font-weight: bold;
+}
+
+.navDropdownItem {
+  color: gray;
+  font-weight: 400;
+  font-size: 14px;
+}
+
+.hoverTextBlack:hover {
+  color: black;
+}
+
+.pr0 {
+  padding-right: 0;
+}
+
+.mr0 {
+  margin-right: 0;
+}
+
+.wFit {
+  width: fit-content;
+}
+
+.dropendCustom {
+  position: relative;
+  display: block;
+  color: gray;
+  font-weight: 400;
+}
+
+.textSmBold {
+  font-size: 0.875rem;
+  font-weight: bold;
+}

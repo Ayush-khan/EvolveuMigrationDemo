@@ -1,0 +1,83 @@
+/* Main Navbar Item - Bold and Dark */
+.bold-navbar-item {
+  font-weight: 700; /* Make main navbar items bold */
+  color: #000; /* Dark color for main navbar items */
+}
+
+.bold-navbar-item:focus,
+.bold-navbar-item:active {
+  color: #000000; /* Text color on click */
+  font-weight: bolder; /* Make text bolder on click */
+}
+/* Optional: Keep text bold when dropdown is open */
+.custom-dropdown.show .bold-navbar-item {
+  color: #3f3a3a; /* Keep text color when dropdown is open */
+  font-weight: bolder;
+}
+/* Submenu Items - Lighter Font */
+.light-submenu-item {
+  font-weight: 400; /* Regular weight (not bold) for submenu items */
+  color: darkgray; /* Lighter color for submenus */
+}
+
+.light-submenu-item:hover {
+  color: #000; /* Darken color on hover */
+  background-color: #f8f9fa; /* Light background on hover */
+}
+
+.nav-dropdown-title {
+  color: #000;
+  /* font-weight: 700; */
+  margin-left: 0.5em;
+
+  /* font-size: 1rem; Adjust title font size as needed */
+}
+
+/* Change Color When Dropdown is Clicked (Active or Focused) */
+
+.custom-dropdown .dropdown-menu {
+  margin-top: 0; /* Align the submenu properly */
+  border-radius: 0; /* Optional: Flat borders */
+}
+/* Show dropdown on hover for submenus */
+.custom-submenu-dropdown:hover .dropdown-menu {
+  display: block;
+}
+/* Custom Nav Link Styles */
+.custom-nav-link {
+  font-weight: 700;
+  padding-right: 20px;
+  position: relative;
+}
+
+.custom-nav-link:hover {
+  background-color: #505e6d;
+  color: #fff;
+}
+/* Main Nav Link Styles */
+.custom-nav-link {
+  font-weight: 700;
+  position: relative;
+  padding-right: 20px;
+}
+
+/* Dropdown indicator to the right */
+.custom-dropdown .dropdown-toggle::after {
+  margin-left: auto; /* Moves the dropdown indicator to the extreme right */
+}
+
+/* Submenu Item - Less Bold */
+.custom-dropdown .dropdown-item {
+  font-weight: 600; /* Submenus are less bold */
+}
+
+/* Submenu Item - Hover Style */
+.custom-dropdown .dropdown-item:hover {
+  background-color: #343a40; /* Hover background color for dropdown items */
+  color: #fff;
+}
+
+/* Main Menu Click Behavior */
+.custom-dropdown .dropdown-menu {
+  display: none; /* Hidden by default */
+}

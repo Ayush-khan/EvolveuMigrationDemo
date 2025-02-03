@@ -1,0 +1,36 @@
+/* talwind configuration is set here now*/
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+* {
+  margin: 0px;
+  padding: 0px;
+  box-sizing: border-box;
+}
+
+.shadow-card {
+  box-shadow: rgba(0, 0, 0, 0.12) 0px 1px 3px, rgba(0, 0, 0, 0.24) 0px 1px 2px;
+}
+
+/* width is here */
+::-webkit-scrollbar {
+  width: 4px;
+}
+
+/* Track is here*/
+::-webkit-scrollbar-track {
+  background: #f1f1f1;
+}
+
+/* Handle is*/
+::-webkit-scrollbar-thumb {
+  background: #c03178;
+}
+
+/* .studenChart::-webkit-scrollbar {
+  width: 14px;
+}
+.studenChart::-webkit-scrollbar-thumb {
+  background: #c03178;
+} */

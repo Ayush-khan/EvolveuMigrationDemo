@@ -1,0 +1,29 @@
+/* Style the select element */
+.custom-select {
+  appearance: none;
+  padding: 0.5rem;
+  border: 1px solid #ccc;
+  border-radius: 0.25rem;
+  background-color: white;
+  width: 100%;
+}
+
+/* Style the dropdown options */
+.custom-select option {
+  height: 30px; /* Set individual option height */
+}
+
+/* Custom dropdown height */
+.custom-select {
+  position: relative;
+}
+
+.custom-select:focus {
+  outline: none;
+}
+
+.custom-select:focus option {
+  max-height: 100px; /* Set the height of the dropdown options box */
+  overflow-y: auto;
+  display: block;
+}

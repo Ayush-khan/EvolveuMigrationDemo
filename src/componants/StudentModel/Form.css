@@ -1,0 +1,15 @@
+.customInputCss {
+  @apply w-full border h-[34px] border-[#ccc] px-3 py-[6px] text-[14px] leading-4 outline-none focus:border-blue-600;
+}
+
+.customLabelCss {
+  @apply pt-[7px] mb-0 text-left max-w-full font-[700];
+}
+
+.mandatory::before {
+  content: "* ";
+  font-size: 15px;
+  vertical-align: top;
+  margin-right: -4px;
+  color: #ff0000;
+}

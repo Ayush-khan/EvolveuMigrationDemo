@@ -1,0 +1,57 @@
+/* Custom CSS for DataTable */
+.dataTables_wrapper {
+    margin: 0 auto;
+}
+
+table.dataTable thead th {
+    border-bottom: none;
+}
+
+table.dataTable tbody tr {
+    border-bottom: 1px solid #ddd;
+}
+
+table.dataTable tbody tr:nth-child(even) {
+    background-color: #f2f2f2;
+}
+
+table.dataTable tbody tr:hover {
+    background-color: #ddd;
+}
+
+.dataTables_length select {
+    border: 1px solid #ced4da;
+    border-radius: 4px;
+    padding: 6px 12px;
+}
+
+.dataTables_filter input {
+    border: 1px solid #ced4da;
+    border-radius: 4px;
+    padding: 6px 12px;
+}
+
+.dataTables_info {
+    margin-top: 10px;
+}
+
+.dataTables_paginate .paginate_button {
+    border-radius: 4px;
+    margin: 0 5px;
+}
+
+.dataTables_paginate .paginate_button.current {
+    background-color: #007bff;
+    border-color: #007bff;
+    color: #fff;
+}
+
+.dataTables_paginate .paginate_button.disabled {
+    color: #6c757d;
+}
+
+.dataTables_paginate .paginate_button:hover {
+    background-color: #0056b3;
+    border-color: #0056b3;
+    color: #fff;
+}

@@ -1,0 +1,92 @@
+/* Navbar items hover effect */
+.custom-nav-dropdown .nav-dropdown-title {
+  color: black;
+  font-weight: 900;
+}
+
+.custom-nav-dropdown:hover .nav-dropdown-title {
+  /* color: white; */
+  color: #202830;
+  font-weight: 800;
+  /* background-color: #343a40; */
+}
+
+/* Submenus background color should stay the same */
+.custom-submenu .dropdown-menu {
+  display: none;
+  background-color: #c1d1e0; /* Submenu background remains dark */
+}
+
+.custom-submenu:hover .dropdown-menu {
+  display: block;
+}
+
+/* Individual dropdown items hover effect */
+.custom-submenu .dropdown-item {
+  color: white; /* Text color inside dropdown */
+  background-color: #89939e; /* Background remains dark */
+  /* border: 2px solid black; */
+}
+
+.custom-submenu .dropdown-item:hover {
+  color: #343a40; /* Text changes to dark on hover */
+  background-color: white; /* Background turns white on hover */
+}
+
+/* General hover effect for all dropdown items in the main menu */
+.custom-nav-dropdown .dropdown-item {
+  color: black;
+  font-weight: 400;
+
+  background-color: white; /* Default background color for dropdown */
+}
+/* subdropdown text effect when hover on it */
+.custom-nav-dropdown .dropdown-item:hover {
+  color: white; /* Text turns white on hover */
+  font-weight: 700;
+  border-right: 2px double rgb(207, 10, 102);
+  border-left: 2px double rgb(207, 10, 102);
+  background-color: #408cdd; /* Background turns dark on hover */
+}
+
+.nav-dropdown-titleSubUnder {
+  display: inline-block;
+  width: 98%;
+  margin: 0;
+  /* position: relative;
+  left: 8px; */
+  /* border: 2px solid black; */
+  /* padding: 2px; */
+  padding: 2px 8px 2px 8px;
+  margin-bottom: -18px;
+  color: black;
+  /* border: 1px solid red; */
+  /* color: white; Text turns white on hover */
+  /* font-weight: 700; */
+
+  /* background-color: #000000; */
+}
+.nav-dropdown-titleSubUnder:hover {
+  /* color: white; */
+  /* font-weight: 800; */
+  color: white; /* Text turns white on hover */
+  font-weight: 700;
+  background-color: #408cdd;
+  border-right: 2px double rgb(207, 10, 102);
+  border-left: 2px double rgb(207, 10, 102);
+  /* background-color: #408cdd; */
+}
+
+/* Preventing dropdowns from opening on click */
+.custom-submenu .dropdown-toggle::after {
+  display: none;
+}
+
+/* Show dropdown on hover */
+.custom-submenu:hover .dropdown-menu {
+  display: block;
+  visibility: visible;
+  opacity: 1;
+
+  transition: all 0.3s ease-in-out;
+}

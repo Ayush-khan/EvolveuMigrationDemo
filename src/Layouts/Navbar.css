@@ -1,0 +1,200 @@
+/* General styles */
+.navbar-container {
+  display: flex;
+  flex-direction: column;
+  background-color: #333; /* Dark background for the navbar */
+  color: white; /* White text color */
+}
+
+.navbar-header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 8px;
+}
+
+.school-icon {
+  font-size: 2rem;
+  color: white; /* White color for the icon */
+}
+
+.school-name {
+  font-size: 1.5rem;
+  color: white; /* White color for the text */
+  margin: 0;
+}
+
+.current-date {
+  font-size: 1rem;
+  color: white; /* White color for the date */
+  margin: 0;
+}
+
+.user-menu {
+  position: relative;
+}
+
+.user-icon {
+  font-size: 1.5rem;
+  color: white; /* White color for the user icon */
+  cursor: pointer;
+}
+
+.dropdown-menu {
+  display: none;
+  position: absolute;
+  top: 100%;
+  right: 0;
+  background-color: white;
+  color: black; /* Black color for dropdown menu text */
+  box-shadow: 0px 8px 16px rgba(0, 0, 0, 0.2);
+  z-index: 1000;
+}
+
+.user-menu:hover .dropdown-menu {
+  display: block;
+}
+
+.dropdown-menu button {
+  display: block;
+  padding: 8px 16px;
+  text-align: left;
+  border: none;
+  background: none;
+  color: black; /* Black color for button text */
+  cursor: pointer;
+}
+
+.navbar-menu {
+  display: flex;
+  align-items: center;
+  padding: 0 16px;
+}
+
+.menu-toggle {
+  display: none;
+  font-size: 1.5rem;
+  color: white; /* White color for the menu icon */
+  cursor: pointer;
+}
+
+.nav-bar {
+  display: flex;
+  align-items: center;
+}
+
+.dashboard-link {
+  color: white; /* White color for the dashboard link */
+  display: flex;
+  align-items: center;
+  padding: 8px 16px;
+  text-decoration: none;
+}
+
+.dropdown {
+  position: relative;
+}
+
+.dropdown-toggle {
+  background: none;
+  border: none;
+  color: white; /* White color for dropdown button text */
+  cursor: pointer;
+  padding: 8px 16px;
+}
+
+.dropdown-menu {
+  display: none;
+  position: absolute;
+  background-color: white;
+  color: black; /* Black color for dropdown menu text */
+  box-shadow: 0px 8px 16px rgba(0, 0, 0, 0.2);
+  top: 100%;
+  left: 0;
+
+  width: 200px; /* Set a fixed width for dropdown menu */
+}
+
+.dropdown-menu.open {
+  display: block;
+}
+
+.dropdown-menu button {
+  display: block;
+  padding: 8px 16px;
+  border: none;
+  background: none;
+  color: black; /* Black color for button text */
+  cursor: pointer;
+}
+
+.dropdown-submenu {
+  position: relative;
+}
+
+.dropdown-submenu .dropdown-menu {
+  top: 0;
+  left: 100%; /* Position submenu to the right of its parent */
+  display: none;
+}
+
+.dropdown-submenu .dropdown-menu.open {
+  display: block;
+}
+
+.academic-year-dropdown {
+  position: relative;
+}
+
+.academic-year-dropdown button {
+  background: none;
+  border: none;
+  color: white; /* White color for dropdown button text */
+  cursor: pointer;
+  padding: 8px 16px;
+}
+
+.academic-year-dropdown .dropdown-menu {
+  display: none;
+  position: absolute;
+  background-color: white;
+  color: black; /* Black color for dropdown menu text */
+  top: 100%;
+
+  width: 200px; /* Set a fixed width for dropdown menu */
+}
+
+.academic-year-dropdown:hover .dropdown-menu {
+  display: block;
+}
+
+.search-input {
+  margin-left: 16px;
+  padding: 8px;
+  border: 1px solid #ddd;
+  border-radius: 4px;
+  color: black; /* Black color for input text */
+}
+
+/* Responsive design for mobile screens */
+@media (max-width: 768px) {
+  .navbar-header {
+    flex-direction: column;
+  }
+
+  .current-date {
+    display: block;
+  }
+
+  .menu-toggle {
+    display: block;
+  }
+
+  .nav-bar {
+    display: none;
+  }
+
+  .sidebar {
+    /* Sidebar styles */
+  }
+}

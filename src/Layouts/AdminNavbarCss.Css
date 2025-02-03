@@ -1,0 +1,8 @@
+.nav-dropdown-title {
+  color: black;
+  font-weight: 700;
+  font-size: 1.25rem; /* Adjust the font size as needed */
+}
+* {
+  background: #000;
+}

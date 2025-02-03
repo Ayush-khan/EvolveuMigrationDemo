@@ -1,0 +1,47 @@
+.xAxisText {
+  font-size: 0.4em; /* Default mobile font size */
+}
+
+@media (min-width: 768px) {
+  .xAxisText {
+    font-size: 0.8em; /* Font size for larger screens */
+  }
+}
+
+.labelText {
+  font-size: 0.4em; /* Default mobile font size */
+}
+/* .recharts-default-legend {
+  background: #000;
+} */
+@media (min-width: 768px) {
+  .labelText {
+    font-size: 0.8em; /* Font size for larger screens */
+  }
+}
+
+.studenChart .customScrollbar {
+  overflow-x: auto;
+}
+
+.studenChart .customScrollbar::-webkit-scrollbar {
+  height: 5px;
+
+  /* width: 4px; */
+}
+
+.studenChart .customScrollbar::-webkit-scrollbar-track {
+  background: #f1f1f1;
+  border-radius: 10px;
+  width: 12px;
+}
+
+.studenChart .customScrollbar::-webkit-scrollbar-thumb {
+  background: #2196f3;
+  border-radius: 10px;
+}
+
+.studenChart .customScrollbar::-webkit-scrollbar-thumb:hover {
+  background: #057fe4;
+  cursor: pointer;
+}

@@ -1,0 +1,65 @@
+@import url("https://fonts.googleapis.com/css2?family=Bebas+Neue&display=swap");
+/* for customise the placeholder  */
+/* .customPlaceholder::placeholder { */
+/* Smaller placeholder text size is */
+/* text-align: center; */
+/* pointer-events: none; */
+/* } */
+
+.navbar {
+  /* background: rgb(63,94,251);
+
+    background: radial-gradient(circle, rgba(63,94,251,1) 0%, rgba(252,70,107,1) 97%);; */
+  background: rgb(255, 9, 98);
+  /* background: rgb(252, 61, 124); */
+}
+
+.heading {
+  font-family: "Bebas Neue", sans-serif;
+  letter-spacing: 5px;
+}
+
+/* main  nev bar itmes */
+.navBarSide {
+  /* border: 2px solid black; */
+  
+  position: relative;
+  transform: translate(7%);
+}
+
+.custom-navbar {
+  display: flex;
+  justify-content: space-between;
+  padding-left: 16px;
+  width: 100%;
+}
+
+@media (max-width: 768px) {
+  .headingSchool {
+    font-size: 0.8em;
+    /* background: #000; */
+  }
+
+  .custom-navbar .navbar-toggler {
+    /* margin-left: 5px; */
+    box-sizing: border-box;
+
+    /* background: white; */
+  }
+
+  .navBarSide {
+    /* border: 2px solid rgb(26, 219, 0); */
+    position: relative;
+    transform: translate(0px);
+  }
+  .dropNaveBarAcademic {
+    /* background: #000; */
+  
+  }
+}
+
+.input-container {
+  display: flex;
+  flex-direction: column;
+  align-items: flex-start;
+}
