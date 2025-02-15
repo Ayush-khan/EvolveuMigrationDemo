@@ -492,6 +492,7 @@
 
 // export default NavBar;
 //
+
 // //  Finallly working navbar dynamically
 import React, { useEffect, useState } from "react";
 import { Navbar, Nav, NavDropdown, NavItem } from "react-bootstrap";
@@ -664,8 +665,18 @@ function NavBar() {
   // for GR number setup
   // Function to handle search based on GR number
   const handleSearch = async () => {
+    console.log("GR Number Entered:", inputValueGR); // Debugging
+
     if (!inputValueGR) {
       toast.error("Please enter a GR number!");
+      console.log("Error: Empty GR Number"); // Debugging
+      return;
+    }
+
+    // Check if inputValueGR contains only digits
+    if (!/^\d+$/.test(inputValueGR)) {
+      toast.error("Invalid GR number! Please enter a valid numeric value.");
+      console.log("Error: Invalid GR Number Format"); // Debugging
       return;
     }
 
@@ -678,17 +689,22 @@ function NavBar() {
       );
 
       const studentList = response?.data?.student || [];
-      setSubjects(studentList);
-      handleView();
+      console.log("Student List:", studentList); // Debugging
 
       if (studentList.length === 0) {
+        alert("Not students found with tis gr no");
         toast.error("No student found with this GR number.");
+        console.log("Error: No student found"); // Debugging
+      } else {
+        navigate(`/StudentSearchUsingGRN`, {
+          state: { studentData: studentList[0] },
+        });
       }
     } catch (error) {
-      // Show the error message from the backend if available
-      const errorMessage =
-        error?.response?.data?.message || "Error fetching student details.";
-      toast.error(errorMessage);
+      toast.error(
+        error?.response?.data?.message || "Error fetching student details."
+      );
+      console.log("API Error:", error?.response?.data?.message); // Debugging
     } finally {
       setLoading(false);
     }

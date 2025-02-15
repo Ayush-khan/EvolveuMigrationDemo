@@ -174,7 +174,8 @@ function ViewStudent() {
       if (student?.image_name) {
         setPhotoPreview(
           // `${API_URL}/path/to/images/${student.teacher_image_name}`
-          `https://sms.evolvu.in/storage/app/public/student_images/${student.image_name}`
+          // `https://sms.evolvu.in/storage/app/public/student_images/${student.image_name}`
+          `${student?.image_name}`
         );
       }
     }

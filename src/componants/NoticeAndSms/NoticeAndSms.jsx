@@ -1081,6 +1081,25 @@ function NoticeAndSms() {
                       className="form-control shadow-md mb-2 w-full"
                       value={noticeDesc}
                       onChange={(e) => setNoticeDesc(e.target.value)}
+                      onKeyDown={(e) => {
+                        if (e.key === "Enter") {
+                          e.preventDefault(); // Prevent the default behavior of Enter key
+                          const cursorPos = e.target.selectionStart; // Current cursor position
+                          const textBeforeCursor = noticeDesc.slice(
+                            0,
+                            cursorPos
+                          ); // Text before the cursor is:
+
+                          const textAfterCursor = noticeDesc.slice(cursorPos); // Text after the cursor
+                          const updatedText = `${textBeforeCursor}\n• ${textAfterCursor}`;
+                          setNoticeDesc(updatedText);
+                          // Move the cursor to the position after the bullet point
+                          setTimeout(() => {
+                            e.target.selectionStart = e.target.selectionEnd =
+                              cursorPos + 3;
+                          }, 0);
+                        }
+                      }}
                     ></textarea>
                     {noticeDescError && (
                       <p className="h-3 relative -top-3 text-red-500 text-sm mt-2">

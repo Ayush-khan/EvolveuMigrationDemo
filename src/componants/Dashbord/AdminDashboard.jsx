@@ -1,7 +1,7 @@
 // import Header from "../components/layout/Header.jsx";
 
-import NavBar from "../../Layouts/NavBar.jsx";
 import DashboardContent from "./DashboardContent.jsx";
+
 // import Style from '../Styles/AdminDashboard.module.css';
 // AdminDashbord
 const AdminDashboard = () => {

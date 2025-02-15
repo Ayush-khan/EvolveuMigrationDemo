@@ -271,7 +271,8 @@ function Form() {
       if (student?.image_name) {
         setPhotoPreview(
           // `${API_URL}/path/to/images/${student.teacher_image_name}`
-          `https://sms.evolvu.in/storage/app/public/student_images/${student.image_name}`
+          // `https://sms.evolvu.in/storage/app/public/student_images/${student.image_name}`
+          `${student.image_name}`
         );
       }
     }
@@ -1094,155 +1095,6 @@ function Form() {
       image_name: croppedImageData,
     }));
   };
-
-  // const handleSubmit = async (event) => {
-  //   event.preventDefault();
-  //   const validationErrors = validate();
-
-  //   if (Object.keys(validationErrors).length > 0) {
-  //     setErrors(validationErrors);
-  //     Object.values(validationErrors).forEach((error) => {
-  //       toast.error(error);
-  //     });
-  //     return;
-  //   }
-
-  //   // Prepare the data for API submission
-  //   const formattedFormData = new FormData();
-  //   Object.keys(formData).forEach((key) => {
-  //     if (formData[key] instanceof File) {
-  //       formattedFormData.append(key, formData[key]);
-  //     } else {
-  //       formattedFormData.append(key, formData[key]);
-  //     }
-  //   });
-  //   console.log(" formattedFormData is,", formData);
-
-  //   try {
-  //     const token = localStorage.getItem("authToken");
-  //     if (!token) {
-  //       throw new Error("No authentication token is found");
-  //     }
-  //     console.log(" formattedFormData,", formattedFormData);
-  //     const response = await axios.put(
-  //       `${API_URL}/api/students/${student.student_id}`,
-  //       formData,
-  //       {
-  //         headers: {
-  //           "Content-Type": "multipart/form-data",
-  //           Authorization: `Bearer ${token}`,
-  //         },
-  //       }
-  //     );
-
-  //     if (response.status === 200) {
-  //       toast.success("Student updated successfully!");
-  //       setTimeout(() => {
-  //         navigate("/StudentList");
-  //       }, 3000);
-  //     }
-  //   } catch (error) {
-  //     toast.error("An error occurred while updating the student.");
-  //     console.error("Error:", error.response?.data || error.message);
-  //     if (error.response && error.response.data && error.response.data.errors) {
-  //       setBackendErrors(error.response.data.errors || {});
-  //     } else {
-  //       toast.error(error.message);
-  //     }
-  //   }
-  // };
-
-  // debuging the logic of preselected input button
-  // const checkUserIdConditions = (student) => {
-  //   let conditionMet = false;
-  //   console.log(
-  //     "student?.user_master?.user_id:",
-  //     student?.user_master?.user_id,
-  //     "and",
-  //     "formData?.m_mobile:",
-  //     student?.parents?.m_mobile
-  //   );
-  //   console.log(
-  //     "student?.user_master?.user_id:",
-  //     student?.user_master?.user_id,
-  //     "and",
-  //     "formData?.f_mobile:",
-  //     student?.parents?.f_mobile
-  //   );
-  //   console.log(
-  //     "student?.user_master?.user_id:",
-  //     student?.user_master?.user_id,
-  //     "and",
-  //     "formData?.f_email:",
-  //     student?.parents?.f_email
-  //   );
-  //   console.log(
-  //     "student?.user_master?.user_id:",
-  //     student?.user_master?.user_id,
-  //     "and",
-  //     "formData?.m_emailid:",
-  //     student?.parents?.m_emailid
-  //   );
-  //   // Check if user_id matches mother mobile number
-  //   if (student?.user_master?.user_id === formData?.m_mobile) {
-  //     console.log("User ID matches mother's mobile number: true");
-  //     console.log(
-  //       "student?.user_master?.user_id:",
-  //       student?.user_master?.user_id,
-  //       "and",
-  //       "formData?.m_mobile:",
-  //       formData?.m_mobile
-  //     );
-  //     conditionMet = true;
-  //     // Call your function here if needed
-  //     // yourFunction();
-  //   } else {
-  //     console.log("User ID matches mother's mobile number: false");
-  //   }
-
-  //   // Check if user_id matches mother email
-  //   if (
-  //     student?.user_master?.user_id === formData?.m_emailid &&
-  //     !conditionMet
-  //   ) {
-  //     console.log("User ID matches mother's email: true");
-  //     conditionMet = true;
-  //     // Call your function here if needed
-  //     // yourFunction();
-  //   } else {
-  //     console.log("User ID matches mother's email: false");
-  //   }
-
-  //   // Check if user_id matches father email
-  //   if (student?.user_master?.user_id === formData?.f_email && !conditionMet) {
-  //     console.log("User ID matches father's email: true");
-  //     conditionMet = true;
-  //     // Call your function here if needed
-  //     // yourFunction();
-  //   } else {
-  //     console.log("User ID matches father's email: false");
-  //   }
-
-  //   // Check if user_id matches father mobile number
-  //   if (student?.user_master?.user_id === formData?.f_mobile && !conditionMet) {
-  //     console.log("User ID matches father's mobile number: true");
-  //     conditionMet = true;
-  //     // Call your function here if needed
-  //     // yourFunction();
-  //   } else {
-  //     console.log("User ID matches father's mobile number: false");
-  //   }
-
-  //   // Console log when the function has been executed
-  //   if (conditionMet) {
-  //     console.log("Match found, function executed.");
-  //   } else {
-  //     console.log("No match found, function not executed.");
-  //   }
-  // };
-  // Example usage
-  // checkUserIdConditions(student);
-
   const handleSubmit = async (event) => {
     event.preventDefault();
     setErrors({});
@@ -1295,10 +1147,17 @@ function Form() {
         throw new Error("No authentication token found");
       }
       // console.log("formattedFormData", formattedFormData);
-      console.log("formData", formData);
+      console.log("selectedUsername------>", selectedUsername);
+      // Create a local copy of formData with the updated field
+      const updatedFormData = {
+        ...formData,
+        SetEmailIDAsUsername: selectedUsername || "",
+      };
+      console.log("formData Before submitting", updatedFormData);
+
       const response = await axios.put(
         `${API_URL}/api/students/${student.student_id}`,
-        formData, // Send the FormData object
+        updatedFormData, // Send the FormData object
         {
           headers: {
             // "Content-Type": "application/json",
