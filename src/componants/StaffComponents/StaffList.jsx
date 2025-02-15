@@ -387,14 +387,15 @@ function StaffList() {
                           </td>
                           <td className="text-center px-2 lg:px-3 border border-gray-950 text-sm py-1">
                             {console.log(
-                              "the teacher image",
-                              `https://sms.evolvu.in/storage/app/public/teacher_images/${staffItem?.teacher_image_name}`
+                              "the teacher image-->",
+                              `${staffItem?.teacher_image_name}`
                             )}
 
                             <img
                               src={
                                 staffItem?.teacher_image_name
-                                  ? `https://sms.evolvu.in/storage/app/public/teacher_images/${staffItem?.teacher_image_name}`
+                                  ? // ? `https://sms.evolvu.in/storage/app/public/teacher_images/${staffItem?.teacher_image_name}`
+                                    `${staffItem?.teacher_image_name}`
                                   : "https://via.placeholder.com/50"
                               }
                               alt={staffItem?.name}

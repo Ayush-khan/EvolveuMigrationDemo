@@ -87,7 +87,8 @@ function EditStaff() {
         setPhotoPreview(
           // `${API_URL}/path/to/images/${staff.teacher_image_name}`
           // `${API_URL}${staff.teacher_image_name}`
-          `https://sms.evolvu.in/storage/app/public/teacher_images/${staff.teacher_image_name}`
+          // `https://sms.evolvu.in/storage/app/public/teacher_images/${staff.teacher_image_name}`
+          `${staff?.teacher_image_name}`
         );
       }
     }

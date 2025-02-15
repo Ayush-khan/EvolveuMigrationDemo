@@ -5,9 +5,9 @@ import { toast, ToastContainer } from "react-toastify";
 import "react-toastify/dist/ReactToastify.css";
 import { useNavigate } from "react-router-dom";
 import { RxCross1 } from "react-icons/rx";
-// import "./AllotGRNumbers.module.CSS";
-//Component of AllotGRnumber by mahima
-const AllotGRNumbers = () => {
+import { Field } from "formik";
+
+const UpdateStudentID = () => {
   const API_URL = import.meta.env.VITE_API_URL;
   const [searchTerm, setSearchTerm] = useState("");
 
@@ -26,14 +26,13 @@ const AllotGRNumbers = () => {
   const [nameErrorForClassForStudent, setNameErrorForClassForStudent] =
     useState("");
   const [selectedClass, setSelectedClass] = useState(null);
+  const [admittedClass, setAdmittedClass] = useState({});
   const [selectedClassForStudent, setSelectedClassForStudent] = useState(null);
   const [studentInformation, setstudentInformation] = useState(null);
   const [loading, setLoading] = useState(false);
   const [loadingForSearch, setLoadingForSearch] = useState(false);
 
   const navigate = useNavigate();
-
-  // for form
   const [errors, setErrors] = useState({});
   const [backendErrors, setBackendErrors] = useState({});
 
@@ -47,7 +46,6 @@ const AllotGRNumbers = () => {
   const [selectAll, setSelectAll] = useState(false);
   const [editedStudents, setEditedStudents] = useState({});
   const [error, setError] = useState(null);
-  const [invalidField, setInvalidField] = useState(null);
 
   const studentRefs = useRef({});
 
@@ -117,9 +115,10 @@ const AllotGRNumbers = () => {
   }, [divisionforForm]);
 
   const handleClassSelect = (selectedOption) => {
-    setSelectedClass(selectedOption);
-    // setClassError("");
     setNameErrorForClass("");
+    setSelectedClass(selectedOption); // change
+    // setClassError("");
+
     setSelectedDivision(null); // Reset division dropdown
     setDivisionForForm([]); // Clear division options
     setClassIdForSearch(selectedOption?.value);
@@ -130,8 +129,8 @@ const AllotGRNumbers = () => {
   };
 
   const handleDivisionSelect = (selectedOption) => {
-    setSelectedDivision(selectedOption); // Ensure correct value is set
     setNameErrorForDivision("");
+    setSelectedDivision(selectedOption); // Ensure correct value is set
   };
 
   const handleSearch = async () => {
@@ -140,7 +139,6 @@ const AllotGRNumbers = () => {
     setSearchTerm("");
     setNameErrorForClass("");
     setNameErrorForDivision("");
-    // setNameErrorForClassForStudent("");
     setNameErrorForStudent("");
     setErrors({}); // Clears all field-specific errors
 
@@ -159,17 +157,18 @@ const AllotGRNumbers = () => {
 
     try {
       setstudentInformation(null);
-      // setSelectedStudentForStudent(null);
-      // setSelectedStudentForStudent([]);
-      setSelectedClassForStudent(null);
       setSelectedClassForStudent([]);
       setSelectedStudents([]);
       setSelectAll(false);
       setLoadingForSearch(true); // Start loading
+
       const token = localStorage.getItem("authToken");
 
       const sectionId = selectedDivision?.value;
       console.log("Section ID:", sectionId);
+
+      const classId = selectedClass?.value;
+      console.log("Class ID", classId);
 
       if (!sectionId) {
         toast.error("Invalid division selection.");
@@ -177,7 +176,7 @@ const AllotGRNumbers = () => {
       }
 
       const response = await axios.get(
-        `${API_URL}/api/get_studentallotgrno/${sectionId}`,
+        `${API_URL}/api/get_studentidotherdetails/${classId}/${sectionId}`,
         {
           headers: { Authorization: `Bearer ${token}` },
         }
@@ -207,94 +206,71 @@ const AllotGRNumbers = () => {
       setLoading(true); // Start loading
 
       const token = localStorage.getItem("authToken");
+
       if (!studentInformation?.length) {
         alert("No student data to update.");
-        toast.error("All fields are required.");
         return;
       }
 
-      let firstInvalidField = null;
-      const regNoCount = {}; // Track occurrences of GR numbers
-      const aadhaarCount = {}; // Track occurrences of Aadhaar numbers
-      const errors = {}; // Store errors for validation
+      const errors = {};
+      let firstInvalidField = null; // Store the first invalid field for scrolling
 
-      // Count occurrences of GR numbers and Aadhaar numbers
-      studentInformation.forEach((student) => {
-        if (student.reg_no) {
-          regNoCount[student.reg_no] = (regNoCount[student.reg_no] || 0) + 1;
-        }
-        if (student.stu_aadhaar_no) {
-          aadhaarCount[student.stu_aadhaar_no] =
-            (aadhaarCount[student.stu_aadhaar_no] || 0) + 1;
-        }
-      });
-
-      // Validate fields
       const updatedStudentInformation = studentInformation.map((student) => {
         let studentHasError = false;
 
-        // Validate empty fields
-        ["reg_no", "stu_aadhaar_no", "admission_date"].forEach((field) => {
-          if (!student[field]?.trim()) {
-            studentHasError = true;
-            errors[`${student.student_id}-${field}`] =
-              "This field cannot be empty";
-          }
-        });
+        // Check if the selected class should hide Udise
+        const studentClass = classOptions.find(
+          (cls) => cls.value === selectedClass?.value
+        )?.label;
+        const shouldHideUdise = hiddenClasses.includes(studentClass);
 
-        // Check for duplicate GR Number
-        if (student.reg_no && regNoCount[student.reg_no] > 1) {
-          studentHasError = true;
-          errors[`${student.student_id}-reg_no`] = "GR number must be unique";
-        }
+        if (!shouldHideUdise) {
+          ["udise_pen_no"].forEach((field) => {
+            const value = student[field]?.trim();
+            const fieldKey = `${student.student_id}-${field}`;
 
-        // Check for duplicate Aadhaar Number
-        if (
-          student.stu_aadhaar_no &&
-          aadhaarCount[student.stu_aadhaar_no] > 1
-        ) {
-          studentHasError = true;
-          errors[`${student.student_id}-stu_aadhaar_no`] =
-            "Aadhaar number must be unique";
+            if (!value) {
+              studentHasError = true;
+              errors[fieldKey] = "This field cannot be empty";
+            } else if (!/^\d{11}$/.test(value)) {
+              studentHasError = true;
+              errors[fieldKey] = "Please enter an 11-digit Udise Pen Number.";
+            }
+
+            if (studentHasError && !firstInvalidField) {
+              firstInvalidField = fieldKey; // Capture first invalid field
+            }
+          });
         }
 
         return { ...student, hasError: studentHasError };
       });
 
-      // Initialize a Set to store unique error messages
-      const errorMessages = new Set();
-
-      // Highlight and scroll to the first invalid field
-      const firstInvalidStudent = updatedStudentInformation.find(
-        (student) => student.hasError
-      );
-      if (firstInvalidStudent) {
+      // If validation errors exist, highlight the fields and scroll to the first invalid field
+      if (firstInvalidField) {
         Object.keys(errors).forEach((key) => {
-          const fieldElement = studentRefs.current[key]; // Get the input element
+          const fieldElement = studentRefs.current?.[key];
           if (fieldElement) {
-            fieldElement.classList.add("border-red-500", "ring-red-300"); // Highlight field
-            if (!firstInvalidField) {
-              firstInvalidField = fieldElement;
-            }
+            fieldElement.classList.add("border-red-500", "ring-red-300");
           }
-          errorMessages.add(errors[key]); // Collect unique error messages
         });
 
-        if (firstInvalidField) {
-          firstInvalidField.focus(); // Focus on the first invalid input
-          firstInvalidField.scrollIntoView({
+        const firstFieldElement = studentRefs.current?.[firstInvalidField];
+        if (firstFieldElement) {
+          firstFieldElement.scrollIntoView({
             behavior: "smooth",
             block: "center",
-          }); // Smooth scroll
+          });
+          firstFieldElement.focus();
         }
 
-        return; // Stop form submission
+        return; // Stop execution if validation fails
       }
 
-      // Proceed with API call if validation passes
+      // Proceed with API call
       const response = await axios.put(
-        `${API_URL}/api/update_studentallotgrno`,
-        { students: updatedStudentInformation },
+        `${API_URL}/api/update_studentidotherdetails`,
+        { students: studentInformation },
         { headers: { Authorization: `Bearer ${token}` } }
       );
 
@@ -324,58 +300,7 @@ const AllotGRNumbers = () => {
       }
     } catch (error) {
       console.log("Full API Error Response:", error.response);
-
-      if (error.response?.status === 422) {
-        const backendErrors = error.response.data;
-
-        if (backendErrors.errors) {
-          const formattedErrors = {};
-          const errorMessages = new Set(); // Store unique error messages
-
-          Object.entries(backendErrors.errors).forEach(([key, messages]) => {
-            const match = key.match(/^students\.(\d+)\.(.+)$/);
-            if (match) {
-              const studentIndex = Number(match[1]);
-              const fieldName = match[2];
-
-              const studentId = studentInformation[studentIndex]?.student_id;
-              if (studentId) {
-                if (!formattedErrors[studentId]) {
-                  formattedErrors[studentId] = {};
-                }
-                formattedErrors[studentId][fieldName] = messages[0];
-
-                errorMessages.add(messages[0]); // Collect unique error messages
-              }
-            }
-          });
-
-          if (Object.keys(formattedErrors).length > 0) {
-            setBackendErrors(formattedErrors);
-
-            // Scroll to first backend error
-            const firstErrorKey = Object.keys(formattedErrors)[0];
-            const firstErrorFieldKey = Object.keys(
-              formattedErrors[firstErrorKey]
-            )[0];
-            const firstErrorField =
-              studentRefs.current[`${firstErrorKey}-${firstErrorFieldKey}`];
-
-            if (firstErrorField) {
-              firstErrorField.classList.add("border-red-500", "ring-red-300");
-              firstErrorField.focus();
-              firstErrorField.scrollIntoView({
-                behavior: "smooth",
-                block: "center",
-              });
-            }
-          }
-        }
-      } else {
-        toast.error(
-          `An error occurred: ${error.response?.data?.message || error.message}`
-        );
-      }
+      toast.error("Error Updating Student Details.");
     } finally {
       setLoading(false); // Stop loading
     }
@@ -392,44 +317,47 @@ const AllotGRNumbers = () => {
       )
     );
 
+    // If the field being changed is the class, update admittedClass state
+    if (fieldName === "admission_class") {
+      setAdmittedClass((prev) => ({
+        ...prev,
+        [studentId]: value, // Store selection per student ID
+      }));
+    }
+
     // Perform field-specific validation
     let error = "";
 
-    if (fieldName === "reg_no") {
+    if (fieldName === "stud_id_no") {
       if (!value) {
-        error = "GR number is required.";
+        error = "Student ID is required.";
       } else if (
         studentInformation.some(
           (student) =>
-            student.reg_no === value && student.student_id !== studentId
+            student.stud_id_no === value && student.student_id !== studentId
         )
       ) {
-        error = "GR number must be unique.";
+        error = "Student ID must be unique.";
       }
     }
 
-    if (fieldName === "stu_aadhaar_no") {
+    if (fieldName === "udise_pen_no") {
       if (!value) {
-        error = "Aadhaar number is required.";
-      } else if (!/^\d{12}$/.test(value)) {
-        error = "Please enter 12 digits.";
-      } else if (
-        studentInformation.some(
-          (student) =>
-            student.stu_aadhaar_no === value && student.student_id !== studentId
-        )
-      ) {
-        error = "Aadhaar Number must be unique.";
+        error = "Please Enter Udise Pen No.";
+      } else if (!/^\d{11}$/.test(value)) {
+        error = "Please enter 11 digit Udise Pen No.";
       }
     }
 
-    if (fieldName === "admission_date") {
-      if (!value) {
-        error = "Admission date is required.";
-      } else if (isNaN(new Date(value).getTime())) {
-        error = "Please enter a valid date.";
-      }
-    }
+    // else if (
+    //   studentInformation.some(
+    //     (student) =>
+    //       student.udise_pen_no === value && student.student_id !== studentId
+    //   )
+    // )
+    // {
+    //   error = "Udise Pen Number must be unique.";
+    // }
 
     // Update the frontend validation errors
     setErrors((prevErrors) => ({
@@ -440,7 +368,6 @@ const AllotGRNumbers = () => {
       },
     }));
 
-    // ✅ Clear the backend error for this field when the user types
     setBackendErrors((prevErrors) => {
       const newErrors = { ...prevErrors };
       if (newErrors[studentId] && newErrors[studentId][fieldName]) {
@@ -455,6 +382,14 @@ const AllotGRNumbers = () => {
     });
   };
 
+  const hiddenClasses = ["Nursery", "LKG", "UKG"];
+
+  const selectedClassHide = classOptions.find(
+    (cls) => cls.value === selectedClass?.value
+  )?.label;
+
+  const shouldHideUdise = hiddenClasses.includes(selectedClassHide);
+
   const filteredParents = useMemo(() => {
     if (!Array.isArray(studentInformation)) return [];
 
@@ -463,8 +398,9 @@ const AllotGRNumbers = () => {
       return (
         (student.roll_no !== null &&
           student.roll_no.toString().toLowerCase().includes(searchLower)) ||
-        student.full_name.toLowerCase().includes(searchLower) ||
-        student.reg_no.toString().toLowerCase().includes(searchLower)
+        `${student.full_name || ""}`.toLowerCase().includes(searchLower) ||
+        student.stud_id_no.toString().toLowerCase().includes(searchLower) ||
+        student.udise_pen_no.toString().toLowerCase().includes(searchLower)
       );
     });
     // .sort((a, b) => (a.roll_no || 0) - (b.roll_no || 0)); // Sort by roll_no
@@ -486,10 +422,10 @@ const AllotGRNumbers = () => {
       <div className="md:mx-auto md:w-[90%] p-4 bg-white mt-4 ">
         <div className=" w-full    flex justify-between items-center ">
           <h3 className="text-gray-700 mt-1 text-[1.2em] lg:text-xl text-nowrap">
-            Allot GR No. and Aadhaar No.
+            Update Student ID & Other Details
           </h3>
           <RxCross1
-            className="   text-xl text-red-600 hover:cursor-pointer hover:bg-red-100"
+            className="text-xl text-red-600 hover:cursor-pointer hover:bg-red-100"
             type="button"
             onClick={handleNavigation}
           />
@@ -508,7 +444,7 @@ const AllotGRNumbers = () => {
 
             <div className="w-full flex md:flex-row justify-start items-center">
               <div className="w-full  flex flex-col gap-y-2 md:gap-y-0 md:flex-row">
-                <div className="w-full  gap-x-1 md:gap-x-6 items-center md:justify-between my-1 md:my-4 flex flex-col md:flex-row ">
+                <div className="w-full gap-x-1 md:gap-x-6 items-center md:justify-between my-1 md:my-4 flex flex-col md:flex-row ">
                   <div className=" w-full md:w-[85%] flex flex-col md:flex-row justify-between">
                     <div className="  w-full md:w-[47%] flex flex-row justify-between   ">
                       <label
@@ -546,13 +482,13 @@ const AllotGRNumbers = () => {
                       </div>
                     </div>
                     <div className="  w-full md:w-[44%] flex flex-row justify-between   ">
-                      {" "}
                       <label
                         className="text-md mt-1.5 mr-1 md:mr-0 inline-flex"
                         htmlFor="divisionSelect"
                       >
                         Division <span className="text-red-500">*</span>
                       </label>
+
                       <div className="w-full md:w-[60%]">
                         <Select
                           id="divisionSelect"
@@ -628,7 +564,7 @@ const AllotGRNumbers = () => {
               <div className="card mx-auto w-full shadow-lg">
                 <div className="p-1 px-3 bg-gray-100 flex justify-between items-center">
                   <h6 className="text-gray-700 mt-1   text-nowrap">
-                    Select Students for allot GR & Aadhaar No.
+                    Update Student Details
                   </h6>
                   <div className="box-border flex md:gap-x-2  ">
                     <div className=" w-1/2 md:w-fit mr-1">
@@ -653,23 +589,31 @@ const AllotGRNumbers = () => {
                       <table className="min-w-full leading-normal table-auto">
                         <thead className=" ">
                           <tr className="bg-gray-200 ">
-                            <th className="px-2 w-full md:w-[7%] text-center lg:px-3 py-2 border border-gray-950 text-sm font-semibold text-gray-900 tracking-wider">
+                            <th className="px-2 w-full md:w-[5%] text-center lg:px-3 py-2 border border-gray-950 text-sm font-semibold text-gray-900 tracking-wider">
                               Sr. No.
                             </th>
-                            <th className="px-2 w-full md:w-[8%] text-center lg:px-3 py-2 border border-gray-950 text-sm font-semibold text-gray-900 tracking-wider">
+                            <th className="px-2 w-full md:w-[6%] text-center lg:px-3 py-2 border border-gray-950 text-sm font-semibold text-gray-900 tracking-wider">
                               Roll No
                             </th>
-                            <th className="px-2 w-full md:w-[40%] text-center lg:px-3 py-2 border border-gray-950 text-sm font-semibold text-gray-900 tracking-wider">
+                            <th className="px-2 w-full md:w-[30%] text-center lg:px-3 py-2 border border-gray-950 text-sm font-semibold text-gray-900 tracking-wider">
                               Student Name
                             </th>
-                            <th className="px-2 w-full md:w-[15%] text-center lg:px-3 py-2 border border-gray-950 text-sm font-semibold text-gray-900 tracking-wider">
-                              GR No.
+                            <th className="px-2 w-full md:w-[10%] text-center lg:px-3 py-2 border border-gray-950 text-sm font-semibold text-gray-900 tracking-wider">
+                              Student ID
+                            </th>
+                            {!shouldHideUdise && (
+                              <th className="px-2 w-full md:w-[10%] text-center lg:px-3 py-2 border border-gray-950 text-sm font-semibold text-gray-900 tracking-wider">
+                                Udise pen no.
+                              </th>
+                            )}
+                            <th className="px-2 w-full md:w-[10%] text-center lg:px-3 py-2 border border-gray-950 text-sm font-semibold text-gray-900 tracking-wider">
+                              Place of Birth
                             </th>
                             <th className="px-2 w-full md:w-[10%] text-center lg:px-3 py-2 border border-gray-950 text-sm font-semibold text-gray-900 tracking-wider">
-                              Admission Date
+                              Mother Tongue
                             </th>
-                            <th className="px-2 w-full md:w-[30%] text-center lg:px-3 py-2 border border-gray-950 text-sm font-semibold text-gray-900 tracking-wider">
-                              Student Aadhaar No.
+                            <th className="px-2 w-full md:w-[12%] text-center lg:px-3 py-2 border border-gray-950 text-sm font-semibold text-gray-900 tracking-wider">
+                              Admitted in Class
                             </th>
                           </tr>
                         </thead>
@@ -687,13 +631,8 @@ const AllotGRNumbers = () => {
                                     {index + 1}
                                   </p>
                                 </td>
-
                                 <td className="text-center px-2 lg:px-3 border border-gray-950 text-sm p-1">
                                   <p className="text-gray-900 whitespace-no-wrap relative top-2">
-                                    {/* {console.log(
-                                      "student roll no",
-                                      student.roll_no
-                                    )} */}
                                     {student.roll_no === 0
                                       ? "0"
                                       : student.roll_no || ""}
@@ -710,104 +649,182 @@ const AllotGRNumbers = () => {
                                     type="text"
                                     ref={(el) =>
                                       (studentRefs.current[
-                                        `${student.student_id}-reg_no`
+                                        `${student.student_id}-stud_id_no`
                                       ] = el)
                                     }
                                     className={`text-center w-full px-2 py-1 border rounded outline-none focus:ring focus:ring-blue-300 ${
-                                      errors[student.student_id]?.reg_no
+                                      errors[student.student_id]?.stud_id_no
                                         ? "border-red-500 ring-red-300"
                                         : ""
                                     }`}
-                                    value={student.reg_no || ""}
+                                    value={student.stud_id_no || ""}
                                     onChange={(e) =>
                                       handleInputChange(
                                         e,
                                         student.student_id,
-                                        "reg_no"
+                                        "stud_id_no"
                                       )
                                     }
                                   />
-                                  {errors[student.student_id]?.reg_no && (
+                                  {/* {errors[student.student_id]?.stud_id_no && (
                                     <span className="text-red-500 text-xs block mt-1">
-                                      {errors[student.student_id]?.reg_no}
+                                      {errors[student.student_id]?.stud_id_no}
                                     </span>
-                                  )}
-                                  {backendErrors[student.student_id]
-                                    ?.reg_no && (
-                                    <span className="text-red-500 text-xs block mt-1">
-                                      {
-                                        backendErrors[student.student_id]
-                                          ?.reg_no
-                                      }
-                                    </span>
-                                  )}
+                                  )} */}
                                 </td>
 
-                                <td className="text-center px-2 lg:px-3 border border-gray-950 text-sm">
-                                  <input
-                                    type="date"
-                                    ref={(el) =>
-                                      (studentRefs.current[
-                                        `${student.student_id}-admission_date`
-                                      ] = el)
-                                    }
-                                    className={`text-center w-full px-2 py-1 border rounded outline-none focus:ring focus:ring-blue-300 ${
-                                      errors[student.student_id]?.admission_date
-                                        ? "border-red-500 ring-red-300"
-                                        : ""
-                                    }`}
-                                    value={student.admission_date || ""}
-                                    onChange={(e) =>
-                                      handleInputChange(
-                                        e,
-                                        student.student_id,
-                                        "admission_date"
-                                      )
-                                    }
-                                    // max={student.admission_date || ""}
-                                  />
-                                  {errors[student.student_id]
-                                    ?.admission_date && (
-                                    <span className="text-red-500 text-xs block mt-1">
-                                      {
-                                        errors[student.student_id]
-                                          ?.admission_date
+                                {!shouldHideUdise && (
+                                  <td className="text-center px-2 lg:px-3 border border-gray-950 text-sm">
+                                    <input
+                                      type="text"
+                                      ref={(el) =>
+                                        (studentRefs.current[
+                                          `${student.student_id}-udise_pen_no`
+                                        ] = el)
                                       }
-                                    </span>
-                                  )}
-                                </td>
+                                      className={`text-center w-full px-2 py-1 border rounded outline-none focus:ring focus:ring-blue-300 ${
+                                        errors[student.student_id]?.udise_pen_no
+                                          ? "border-red-500 ring-red-300"
+                                          : ""
+                                      }`}
+                                      value={student.udise_pen_no || ""}
+                                      onChange={(e) =>
+                                        handleInputChange(
+                                          e,
+                                          student.student_id,
+                                          "udise_pen_no"
+                                        )
+                                      }
+                                    />
+                                    {errors[student.student_id]
+                                      ?.udise_pen_no && (
+                                      <span className="text-red-500 text-xs block mt-1">
+                                        {
+                                          errors[student.student_id]
+                                            ?.udise_pen_no
+                                        }
+                                      </span>
+                                    )}
+                                  </td>
+                                )}
 
                                 <td className="text-center px-2 lg:px-3 border border-gray-950 text-sm">
                                   <input
                                     type="text"
                                     ref={(el) =>
                                       (studentRefs.current[
-                                        `${student.student_id}-stu_aadhaar_no`
+                                        `${student.student_id}-birth_place`
                                       ] = el)
                                     }
                                     className={`text-center w-full px-2 py-1 border rounded outline-none focus:ring focus:ring-blue-300 ${
-                                      errors[student.student_id]?.stu_aadhaar_no
+                                      errors[student.student_id]?.birth_place
                                         ? "border-red-500 ring-red-300"
                                         : ""
                                     }`}
-                                    value={student.stu_aadhaar_no || ""}
+                                    value={student.birth_place || ""}
                                     onChange={(e) =>
                                       handleInputChange(
                                         e,
                                         student.student_id,
-                                        "stu_aadhaar_no"
+                                        "birth_place"
                                       )
                                     }
                                   />
-                                  {errors[student.student_id]
-                                    ?.stu_aadhaar_no && (
+                                  {errors[student.student_id]?.birth_place && (
+                                    <span className="text-red-500 text-xs block mt-1">
+                                      {errors[student.student_id]?.birth_place}
+                                    </span>
+                                  )}
+                                </td>
+                                <td className="text-center px-2 lg:px-3 border border-gray-950 text-sm">
+                                  <input
+                                    type="text"
+                                    ref={(el) =>
+                                      (studentRefs.current[
+                                        `${student.student_id}-mother_tongue`
+                                      ] = el)
+                                    }
+                                    className={`text-center w-full px-2 py-1 border rounded outline-none focus:ring focus:ring-blue-300 ${
+                                      errors[student.student_id]?.mother_tongue
+                                        ? "border-red-500 ring-red-300"
+                                        : ""
+                                    }`}
+                                    value={student.mother_tongue || ""}
+                                    onChange={(e) =>
+                                      handleInputChange(
+                                        e,
+                                        student.student_id,
+                                        "mother_tongue"
+                                      )
+                                    }
+                                  />
+                                  {/* {errors[student.student_id]
+                                    ?.mother_tongue && (
                                     <span className="text-red-500 text-xs block mt-1">
                                       {
                                         errors[student.student_id]
-                                          ?.stu_aadhaar_no
+                                          ?.mother_tongue
                                       }
                                     </span>
-                                  )}
+                                  )} */}
+                                </td>
+                                {/* <td className="text-center px-2 lg:px-3 border border-gray-950 text-sm">
+                                  <select
+                                    value={
+                                      admittedClass[student.student_id] || ""
+                                    }
+                                    onChange={(e) =>
+                                      handleClassChange(
+                                        student.student_id,
+                                        e.target.value
+                                      )
+                                    }
+                                    className="w-full px-2 py-1 border rounded outline-none focus:ring focus:ring-blue-300"
+                                    disabled={loadingClasses}
+                                  >
+                                    <option value="">Select</option>
+                                    {loadingClasses ? (
+                                      <option disabled>Loading...</option>
+                                    ) : (
+                                      classOptions.map((option) => (
+                                        <option
+                                          key={option.value}
+                                          value={option.value}
+                                        >
+                                          {option.label}
+                                        </option>
+                                      ))
+                                    )}
+                                  </select>
+                                </td> */}
+
+                                <td className="text-center px-2 lg:px-3 border border-gray-950 text-sm">
+                                  <select
+                                    value={student.admission_class || ""}
+                                    onChange={(e) =>
+                                      handleInputChange(
+                                        e,
+                                        student.student_id,
+                                        "admission_class"
+                                      )
+                                    }
+                                    className="w-full px-2 py-1 border rounded outline-none focus:ring focus:ring-blue-300"
+                                    disabled={loadingClasses}
+                                  >
+                                    <option value="">Select</option>
+                                    {loadingClasses ? (
+                                      <option disabled>Loading...</option>
+                                    ) : (
+                                      classOptions.map((option) => (
+                                        <option
+                                          key={option.value}
+                                          value={option.label}
+                                        >
+                                          {option.label}
+                                        </option>
+                                      ))
+                                    )}
+                                  </select>
                                 </td>
                               </tr>
                             ))
@@ -822,14 +839,6 @@ const AllotGRNumbers = () => {
                       </table>
                     </div>
                   </div>{" "}
-                  {/* <div className="text-center">
-                    <p className="text-blue-500 font-semibold mt-1">
-                      Selected Students:{" "}
-                      <h6 className=" inline text-pink-600">
-                        {selectedStudents.length}
-                      </h6>
-                    </p>
-                  </div> */}
                   <div className="col-span-3 mb-2  text-right mt-2">
                     <button
                       type="submit"
@@ -879,4 +888,4 @@ const AllotGRNumbers = () => {
   );
 };
 
-export default AllotGRNumbers;
+export default UpdateStudentID;
