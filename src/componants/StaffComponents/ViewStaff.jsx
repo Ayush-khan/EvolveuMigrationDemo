@@ -118,7 +118,8 @@ function ViewStaff() {
         console.log("role_name", formData.role_name);
         if (teacher.teacher_image_name) {
           setPhotoPreview(
-            `https://sms.evolvu.in/storage/app/public/teacher_images/${teacher.teacher_image_name}`
+            // `https://sms.evolvu.in/storage/app/public/teacher_images/${teacher.teacher_image_name}`
+            `${teacher?.teacher_image_name}`
           );
         }
       })
@@ -132,6 +133,8 @@ function ViewStaff() {
   }, [staff?.teacher_id, navigate]);
 
   console.log("staff", staff);
+  console.log("formData_teacher_image--->", formData.teacher_image);
+  console.log("teacherImgfrom API:-->", photoPreview);
 
   return (
     <>

@@ -823,7 +823,8 @@ function ManageSubjectList() {
                                   <img
                                     src={
                                       subject?.image_name
-                                        ? `https://sms.evolvu.in/storage/app/public/student_images/${subject?.image_name}`
+                                        ? // ? `https://sms.evolvu.in/storage/app/public/student_images/${subject?.image_name}`
+                                          `${subject?.image_name}`
                                         : "https://via.placeholder.com/50"
                                     }
                                     alt={subject?.name}

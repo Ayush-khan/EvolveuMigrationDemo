@@ -594,9 +594,13 @@ const AllotTeachersForClass = () => {
       }
       console.log("Subjects data from GET API by classId:", subjects);
     } catch (error) {
+      console.log(
+        "eerror-->allotTeachrersForsubject",
+        error.response.data.error
+      );
       console.error("Error fetching subjects:", error);
       setError("Error fetching subjects");
-      toast.error("Error fetching subjects");
+      toast.error(error?.response?.data?.error || "Error fetching subjects");
     } finally {
       setLoading(false);
 

@@ -193,20 +193,20 @@ function AllotMarksHeading() {
     // Handle invalid input (non-numeric)
   };
 
-  const handleDelete = (sectionId) => {
-    const classToDelete = subjects.find(
-      (cls) => cls.allot_markheadings_id === sectionId
-    );
-    console.log("classsToDelete", classToDelete);
-    // Set the current section and subject name for deletion
-    if (classToDelete) {
-      setCurrentSection(classToDelete); // Set the current section directly
-      setCurrestSubjectNameForDelete(classToDelete.get_marksheading?.name); // Set subject name for display
-      setShowDeleteModal(true); // Show the delete modal
-    } else {
-      console.error("Section not found for deletion");
-    }
-  };
+  // const handleDelete = (sectionId) => {
+  //   const classToDelete = subjects.find(
+  //     (cls) => cls.allot_markheadings_id === sectionId
+  //   );
+  //   console.log("classsToDelete", classToDelete);
+  //   // Set the current section and subject name for deletion
+  //   if (classToDelete) {
+  //     setCurrentSection(classToDelete); // Set the current section directly
+  //     setCurrestSubjectNameForDelete(classToDelete.get_marksheading?.name); // Set subject name for display
+  //     setShowDeleteModal(true); // Show the delete modal
+  //   } else {
+  //     console.error("Section not found for deletion");
+  //   }
+  // };
 
   const handleSubmitEdit = async () => {
     if (isSubmitting) return; // Prevent re-submitting
@@ -464,7 +464,7 @@ function AllotMarksHeading() {
                         <table className="min-w-full leading-normal table-auto">
                           <thead>
                             <tr className="bg-gray-200">
-                              <th className="px-2 text-center lg:px-3 py-2 border border-gray-950 text-sm font-semibold text-gray-900 tracking-wider">
+                              <th className="px-2 w-full md:w-[8%] text-center lg:px-3 py-2 border border-gray-950 text-sm font-semibold text-gray-900 tracking-wider">
                                 Sr.No
                               </th>
                               <th className="px-2 text-center lg:px-3 py-2 border border-gray-950 text-sm font-semibold text-gray-900 tracking-wider">
@@ -477,18 +477,18 @@ function AllotMarksHeading() {
                               <th className="px-2 text-center lg:px-3 py-2 border border-gray-950 text-sm font-semibold text-gray-900 tracking-wider">
                                 Exam
                               </th>
-                              <th className="px-2 text-center lg:px-3 py-2 border border-gray-950 text-sm font-semibold text-gray-900 tracking-wider">
+                              <th className="px-2 w-full md:w-[25%] text-center lg:px-3 py-2 border border-gray-950 text-sm font-semibold text-gray-900 tracking-wider">
                                 Marks Heading
                               </th>
-                              <th className="px-2 text-center lg:px-3 py-2 border border-gray-950 text-sm font-semibold text-gray-900 tracking-wider">
+                              <th className="px-2 w-full md:w-[10%] text-center lg:px-3 py-2 border border-gray-950 text-sm font-semibold text-gray-900 tracking-wider">
                                 Highest Marks
                               </th>
-                              <th className="px-2 w-full md:w-[8%] text-center lg:px-3 py-2 border border-gray-950 text-sm font-semibold text-gray-900 tracking-wider">
+                              <th className="px-2 w-full md:w-[10%] text-center lg:px-3 py-2 border border-gray-950 text-sm font-semibold text-gray-900 tracking-wider">
                                 Edit
                               </th>
-                              <th className="px-2 w-full md:w-[8%] text-center lg:px-3 py-2 border border-gray-950 text-sm font-semibold text-gray-900 tracking-wider">
+                              {/* <th className="px-2 w-full md:w-[8%] text-center lg:px-3 py-2 border border-gray-950 text-sm font-semibold text-gray-900 tracking-wider">
                                 Delete
-                              </th>
+                              </th> */}
                             </tr>
                           </thead>
                           <tbody>
@@ -526,7 +526,7 @@ function AllotMarksHeading() {
                                       <FontAwesomeIcon icon={faEdit} />
                                     </button>
                                   </td>
-                                  <td className="px-2 text-center lg:px-3 py-2 border border-gray-950 text-sm">
+                                  {/* <td className="px-2 text-center lg:px-3 py-2 border border-gray-950 text-sm">
                                     <button
                                       onClick={() =>
                                         handleDelete(
@@ -537,7 +537,7 @@ function AllotMarksHeading() {
                                     >
                                       <FontAwesomeIcon icon={faTrash} />
                                     </button>
-                                  </td>
+                                  </td> */}
                                 </tr>
                               ))
                             ) : (

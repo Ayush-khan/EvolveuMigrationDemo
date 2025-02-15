@@ -515,7 +515,7 @@ const AllotMarksHeadingTab = () => {
   const [marksHeadingError, setMarksHeadingError] = useState("");
   const [highestMarksError, setHighestMarksError] = useState([]);
   const [isSubmitting, setIsSubmitting] = useState(false);
-
+  const [isDeleting, setIsDeleting] = useState(false);
   const navigate = useNavigate();
   // Fetch class list and exams on component mount
   useEffect(() => {
@@ -807,6 +807,11 @@ const AllotMarksHeadingTab = () => {
   const handleSave = async () => {
     if (isSubmitting) return; // Prevent re-submitting
     setIsSubmitting(true);
+    setExamError("");
+    setClassError("");
+    setSubjectError("");
+    setMarksHeadingError("");
+    setHighestMarksError([]);
     let hasError = false;
 
     // Validate form fields
@@ -888,6 +893,67 @@ const AllotMarksHeadingTab = () => {
       toast.error("Error saving Allot Marks headings");
     } finally {
       setIsSubmitting(false); // Re-enable the button after the operation
+    }
+  };
+  const handleDelete = async () => {
+    if (isDeleting) return; // Prevent re-submitting
+    setIsDeleting(true);
+    setExamError("");
+    setClassError("");
+    setSubjectError("");
+    setMarksHeadingError("");
+    setHighestMarksError([]);
+
+    let hasError = false;
+
+    // Validate form fields
+    if (!selectedClass) {
+      setClassError("Please select a class.");
+      hasError = true;
+    }
+    if (!selectedExam) {
+      setExamError("Please select an exam.");
+      hasError = true;
+    }
+    if (!selectedSubject) {
+      setSubjectError("Please select a subject.");
+      hasError = true;
+    }
+    if (hasError) {
+      setIsDeleting(false);
+
+      return;
+    }
+
+    try {
+      const token = localStorage.getItem("authToken");
+      const response = await axios.delete(
+        `${API_URL}/api/delete_AllotMarkheadingss/${selectedClass.value}/${selectedSubject.value}/${selectedExam.value}`,
+
+        {
+          headers: { Authorization: `Bearer ${token}` },
+        }
+      );
+      toast.success(
+        response?.data?.message || "Allot Marks headings Deleted successfully"
+      );
+
+      // Reset the form
+      setSelectedClass(null);
+      setSelectedExam(null);
+      setSelectedSubject(null);
+      setMarksHeadingsData(
+        marksHeadingsData.map((heading) => ({
+          ...heading,
+          selected: false,
+          highest_marks: "",
+        }))
+      );
+      // navigate("/allotMarksHeading"); // Replace '/your-target-route' with the desired route
+    } catch (error) {
+      toast.error("Error Deleting Allot Marks headings");
+    } finally {
+      setIsDeleting(false); // Re-enable the button after the operation
     }
   };
 
@@ -1078,7 +1144,14 @@ const AllotMarksHeadingTab = () => {
                 </div>
 
                 {/* Save Button  */}
-                <div className=" flex float-end mt-6">
+                <div className=" flex float-end gap-x-2 mt-6 ">
+                  <button
+                    onClick={handleDelete}
+                    disabled={isDeleting}
+                    className="bg-red-500 text-white px-3 py-2 rounded-lg hover:bg-red-600"
+                  >
+                    {isDeleting ? "Deleting..." : "Delete"}
+                  </button>
                   <button
                     onClick={handleSave}
                     disabled={isSubmitting}

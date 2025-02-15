@@ -519,7 +519,41 @@ const CreateShortSMS = () => {
                           <h5 className="px-2 mt-2 lg:px-3 py-2 text-[1em] text-gray-700">
                             Description <span className="text-red-500">*</span>
                           </h5>
-                          <div className="w-full md:w-[70%] flex flex-col gap-0 ">
+                          <div className="w-full md:w-[70%] flex flex-col gap-0">
+                            <p className="font-light">Dear Parent,</p>
+                            <textarea
+                              className="relative -top-4 px-2 py-1 border border-gray-700 rounded-md shadow-md"
+                              rows="2"
+                              value={noticeDesc}
+                              onChange={(e) => setNoticeDesc(e.target.value)}
+                              onKeyDown={(e) => {
+                                if (e.key === "Enter") {
+                                  e.preventDefault(); // Prevent the default behavior of Enter key
+                                  const cursorPos = e.target.selectionStart; // Current cursor position
+                                  const textBeforeCursor = noticeDesc.slice(
+                                    0,
+                                    cursorPos
+                                  ); // Text before the cursor
+                                  const textAfterCursor =
+                                    noticeDesc.slice(cursorPos); // Text after the cursor
+                                  const updatedText = `${textBeforeCursor}\n• ${textAfterCursor}`;
+                                  setNoticeDesc(updatedText);
+                                  // Move the cursor to the position after the bullet point
+                                  setTimeout(() => {
+                                    e.target.selectionStart =
+                                      e.target.selectionEnd = cursorPos + 3;
+                                  }, 0);
+                                }
+                              }}
+                            />
+                            {noticeDescError && (
+                              <p className="h-3 relative -top-3 text-red-500 text-sm mt-2">
+                                {noticeDescError}
+                              </p>
+                            )}
+                          </div>
+
+                          {/* <div className="w-full md:w-[70%] flex flex-col gap-0 ">
                             <p className="font-light">Dear Parent,</p>
                             <textarea
                               className="relative -top-4 px-2 py-1 border border-gray-700 rounded-md shadow-md  "
@@ -532,7 +566,7 @@ const CreateShortSMS = () => {
                                 {noticeDescError}
                               </p>
                             )}
-                          </div>
+                          </div> */}
                         </div>
                       </div>
                     </div>
