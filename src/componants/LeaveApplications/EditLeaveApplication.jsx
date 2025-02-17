@@ -8,7 +8,6 @@ const EditLeaveApplication = () => {
   const location = useLocation();
   const API_URL = import.meta.env.VITE_API_URL;
   const [loading, setLoading] = useState(false);
-  const [isSubmitting, setIsSubmitting] = useState(false);
 
   const { staffleave } = location.state || {};
   console.log("staff leave for editing", staffleave);
@@ -109,7 +108,7 @@ const EditLeaveApplication = () => {
     }
   };
 
-  const fetchLeaveType = async () => {
+  const fetchLeaveType = async (reg_id) => {
     setLoading(true);
     try {
       const token = localStorage.getItem("authToken");
@@ -118,12 +117,16 @@ const EditLeaveApplication = () => {
         throw new Error("No Authentication token found.");
       }
 
-      const response = await axios.get(`${API_URL}/api/get_leavetype`, {
-        headers: {
-          Authorization: `Bearer ${token}`,
-        },
-        withCredentials: true,
-      });
+      const response = await axios.get(
+        `${API_URL}/api/get_leavetypedata/${reg_id}`,
+        {
+          // ${API_URL}/api/get_leavetype
+          headers: {
+            Authorization: `Bearer ${token}`,
+          },
+          withCredentials: true,
+        }
+      );
 
       if (Array.isArray(response.data.data)) {
         setLeaveType(response.data.data);
@@ -273,8 +276,6 @@ const EditLeaveApplication = () => {
   }, [staffleave, API_URL]);
 
   const handleSubmit = async (event) => {
-    if (isSubmitting) return; // Prevent re-submitting
-    setIsSubmitting(true);
     event.preventDefault();
 
     // Prevent double submissions
@@ -284,11 +285,8 @@ const EditLeaveApplication = () => {
     const validationErrors = validate();
     if (validationErrors && Object.keys(validationErrors).length > 0) {
       setErrors(validationErrors);
-      setIsSubmitting(false); // Reset submitting state if validation fails
-
       Object.values(validationErrors).forEach((error) => {
-        console.log("error", error);
-        // toast.error(error);
+        toast.error(error); // Display validation errors
       });
       return;
     }
@@ -357,8 +355,6 @@ const EditLeaveApplication = () => {
         toast.error("An unexpected error occurred.");
       }
     } finally {
-      setIsSubmitting(false); // Re-enable the button after the operation
-
       setLoading(false); // End loading state
     }
   };
@@ -408,8 +404,8 @@ const EditLeaveApplication = () => {
                 title="Name should not start with a number"
                 required
                 value={formData.staff_name}
-                readOnly
-                className="w-full bg-gray-200 no-underline p-1.5 shadow-md mb-2 pl-2 "
+                disabled
+                className="w-full form-control shadow-md mb-2"
               />
               <div className="absolute top-9 left-1/3">
                 {errors.staff_name && (
@@ -432,7 +428,7 @@ const EditLeaveApplication = () => {
                 className="form-control shadow-md"
               >
                 <option className="bg-gray-300" value="">
-                  Select{" "}
+                  Select Leave{" "}
                 </option>
                 {leaveType.length === 0 ? (
                   <option>No Options</option>
@@ -586,10 +582,9 @@ const EditLeaveApplication = () => {
                 style={{ backgroundColor: "#2196F3" }}
                 className="mr-2 bg-blue-500 text-white py-1 px-3 rounded hover:bg-blue-700"
                 onClick={handleSubmit}
-                disabled={isSubmitting}
                 // disabled={loadingForSearch}
               >
-                {isSubmitting ? "Updating..." : "Update"}
+                Update
               </button>
             </div>
           </div>
@@ -600,3 +595,183 @@ const EditLeaveApplication = () => {
 };
 
 export default EditLeaveApplication;
+
+{
+  /* <div className="w-full max-w-3xl rounded-lg mt-0">
+            <div className="flex flex-col mt-0 md:grid md:grid-cols-2 md:gap-x-0 md:gap-y-4">
+              <label htmlFor="staffName" className="w-1/2 mt-2 ml-7">
+                Staff Name 
+              </label>
+              <input
+                type="text"
+                maxLength={100}
+                id="staff_name"
+                name="staff_name"
+                pattern="^[^\d].*"
+                title="Name should not start with a number"
+                required
+                value={formData.staff_name}
+                className="block border w-full border-gray-300 rounded-md py-1 px-3 bg-white shadow-inner"
+                readOnly
+              />
+              <label htmlFor="leavetype" className="w-1/2 mt-2 ml-7">
+                Leave Type<span className="text-red-500">*</span>
+              </label>
+              <select
+                id="leave_type"
+                name="leave_type"
+                value={formData.leave_type_id}
+                onChange={handleChangeLeaveType}
+                required
+                className="input-field block w-full border border-gray-300 rounded-md py-1 px-3 bg-white shadow-inner"
+              >
+                <option className="bg-gray-300" value="">
+                  Select
+                </option>
+
+                {leaveType.length === 0 ? (
+                  <option>No Options</option>
+                ) : (
+                  leaveType.map((leave) => (
+                    <option
+                      key={leave.leave_type_id}
+                      value={leave.leave_type_id}
+                      className="max-h-20 overflow-y-scroll"
+                    >
+                      {leave.name}
+                    </option>
+                  ))
+                )}
+              </select>
+              <label htmlFor="leavestartdate" className="w-1/2 mt-2 ml-7">
+                Leave Start Date <span className="text-red-500">*</span>
+              </label>
+              <input
+                type="date"
+                id="leave_start_date"
+                // max={today}
+                name="leave_start_date"
+                value={formData.leave_start_date}
+                onChange={handleChange}
+                max={formData.leave_end_date || ""}
+                className="input-field block w-full border border-gray-300 rounded-md py-1 px-3 bg-white shadow-inner"
+                required
+              />
+              {errors.leave_start_date && (
+                  <span className="text-red-500 text-xs">
+                    {errors.leave_start_date}
+                  </span>
+                )}
+              <label htmlFor="leaveenddate" className="w-1/2 mt-2 ml-7">
+                Leave End Date<span className="text-red-500">*</span>
+              </label>
+              <input
+                type="date"
+                id="leave_end_date"
+                // max={today}
+                name="leave_end_date"
+                value={formData.leave_end_date}
+                onChange={handleChange}
+                min={formData.leave_start_date || ""}
+                className="input-field block w-full border border-gray-300 rounded-md py-1 px-3 bg-white shadow-inner"
+                required
+              />
+              {errors.leave_end_date && (
+                  <span className="text-red-500 text-xs">
+                    {errors.leave_end_date}
+                  </span>
+                )}
+            
+            <label htmlFor="status" className="w-1/2 mt-2 ml-7">
+                Status <span className="text-red-500">*</span>
+              </label>
+              <input
+                type="text"
+                maxLength={100}
+                id="status"
+                name="status"
+                pattern="^[^\d].*"
+                // title="Name should not start with a number"
+                required
+                value={formData.status}
+                // onChange={handleChange}
+                // placeholder="Name"
+                className="block border w-full border-gray-300 rounded-md py-1 px-3 bg-gray-200 shadow-inner"
+                readOnly
+              />
+
+              <label htmlFor="days" className="w-1/2 mt-2 ml-7">
+                No. of Days <span className="text-red-500">*</span>
+              </label>
+              <input
+                type="number" // Change to "number" to support decimals
+                id="no_of_days"
+                name="no_of_days"
+                value={formData.no_of_days}
+                step="0.5" // Allows decimals (e.g., 0.5, 1.75)
+                min="0.5" // Ensures that 0.01 or more is entered
+                onChange={handleChange}
+                className="input-field block w-full border border-gray-300 rounded-md py-1 px-3 bg-white shadow-inner"
+              />
+              
+                {errors.no_of_days && (
+                  <span className="text-red-500 text-xs">
+                    {errors.no_of_days}
+                  </span>
+                )}
+
+              <label htmlFor="reason" className="w-1/2 mt-2 ml-7">
+                Reason 
+              </label>
+              <textarea
+                type="text"
+                maxLength={200}
+                id="reason"
+                name="reason"
+                value={formData.reason}
+                onChange={handleChange}
+                className="input-field resize block w-full border border-gray-300 rounded-md py-1 px-3 bg-white shadow-inner"
+                rows="2"
+              />
+              {errors.reason && (
+                  <div className="text-red-500 text-xs ml-2">
+                    {errors.reason}
+                  </div>
+                )}
+
+              <label htmlFor="approval" className="w-1/2 mt-2 ml-7">
+                Approver's Comments
+              </label>
+              <textarea
+                type="text"
+                maxLength={200}
+                id="approval"
+                name="approval"
+                value={formData.reason_for_rejection}
+                // onChange={handleChange}
+                className="input-field resize block w-full border border-gray-300 rounded-md py-1 px-3 bg-gray-200 shadow-inner"
+                rows="2"
+                readOnly
+              />
+            </div>
+
+            <div className="col-span-3 text-right mt-4">
+              <button
+                type="submit"
+                style={{ backgroundColor: "#2196F3" }}
+                className="mr-2 bg-blue-500 text-white py-1 px-3 rounded hover:bg-blue-700"
+                onClick={handleSubmit}
+                // disabled={loadingForSearch}
+              >
+                Update
+              </button>
+              <button
+                className=" bg-yellow-500 text-white py-1 px-3 rounded hover:bg-yellow-700"
+                onClick={() => navigate("/leaveApplication")}
+                // disabled={loadingForSearch}
+              >
+                Back
+              </button>
+            </div>
+          </div> */
+}
