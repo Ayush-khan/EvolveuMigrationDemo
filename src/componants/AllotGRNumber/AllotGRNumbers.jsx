@@ -6,7 +6,6 @@ import "react-toastify/dist/ReactToastify.css";
 import { useNavigate } from "react-router-dom";
 import { RxCross1 } from "react-icons/rx";
 // import "./AllotGRNumbers.module.CSS";
-//Component of AllotGRnumber by mahima
 const AllotGRNumbers = () => {
   const API_URL = import.meta.env.VITE_API_URL;
   const [searchTerm, setSearchTerm] = useState("");
@@ -119,7 +118,7 @@ const AllotGRNumbers = () => {
   const handleClassSelect = (selectedOption) => {
     setSelectedClass(selectedOption);
     // setClassError("");
-    setNameErrorForClass("");
+
     setSelectedDivision(null); // Reset division dropdown
     setDivisionForForm([]); // Clear division options
     setClassIdForSearch(selectedOption?.value);
@@ -131,7 +130,6 @@ const AllotGRNumbers = () => {
 
   const handleDivisionSelect = (selectedOption) => {
     setSelectedDivision(selectedOption); // Ensure correct value is set
-    setNameErrorForDivision("");
   };
 
   const handleSearch = async () => {
@@ -204,8 +202,6 @@ const AllotGRNumbers = () => {
     e.preventDefault();
 
     try {
-      setLoading(true); // Start loading
-
       const token = localStorage.getItem("authToken");
       if (!studentInformation?.length) {
         alert("No student data to update.");
@@ -234,7 +230,7 @@ const AllotGRNumbers = () => {
         let studentHasError = false;
 
         // Validate empty fields
-        ["reg_no", "stu_aadhaar_no", "admission_date"].forEach((field) => {
+        ["admission_date"].forEach((field) => {
           if (!student[field]?.trim()) {
             studentHasError = true;
             errors[`${student.student_id}-${field}`] =
@@ -288,35 +284,29 @@ const AllotGRNumbers = () => {
           }); // Smooth scroll
         }
 
+        // Display toast messages for unique errors
+        // if (errorMessages.size > 0) {
+        //   toast.error(Array.from(errorMessages).join("\n"),
+        //   {
+        //     autoClose: 5000,
+        //     position: "top-right",
+        //     closeOnClick: true,
+        //     pauseOnHover: true,
+        //   });
+        // }
+
         return; // Stop form submission
       }
 
       // Proceed with API call if validation passes
       const response = await axios.put(
-        `${API_URL}/api/update_studentallotgrno`,
+        `${API_URL}/api/update_studentallotgrno `,
         { students: updatedStudentInformation },
-        { headers: { Authorization: `Bearer ${token}` } }
+        { headers: { Authorization: ` Bearer ${token} ` } }
       );
 
       if (response.status === 200) {
         toast.success("Student details updated successfully!");
-        setSelectedClass(null); // Reset class selection
-        setSelectedStudent(null); // Reset student selection
-        setSelectedStudents([]); // Clear selected students
-        setErrors({});
-        setSelectedStudentForStudent(null);
-        setSelectedStudentForStudent([]);
-        setSelectedClassForStudent(null);
-        setSelectedDivision("");
-        setDivisionForForm([]);
-        setSelectedClassForStudent([]);
-        setNameErrorForClassForStudent("");
-        setNameErrorForStudent("");
-        setSelectAll(null);
-        setBackendErrors({});
-        setTimeout(() => {
-          setstudentInformation(null);
-        }, 500);
       } else {
         toast.error(
           `Failed to update student details. Status: ${response.status}`
@@ -376,10 +366,164 @@ const AllotGRNumbers = () => {
           `An error occurred: ${error.response?.data?.message || error.message}`
         );
       }
-    } finally {
-      setLoading(false); // Stop loading
     }
   };
+
+  // const handleSubmit = async (e) => {
+  //   e.preventDefault();
+
+  //   try {
+  //     const token = localStorage.getItem("authToken");
+  //     if (!studentInformation?.length) {
+  //       alert("No student data to update.");
+  //       toast.error("All fields are required.");
+  //       return;
+  //     }
+
+  //     let firstInvalidField = null;
+  //     const regNoCount = {};
+  //     const aadhaarCount = {};
+  //     const errors = {};
+  //     const errorMessages = new Set();
+
+  //     // Count occurrences of GR numbers and Aadhaar numbers
+  //     studentInformation.forEach((student) => {
+  //       if (student.reg_no) {
+  //         regNoCount[student.reg_no] = (regNoCount[student.reg_no] || 0) + 1;
+  //       }
+  //       if (student.stu_aadhaar_no) {
+  //         aadhaarCount[student.stu_aadhaar_no] =
+  //           (aadhaarCount[student.stu_aadhaar_no] || 0) + 1;
+  //       }
+  //     });
+
+  //     // Validate fields
+  //     const updatedStudentInformation = studentInformation.map((student) => {
+  //       let studentHasError = false;
+
+  //       // Validate required fields only if they are needed
+  //       ["reg_no", "stu_aadhaar_no", "admission_date"].forEach((field) => {
+  //         if (student[field] === undefined || student[field]?.trim() === "") {
+  //           studentHasError = true;
+  //           errors[`${student.student_id}-${field}`] = "This field cannot be empty";
+  //           errorMessages.add("All required fields must be filled.");
+  //         }
+  //       });
+
+  //       // Check for duplicate GR Number
+  //       if (student.reg_no && regNoCount[student.reg_no] > 1) {
+  //         studentHasError = true;
+  //         errors[`${student.student_id}-reg_no`] = "GR number must be unique";
+  //         errorMessages.add("Duplicate GR numbers found.");
+  //       }
+
+  //       // Check for duplicate Aadhaar Number
+  //       if (student.stu_aadhaar_no && aadhaarCount[student.stu_aadhaar_no] > 1) {
+  //         studentHasError = true;
+  //         errors[`${student.student_id}-stu_aadhaar_no`] = "Aadhaar number must be unique";
+  //         errorMessages.add("Duplicate Aadhaar numbers found.");
+  //       }
+
+  //       return { ...student, hasError: studentHasError };
+  //     });
+
+  //     // Highlight and scroll to the first invalid field
+  //     const firstInvalidStudent = updatedStudentInformation.find(
+  //       (student) => student.hasError
+  //     );
+
+  //     if (firstInvalidStudent) {
+  //       Object.keys(errors).forEach((key) => {
+  //         const fieldElement = studentRefs.current[key];
+  //         if (fieldElement) {
+  //           fieldElement.classList.add("border-red-500", "ring-red-300");
+  //           if (!firstInvalidField) {
+  //             firstInvalidField = fieldElement;
+  //           }
+  //         }
+  //       });
+
+  //       if (firstInvalidField) {
+  //         firstInvalidField.focus();
+  //         firstInvalidField.scrollIntoView({ behavior: "smooth", block: "center" });
+  //       }
+
+  //       toast.error(Array.from(errorMessages).join("\n"), {
+  //         autoClose: 5000,
+  //         position: "top-right",
+  //         closeOnClick: true,
+  //         pauseOnHover: true,
+  //       });
+
+  //       return;
+  //     }
+
+  //     // Proceed with API call if validation passes
+  //     const response = await axios.put(
+  //       `${API_URL}/api/update_studentallotgrno`,
+  //       { students: updatedStudentInformation },
+  //       { headers: { Authorization: `Bearer ${token}` } }
+  //     );
+
+  //     if (response.status === 200) {
+  //       toast.success("Student details updated successfully!");
+  //     } else {
+  //       toast.error(`Failed to update student details. Status: ${response.status}`);
+  //     }
+  //   } catch (error) {
+  //     console.log("Full API Error Response:", error.response);
+
+  //     if (error.response?.status === 422) {
+  //       const backendErrors = error.response.data;
+
+  //       if (backendErrors.errors) {
+  //         const formattedErrors = {};
+  //         const backendErrorMessages = new Set();
+
+  //         Object.entries(backendErrors.errors).forEach(([key, messages]) => {
+  //           const match = key.match(/^students\.(\d+)\.(.+)$/);
+  //           if (match) {
+  //             const studentIndex = Number(match[1]);
+  //             const fieldName = match[2];
+
+  //             const studentId = studentInformation[studentIndex]?.student_id;
+  //             if (studentId) {
+  //               if (!formattedErrors[studentId]) {
+  //                 formattedErrors[studentId] = {};
+  //               }
+  //               formattedErrors[studentId][fieldName] = messages[0];
+  //               backendErrorMessages.add(messages[0]);
+  //             }
+  //           }
+  //         });
+
+  //         if (Object.keys(formattedErrors).length > 0) {
+  //           setBackendErrors(formattedErrors);
+
+  //           // Scroll to first backend error
+  //           const firstErrorKey = Object.keys(formattedErrors)[0];
+  //           const firstErrorFieldKey = Object.keys(formattedErrors[firstErrorKey])[0];
+  //           const firstErrorField = studentRefs.current[`${firstErrorKey}-${firstErrorFieldKey}`];
+
+  //           if (firstErrorField) {
+  //             firstErrorField.classList.add("border-red-500", "ring-red-300");
+  //             firstErrorField.focus();
+  //             firstErrorField.scrollIntoView({ behavior: "smooth", block: "center" });
+  //           }
+
+  //           toast.error(Array.from(backendErrorMessages).join("\n"), {
+  //             autoClose: 5000,
+  //             position: "top-right",
+  //             closeOnClick: true,
+  //             pauseOnHover: true,
+  //           });
+  //         }
+  //       }
+  //     } else {
+  //       toast.error(`An error occurred: ${error.response?.data?.message || error.message}`);
+  //     }
+  //   }
+  // };
 
   const handleInputChange = (e, studentId, fieldName) => {
     const { value } = e.target;
@@ -387,7 +531,7 @@ const AllotGRNumbers = () => {
     setstudentInformation((prevStudents) =>
       prevStudents.map((student) =>
         student.student_id === studentId || student.roll_no === studentId
-          ? { ...student, [fieldName]: value }
+          ? { ...student, [fieldName]: value, hasChanged: true }
           : student
       )
     );
@@ -397,7 +541,7 @@ const AllotGRNumbers = () => {
 
     if (fieldName === "reg_no") {
       if (!value) {
-        error = "GR number is required.";
+        // error = "GR number is required.";
       } else if (
         studentInformation.some(
           (student) =>
@@ -410,7 +554,7 @@ const AllotGRNumbers = () => {
 
     if (fieldName === "stu_aadhaar_no") {
       if (!value) {
-        error = "Aadhaar number is required.";
+        // error = "Aadhaar number is required.";
       } else if (!/^\d{12}$/.test(value)) {
         error = "Please enter 12 digits.";
       } else if (
@@ -423,13 +567,13 @@ const AllotGRNumbers = () => {
       }
     }
 
-    if (fieldName === "admission_date") {
-      if (!value) {
-        error = "Admission date is required.";
-      } else if (isNaN(new Date(value).getTime())) {
-        error = "Please enter a valid date.";
-      }
-    }
+    // if (fieldName === "admission_date") {
+    //   if (!value) {
+    //     error = "Admission date is required.";
+    //   } else if (isNaN(new Date(value).getTime())) {
+    //     error = "Please enter a valid date.";
+    //   }
+    // }
 
     // Update the frontend validation errors
     setErrors((prevErrors) => ({
@@ -503,85 +647,81 @@ const AllotGRNumbers = () => {
         <div className="w-full md:container mt-4">
           {/* Search Section */}
           <div className="pt-2 md:pt-4"></div>
-          <div className="pt-8 w-full md:w-[65%]  relative ml-0 md:ml-[10%]  border-1 flex justify-start flex-col md:flex-row gap-x-1  bg-white rounded-lg mt-2 md:mt-6 p-2 ">
+          <div className="pt-8 w-full md:w-[70%]  relative ml-0 md:ml-[10%]  border-1 flex justify-start flex-col md:flex-row gap-x-1  bg-white rounded-lg mt-2 md:mt-6 p-2 ">
             {/* <h6 className=" w-[20%] float-start text-nowrap text-blue-600 mt-2.5"></h6> */}
 
             <div className="w-full flex md:flex-row justify-start items-center">
               <div className="w-full  flex flex-col gap-y-2 md:gap-y-0 md:flex-row">
-                <div className="w-full  gap-x-1 md:gap-x-6 items-center md:justify-between my-1 md:my-4 flex flex-col md:flex-row ">
-                  <div className=" w-full md:w-[85%] flex flex-col md:flex-row justify-between">
-                    <div className="  w-full md:w-[47%] flex flex-row justify-between   ">
-                      <label
-                        className="text-md mt-1.5 mr-1 md:mr-0 inline-flex"
-                        htmlFor="classSelect"
-                      >
-                        Class <span className="text-red-500">*</span>
-                      </label>
+                <div className="w-full gap-x-1 md:gap-x-6 md:justify-start my-1 md:my-4 flex md:flex-row ">
+                  <label
+                    className="text-md mt-1.5 mr-1 md:mr-0 inline-flex"
+                    htmlFor="classSelect"
+                  >
+                    Class <span className="text-red-500">*</span>
+                  </label>
 
-                      <div className="w-full md:w-[70%]">
-                        <Select
-                          id="classSelect"
-                          value={selectedClass}
-                          onChange={handleClassSelect}
-                          options={classOptions}
-                          placeholder={
-                            loadingClasses ? "Loading classes..." : "Select"
-                          }
-                          isSearchable
-                          isClearable
-                          className="text-sm"
-                          styles={{
-                            menu: (provided) => ({
-                              ...provided,
-                              zIndex: 1050, // Set your desired z-index value
-                            }),
-                          }}
-                          isDisabled={loadingClasses}
-                        />
-                        {nameErrorForClass && (
-                          <div className="h-8 relative ml-1 text-danger text-xs">
-                            {nameErrorForClass}
-                          </div>
-                        )}
+                  <div className="w-full md:w-[30%]">
+                    <Select
+                      id="classSelect"
+                      value={selectedClass}
+                      onChange={handleClassSelect}
+                      options={classOptions}
+                      placeholder={
+                        loadingClasses ? "Loading classes..." : "Select"
+                      }
+                      isSearchable
+                      isClearable
+                      className="text-sm"
+                      styles={{
+                        menu: (provided) => ({
+                          ...provided,
+                          zIndex: 1050, // Set your desired z-index value
+                        }),
+                      }}
+                      isDisabled={loadingClasses}
+                    />
+                    {nameErrorForClass && (
+                      <div className="h-8 relative ml-1 text-danger text-xs">
+                        {nameErrorForClass}
                       </div>
-                    </div>
-                    <div className="  w-full md:w-[44%] flex flex-row justify-between   ">
-                      {" "}
-                      <label
-                        className="text-md mt-1.5 mr-1 md:mr-0 inline-flex"
-                        htmlFor="divisionSelect"
-                      >
-                        Division <span className="text-red-500">*</span>
-                      </label>
-                      <div className="w-full md:w-[60%]">
-                        <Select
-                          id="divisionSelect"
-                          value={selectedDivision}
-                          onChange={handleDivisionSelect}
-                          options={divisionOptions}
-                          placeholder={
-                            loadingClasses ? "Loading divisions..." : "Select"
-                          }
-                          isSearchable
-                          isClearable
-                          className="text-sm"
-                          styles={{
-                            menu: (provided) => ({
-                              ...provided,
-                              zIndex: 1050, // Set your desired z-index value
-                            }),
-                          }}
-                          isDisabled={loadingDivision}
-                        />
-                        {nameErrorForDivision && (
-                          <div className="h-8 relative ml-1 text-danger text-xs">
-                            {nameErrorForDivision}
-                          </div>
-                        )}
+                    )}
+                  </div>
+
+                  <label
+                    className="text-md mt-1.5 mr-1 md:mr-0 inline-flex"
+                    htmlFor="divisionSelect"
+                  >
+                    Division <span className="text-red-500">*</span>
+                  </label>
+
+                  <div className="w-full md:w-[30%]">
+                    <Select
+                      id="divisionSelect"
+                      value={selectedDivision}
+                      onChange={handleDivisionSelect}
+                      options={divisionOptions}
+                      placeholder={
+                        loadingClasses ? "Loading divisions..." : "Select"
+                      }
+                      isSearchable
+                      isClearable
+                      className="text-sm"
+                      styles={{
+                        menu: (provided) => ({
+                          ...provided,
+                          zIndex: 1050, // Set your desired z-index value
+                        }),
+                      }}
+                      isDisabled={loadingDivision}
+                    />
+                    {nameErrorForDivision && (
+                      <div className="h-8 relative ml-1 text-danger text-xs">
+                        {nameErrorForDivision}
                       </div>
-                    </div>
+                    )}
                   </div>
                 </div>
+
                 <button
                   type="search"
                   onClick={handleSearch}

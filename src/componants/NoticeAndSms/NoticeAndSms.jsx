@@ -207,7 +207,7 @@ function NoticeAndSms() {
     setteacherIdIs(section?.get_teacher?.teacher_id);
     setShowViewModal(true);
 
-    if (section.notice_type === "NOTICE") {
+    if (section.notice_type === "Notice") {
       fetchNoticeData(section); // Pass the current section directly
     } else {
       setImageUrls([]); // Clear image URLs if not a notice
@@ -350,7 +350,7 @@ function NoticeAndSms() {
   // };
   const downloadFile = (fileUrl, fileName) => {
     const baseUrl = "https://sms.evolvu.in/"; // Base URL
-    const fullUrl = `${baseUrl}${fileUrl}`; // Construct the full file URL
+    const fullUrl = `${fileUrl}`; // Construct the full file URL
 
     // Create an anchor element
     const link = document.createElement("a");
@@ -385,8 +385,10 @@ function NoticeAndSms() {
     setSubject(section?.subject || "");
     setNoticeDesc(section?.notice_desc || "");
     setnewclassnames(section?.classnames || "");
+    console.log("enter notice", section);
+    if (section?.notice_type === "Notice") {
+      console.log("enter notice-->start");
 
-    if (section?.notice_type === "NOTICE") {
       try {
         const token = localStorage.getItem("authToken");
         if (!token) {
@@ -398,6 +400,7 @@ function NoticeAndSms() {
             headers: { Authorization: `Bearer ${token}` },
           }
         );
+        console.log("responsedata of notice edit", response);
         if (response.data.success) {
           const noticedata = response.data.data.noticedata[0];
           const imageUrls = response.data.data.imageurl || [];
@@ -1108,7 +1111,7 @@ function NoticeAndSms() {
                     )}
                   </div>
 
-                  {currentSection?.notice_type === "NOTICE" && (
+                  {currentSection?.notice_type === "Notice" && (
                     <>
                       {/* File Upload */}
                       <div className="modal-body">

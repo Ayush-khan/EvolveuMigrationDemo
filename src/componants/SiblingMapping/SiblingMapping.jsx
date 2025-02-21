@@ -460,21 +460,6 @@ const SiblingMapping = () => {
   const handleSubmit = async (event) => {
     event.preventDefault();
 
-    // Validation checks
-    if (selectedStudentId === selectedStudentIdForSecond) {
-      toast.error(
-        "🚫 Both students cannot be the same. Please select different students!",
-        {
-          autoClose: 5000,
-          hideProgressBar: false,
-          closeOnClick: true,
-          pauseOnHover: true,
-          draggable: true,
-        }
-      );
-      return;
-    }
-
     let hasError = false;
 
     if (!selectedStudentId) {
@@ -494,7 +479,20 @@ const SiblingMapping = () => {
     if (hasError) {
       return;
     }
-
+    // Validation checks
+    if (selectedStudentId === selectedStudentIdForSecond) {
+      toast.error(
+        "🚫 Both students cannot be the same. Please select different students!",
+        {
+          autoClose: 5000,
+          hideProgressBar: false,
+          closeOnClick: true,
+          pauseOnHover: true,
+          draggable: true,
+        }
+      );
+      return;
+    }
     // Prepare the data format as per requirement
     const requestData = {
       operation: "create",
@@ -709,9 +707,7 @@ const SiblingMapping = () => {
                           value={selectedClass}
                           onChange={handleClassSelect}
                           options={classOptions}
-                          placeholder={
-                            loadingClasses ? "Loading classes..." : "Select"
-                          }
+                          placeholder={loadingClasses ? "Loading..." : "Select"}
                           isSearchable
                           isClearable
                           className="text-[.8em]"
@@ -735,7 +731,7 @@ const SiblingMapping = () => {
                           onChange={handleStudentSelect}
                           options={studentOptions}
                           placeholder={
-                            loadingStudents ? "Loading students..." : "Select"
+                            loadingStudents ? "Loading..." : "Select"
                           }
                           isSearchable
                           isClearable
@@ -902,11 +898,6 @@ const SiblingMapping = () => {
                             <label htmlFor="parent1" className="text-gray-700">
                               Set this as parent
                             </label>{" "}
-                            {radioButtonError && (
-                              <div className="  ml-1 text-danger text-xs">
-                                {radioButtonError}
-                              </div>
-                            )}
                           </div>
                         </div>
                       </form>
@@ -934,9 +925,7 @@ const SiblingMapping = () => {
                           onChange={handleClassSelectForSecond}
                           options={classOptionsForSecond}
                           placeholder={
-                            loadingClassesForSecond
-                              ? "Loading classes..."
-                              : "Select"
+                            loadingClassesForSecond ? "Loading..." : "Select"
                           }
                           isSearchable
                           isClearable
@@ -961,9 +950,7 @@ const SiblingMapping = () => {
                           onChange={handleStudentSelectForSecond}
                           options={studentOptionsForSecond}
                           placeholder={
-                            loadingStudentsForSecond
-                              ? "Loading students..."
-                              : "Select"
+                            loadingStudentsForSecond ? "Loading..." : "Select"
                           }
                           isSearchable
                           isClearable

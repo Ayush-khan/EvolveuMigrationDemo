@@ -1032,6 +1032,22 @@ const EditExamTimeTable = () => {
                   maxLength={500}
                   value={description}
                   onChange={(e) => setDescription(e.target.value)}
+                  onKeyDown={(e) => {
+                    if (e.key === "Enter") {
+                      e.preventDefault(); // Prevent the default behavior of Enter key
+                      const cursorPos = e.target.selectionStart; // Current cursor position
+                      const textBeforeCursor = description.slice(0, cursorPos); // Text before the cursor is:
+
+                      const textAfterCursor = description.slice(cursorPos); // Text after the cursor
+                      const updatedText = `${textBeforeCursor}\n• ${textAfterCursor}`;
+                      setDescription(updatedText);
+                      // Move the cursor to the position after the bullet point
+                      setTimeout(() => {
+                        e.target.selectionStart = e.target.selectionEnd =
+                          cursorPos + 3;
+                      }, 0);
+                    }
+                  }}
                   className="border-1 border-gray-300 p-2 w-[50%] shadow-md mb-2"
                 />
               </div>
