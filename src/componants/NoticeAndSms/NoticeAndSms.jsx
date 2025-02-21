@@ -462,9 +462,17 @@ function NoticeAndSms() {
       uploadedFiles.forEach((file) => formData.append("userfile[]", file));
       console.log("filenottobedeleted[]", preselectedFiles);
       // Append preselected files (assuming preselectedFiles contains their URLs or identifiers)
-      preselectedFiles.forEach((fileUrl) =>
-        formData.append("filenottobedeleted[]", fileUrl)
-      );
+      // preselectedFiles.forEach((fileUrl) =>
+      //   formData.append("filenottobedeleted[]", fileUrl)
+      // );
+      // Append preselected files (extracting only the filename)
+      preselectedFiles.forEach((fileUrl) => {
+        const fileName = fileUrl.split("/").pop(); // Extracts only the file name
+        formData.append("filenottobedeleted[]", fileName);
+      });
+
+      console.log("Formatted data of the edit SMS part", formData);
+      console.log("Selected files", uploadedFiles);
 
       console.log("formated data of the edit sms part", formData);
       console.log("seletd files", uploadedFiles);
