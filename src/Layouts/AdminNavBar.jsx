@@ -740,7 +740,7 @@ const AdminNavBar = () => {
           <NavDropdown.Item as={Link} to="#">
             Event
           </NavDropdown.Item>
-          <NavDropdown.Item as={Link} to="#">
+          <NavDropdown.Item as={Link} to="/holidayList">
             Holiday List
           </NavDropdown.Item>
           <NavDropdown.Item as={Link} to="/allotClassTeacher">

@@ -180,6 +180,7 @@ import CategoryReligion from "../componants/CategoryReligion/CategoryReligion.js
 import AllotGRNumbers from "../componants/AllotGRNumber/AllotGRNumbers.jsx";
 import UpdateStudentID from "../componants/UpdateStudentID/UpdateStudentID.jsx";
 import StudentSearchUsingGRN from "../componants/StudentSearchUsingGRN/StudentSearchUsingGRN.jsx";
+import HolidayList from "../componants/HolidayList/HolidayList.jsx";
 // import Menus from "../c";
 function Index() {
   return (
@@ -400,6 +401,11 @@ function Index() {
         <Route
           path="/noticeAndSms"
           element={<PrivateRoute element={<NoticeAndSms />} />}
+        />
+        {/* Holiday List module */}
+        <Route
+          path="/holidayList"
+          element={<PrivateRoute element={<HolidayList />} />}
         />
         {/* CareTacker */}
         <Route
