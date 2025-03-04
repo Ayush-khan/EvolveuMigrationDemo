@@ -758,6 +758,9 @@ const AdminNavBar = () => {
           <NavDropdown.Item as={Link} to="/updateStudentID">
             Update Student ID Other Details
           </NavDropdown.Item>
+          <NavDropdown.Item as={Link} to="/timeTable">
+            Time Table
+          </NavDropdown.Item>
         </NavDropdown>
 
         {/* ID Card Dropdown */}
@@ -769,14 +772,14 @@ const AdminNavBar = () => {
         >
           <NavDropdown.Item
             as={Link}
-            to="#"
+            to="/studentIdCard"
             className="text-sm font-bold hover:text-black"
           >
             Student ID Card
           </NavDropdown.Item>
           <NavDropdown.Item
             as={Link}
-            to="#"
+            to="/teacherIdCard"
             className="text-sm font-bold hover:text-black"
           >
             Teacher ID Card

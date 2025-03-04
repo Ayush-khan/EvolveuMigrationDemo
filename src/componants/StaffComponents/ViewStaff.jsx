@@ -92,8 +92,7 @@ function ViewStaff() {
           father_spouse_name: teacher.father_spouse_name || "",
           birthday: formatDate(teacher.birthday),
           date_of_joining: formatDate(teacher.date_of_joining),
-          sex:
-            teacher.sex === "M" ? "Male" : teacher.sex === "F" ? "Female" : "",
+          sex: teacher?.sex || "",
 
           religion: teacher.religion || "",
           blood_group: teacher.blood_group || "",

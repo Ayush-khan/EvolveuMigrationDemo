@@ -82,19 +82,6 @@ function ViewCareTacker() {
     return category ? category.name : "Unknown Category";
   };
 
-  // Function to convert gender code to readable format
-  const getGenderDisplay = (genderCode) => {
-    switch (genderCode) {
-      case "M":
-        return "Male";
-      case "F":
-        return "Female";
-      case "O":
-        return "Other";
-      default:
-        return "Unknown";
-    }
-  };
   return (
     <div className="container mx-auto p-4 ">
       <ToastContainer />
@@ -199,7 +186,7 @@ function ViewCareTacker() {
               </label>
 
               <p className="input-field h-9  block w-full  border border-gray-300 rounded-md py-1 px-3 bg-gray-300">
-                {getGenderDisplay(formData.sex)}
+                {formData.sex}
               </p>
             </div>
 

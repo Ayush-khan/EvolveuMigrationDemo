@@ -181,6 +181,11 @@ import AllotGRNumbers from "../componants/AllotGRNumber/AllotGRNumbers.jsx";
 import UpdateStudentID from "../componants/UpdateStudentID/UpdateStudentID.jsx";
 import StudentSearchUsingGRN from "../componants/StudentSearchUsingGRN/StudentSearchUsingGRN.jsx";
 import HolidayList from "../componants/HolidayList/HolidayList.jsx";
+import StudentIdCard from "../componants/IDCards/StudentIdCard.jsx";
+import TeacherIdCard from "../componants/IDCards/TeacherIdCard.jsx";
+import TimeTable from "../componants/TimeTableModule/TimeTable.jsx";
+import CreateTimeTable from "../componants/TimeTableModule/CreateTimeTable.jsx";
+import IDCardDetails from "../componants/IDCards/IDCardDetails.jsx";
 // import Menus from "../c";
 function Index() {
   return (
@@ -200,7 +205,6 @@ function Index() {
           path="//manage-role-access/:roleId"
           element={<PrivateRoute element={<ManageRoleAccess />} />}
         />
-
         {/* <Route
           path="/TestForAllfunctionlity"
           // path="#"
@@ -276,7 +280,6 @@ function Index() {
           // path="#"
           element={<PrivateRoute element={<EditSimpleBonafied />} />}
         />
-
         {/* LC Student */}
         <Route
           path="/leavingCertificate"
@@ -311,7 +314,6 @@ function Index() {
           // path="#"
           element={<PrivateRoute element={<EditLCforDeleteStudent />} />}
         />
-
         {/* <Route
           path="/student/edit/:id"
           element={<PrivateRoute element={<CreateStudent/>} />}
@@ -371,7 +373,6 @@ function Index() {
           path="/LeaveApplication"
           element={<PrivateRoute element={<LeaveApplication />} />}
         />
-
         <Route
           path="/createLeaveApplication"
           element={<PrivateRoute element={<CreateLeaveApplication />} />}
@@ -424,7 +425,6 @@ function Index() {
           path="/CareTacker/view/:id"
           element={<PrivateRoute element={<ViewCareTacker />} />}
         />
-
         {/* Set Late Time module */}
         <Route
           path="/SetLateTime"
@@ -446,7 +446,6 @@ function Index() {
           path="/classes"
           element={<PrivateRoute element={<ClassList />} />}
         />
-
         {/* Division module */}
         <Route
           path="/division"
@@ -502,7 +501,6 @@ function Index() {
           path="/newStudetEdit/edit/:id"
           element={<PrivateRoute element={<EditOfNewStudentList />} />}
         />
-
         {/* AllotClassTeacher */}
         <Route
           path="/allotClassTeacher"
@@ -523,6 +521,16 @@ function Index() {
           path="/updateStudentID"
           element={<PrivateRoute element={<UpdateStudentID />} />}
         />
+        {/* TimeTable Module */}
+        <Route
+          path="/timeTable"
+          element={<PrivateRoute element={<TimeTable />} />}
+        />
+        {/* Create TimeTable Module */}
+        <Route
+          path="/createTimeTable"
+          element={<PrivateRoute element={<CreateTimeTable />} />}
+        />
         {/*Update CategoryReligion Module */}
         <Route
           path="/categoryReligion"
@@ -533,7 +541,6 @@ function Index() {
         {/* Grade Module */}
         <Route path="/grades" element={<PrivateRoute element={<Grade />} />} />
         {/* MarksHeading Moudle */}
-
         <Route
           path="/marksHeading"
           element={<PrivateRoute element={<MarksHeading />} />}
@@ -560,10 +567,26 @@ function Index() {
           path="/examTimeTable/view/:id"
           element={<PrivateRoute element={<ViewExamTimeTable />} />}
         />
-
         <Route
           path="/sections"
           element={<PrivateRoute element={<Sections />} />}
+        />
+        {/* Id Cards Module */}
+        {/* Student Id Card Module */}
+        <Route
+          path="/studentIdCard"
+          element={<PrivateRoute element={<StudentIdCard />} />}
+        />
+        {/* Teacher ID Card Module */}
+        <Route
+          path="/teacherIdCard"
+          element={<PrivateRoute element={<TeacherIdCard />} />}
+        />
+        {/* Id Card Details */}
+
+        <Route
+          path="/iDCardDetails/:id"
+          element={<PrivateRoute element={<IDCardDetails />} />}
         />
         <Route path="/notification" element={<NotificationPage />} />
         <Route path="/changepassword" element={<ChangePassword />} />

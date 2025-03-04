@@ -608,10 +608,6 @@ function HolidayList() {
     setShowDActiveModal(false);
   };
 
-  const handleCloseModalForBulkUpload = () => {
-    setShowDisplayUpload(false);
-  };
-
   // for uplode portions  // Function to download the CSV template
   const handleDownloadTemplate = async () => {
     const token = localStorage.getItem("authToken");
@@ -681,103 +677,11 @@ function HolidayList() {
     }
   };
 
-  // const handleUpload = async () => {
-  //   if (!selectedFile) {
-  //     setErrorMessage("Please select a file first.");
-  //     return;
-  //   }
-
-  //   // // Extract the trimmed class name from the file name (assuming the format is "12 A.csv")
-  //   // const fileNameWithoutExtension = selectedFile.name.split("_")[0].trim(); // Remove extension and trim spaces
-  //   // // Remove extension and trim spaces
-  //   // const classNameForBulkUploadForCheck = classNameForBulkUpload.trim(); // Trim the class name for comparison
-  //   // console.log(
-  //   //   "fileNameWithoutExtension",
-  //   //   fileNameWithoutExtension,
-  //   //   "classNameForBulkUploadForCheck",
-  //   //   classNameForBulkUploadForCheck
-  //   // );
-  //   // // Check if the file name matches the selected class name
-  //   // if (fileNameWithoutExtension !== classNameForBulkUploadForCheck) {
-  //   //   // toast.error(
-  //   //   //   "Invalid file! Select a valid file without renaming it or modifying the first four columns."
-  //   //   // );
-  //   //   toast.warning(
-  //   //     "⚠️Invalid file! Please select a valid file without renaming it or modifying the first four columns."
-  //   //   );
-  //   //   return;
-  //   // }
-
-  //   setLoading(true); // Show loader
-  //   const formData = new FormData();
-  //   formData.append("file", selectedFile); // Append the selected file
-
-  //   try {
-  //     const token = localStorage.getItem("authToken");
-  //     if (!token) {
-  //       throw new Error("No authentication token found");
-  //     }
-  //     console.log("file is csv", formData);
-  //     // console.log("this is post of the csv", selectedClass.value);
-  //     const response = await axios.post(
-  //       `${API_URL}/api/update_holidaylist_csv`, // Pass sectionId in the URL
-  //       formData,
-  //       {
-  //         headers: {
-  //           Authorization: `Bearer ${token}`,
-  //         },
-  //       }
-  //     );
-  //     console.log("the response of post bulk upload", response);
-  //     if (response.status === 200) {
-  //       toast.success("Data posted successfully!");
-  //       setIsDataPosted(true); // Set the flag to true after a successful post
-  //       setSelectedFile(null);
-  //     }
-  //   } catch (error) {
-  //     setLoading(false); // Hide loader
-
-  //     const showErrorForUploading = error?.response?.data?.message;
-  //     const showErrorForUploadingUrl = error?.response?.data?.invalid_rows;
-  //     console.log("showErrorForUploadingURL", showErrorForUploading);
-  //     setErrorMessage(
-  //       !showErrorForUploading
-  //         ? "Failed to upload file. Please try again..."
-  //         : `Error-Message: ${showErrorForUploading}.`
-  //     );
-  //     // const fullURLFOrErrorMessage = `${API_URL}${showErrorForUploadingUrl}`;
-  //     const fullURLFOrErrorMessage = `${showErrorForUploadingUrl}`;
-
-  //     setErrorMessageUrl(fullURLFOrErrorMessage);
-  //     console.log("showerrormessage Full url", errorMessageUrl);
-
-  //     toast.error(
-  //       !showErrorForUploading
-  //         ? "Error uploading file."
-  //         : error?.response?.data?.message
-  //     );
-
-  //     console.error("Error uploading file:", showErrorForUploading);
-  //   }
-  // };
-
   const handleUpload = async () => {
     if (!selectedFile) {
       setErrorMessage("Please select a file first.");
       return;
     }
-
-    // Expected file name
-    // const expectedFileName = "holidaylist.csv";
-
-    // // Extract the file name and trim spaces
-    // const fileNameWithoutExtension = selectedFile.name.trim();
-
-    // // Check if the file name matches the expected name
-    // if (fileNameWithoutExtension !== expectedFileName) {
-    //   toast.warning("⚠️ Invalid file name! Please select 'holidaylist.csv'.");
-    //   return;
-    // }
 
     // Regular expression to allow "holidaylist.csv", "holidaylist(1).csv", "holidaylist(2).csv", etc.
     const fileNamePattern = /^holidaylist(\s\(\d+\))?\.csv$/;
@@ -890,9 +794,18 @@ function HolidayList() {
   return (
     <>
       <div className="md:mx-auto md:w-[85%] p-4 bg-white mt-4 ">
-        <h3 className="text-gray-700 mt-1 text-[1.2em] lg:text-xl text-nowrap">
-          Holiday List
-        </h3>
+        <div className="w-full  flex flex-row justify-between">
+          <h3 className="text-gray-700 mt-1 text-[1.2em] lg:text-xl text-nowrap">
+            Holiday List
+          </h3>
+          <RxCross1
+            className=" relative  mt-2 right-2 text-xl text-red-600 hover:cursor-pointer hover:bg-red-100"
+            onClick={() => {
+              navigate("/dashboard");
+            }}
+          />
+        </div>
+
         <div
           className=" relative  mb-8   h-1  mx-auto bg-red-700"
           style={{
@@ -906,10 +819,6 @@ function HolidayList() {
             <div className="mb-4  ">
               <div className="  w-[100%]  mx-auto ">
                 <div className="max-w-full bg-white shadow-md rounded-lg border border-gray-300 mx-auto p-6">
-                  <RxCross1
-                    className="float-end relative mt-2 right-2 text-xl text-red-600 hover:cursor-pointer hover:bg-red-100"
-                    onClick={handleCloseModalForBulkUpload}
-                  />
                   <h2 className="text-center text-2xl font-semibold mb-8 text-blue-600">
                     Upload Holiday Data from Excel Sheet
                   </h2>
@@ -1432,61 +1341,6 @@ function HolidayList() {
                     backgroundColor: "#C03078",
                   }}
                 ></div>
-                {/* <hr className="font-bold"></hr> */}
-                {/* <div className="modal-body">
-                  <div className="relative mb-3 flex justify-center mx-4">
-                    <label htmlFor="title" className="w-1/2 mt-2">
-                      Title<span className="text-red-500">*</span>
-                    </label>
-                    <input
-                      type="text"
-                      id="title"
-                      name="title"
-                      value={formData.title}
-                      className="form-control shadow-md"
-                      onChange={handleChangeInput}
-                    />
-                  </div>
-
-                  <div className="relative mb-3 flex justify-center mx-4">
-                    <label htmlFor="startDate" className="w-1/2 mt-2">
-                      Start Date<span className="text-red-500">*</span>
-                    </label>
-                    <input
-                      id="startDate"
-                      type="date"
-                      name="holiday_date"
-                      value={formData.holiday_date}
-                      className="form-control shadow-md"
-                      onChange={handleChangeInput}
-                      min={dateLimits.min} // Restrict min date
-                      max={dateLimits.max} // Restrict max date
-                    />
-                    <div className="absolute top-9 left-1/3">
-                      {fieldErrors.holiday_date && (
-                        <span className="text-danger text-xs">
-                          {fieldErrors.holiday_date}
-                        </span>
-                      )}
-                    </div>
-                  </div>
-
-                  <div className=" relative mb-3 flex justify-center  mx-4">
-                    <label htmlFor="endDate" className="w-1/2 mt-2">
-                      End Date
-                    </label>
-                    <input
-                      id="endDate"
-                      type="date"
-                      name="to_date"
-                      value={formData.to_date}
-                      className="form-control shadow-md"
-                      onChange={handleChangeInput}
-                      min={dateLimits.min} // Restrict min date
-                      max={dateLimits.max} // Restrict max date
-                    />
-                  </div>
-                </div> */}
 
                 <div className="modal-body">
                   <div className=" relative mb-4 flex justify-center  mx-4">
