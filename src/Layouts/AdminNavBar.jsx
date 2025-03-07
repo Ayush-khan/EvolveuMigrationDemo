@@ -826,6 +826,13 @@ const AdminNavBar = () => {
         >
           <NavDropdown.Item
             as={Link}
+            to="/listAdmFrmRep"
+            className="text-sm font-bold hover:text-black"
+          >
+            List of Admission Forms Report
+          </NavDropdown.Item>
+          <NavDropdown.Item
+            as={Link}
             to="#"
             className="text-sm font-bold hover:text-black"
           >

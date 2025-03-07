@@ -8,6 +8,7 @@ import "react-toastify/dist/ReactToastify.css";
 import { useNavigate } from "react-router-dom";
 import Select from "react-select";
 import axios from "axios";
+// import styles from "./CreateTimeTable.module.css";
 
 const CreateTimeTable = () => {
   const API_URL = import.meta.env.VITE_API_URL; // Ensure this is correctly defined in your .env
@@ -16,45 +17,25 @@ const CreateTimeTable = () => {
   const [loadingClasses, setLoadingClasses] = useState(false);
   const [classError, setClassError] = useState("");
   const navigate = useNavigate();
-
   const [divisionforForm, setDivisionForForm] = useState([]);
   const [selectedDivision, setSelectedDivision] = useState(null);
   const [loadingDivision, setLoadingDivision] = useState(false);
   const [divisionError, setDivisionError] = useState("");
-
   const [selectedMonFri, setSelectedMonFri] = useState(null);
   const [selectedSat, setSelectedSat] = useState(null);
   const [monFriLectures, setMonFriLectures] = useState([]);
   const [satLectures, setSatLectures] = useState([]);
-
   const [loadingForSearch, setLoadingForSearch] = useState(false);
   const [classIdForSearch, setClassIdForSearch] = useState(null);
   const [sectionIdForSearch, setSectionIdForSearch] = useState(null);
-
   const [timetable, setTimetable] = useState([]);
-  const [dates, setDates] = useState([]);
-
-  const [selectedTime, setSelectedTime] = useState("");
-  const [startTime, setStartTime] = useState("");
-  const [endTime, setEndTime] = useState("");
-
-  const [satStartTime, setSatStartTime] = useState("");
-  const [satEndTime, setSatEndTime] = useState("");
-
   const [subjects, setSubjects] = useState([]);
   const [loadingSubjects, setLoadingSubjects] = useState(true);
   const [selectedSubjects, setSelectedSubjects] = useState({});
-
   const [lectureCount, setLectureCount] = useState(8); // Default value for Mon-Fri
   const [satLectureCount, setSatLectureCount] = useState(5); // Default for Sat
-
-  const [loading, setLoading] = useState(false);
-  const [lecturesPerWeek, setLecturesPerWeek] = useState("");
-  const [saturdayLectures, setSaturdayLectures] = useState("");
-  const [classId, setClassId] = useState("");
-  const [sectionId, setSectionId] = useState("");
   const [showTimeTable, setShowTimeTable] = useState(false);
-  const [openDropdowns, setOpenDropdowns] = useState({});
+  const [openDropdown, setOpenDropdown] = useState({});
 
   //Fetch Subjects Data
   const fetchSubjects = async () => {
@@ -94,24 +75,6 @@ const CreateTimeTable = () => {
     } finally {
       setLoadingSubjects(false); // Ensure the loader state is updated
     }
-  };
-
-  const handleSubjectSelect = (dayIndex, lectureIndex, selectedOption) => {
-    setSelectedSubjects((prev) => {
-      // Ensure the dayIndex exists
-      const updatedDay = prev[dayIndex] || { lectures: [] };
-
-      // Ensure the lectureIndex exists in lectures
-      const updatedLectures = [...(updatedDay.lectures || [])];
-      updatedLectures[lectureIndex] = {
-        subject: { sm_id: selectedOption },
-      };
-
-      return {
-        ...prev,
-        [dayIndex]: { ...updatedDay, lectures: updatedLectures },
-      };
-    });
   };
 
   useEffect(() => {
@@ -233,23 +196,20 @@ const CreateTimeTable = () => {
     );
   };
 
-  const handleTimeChange = (lecIndex, field, value) => {
-    // Update state with selected time values
-    console.log(`Lecture ${lecIndex + 1}, ${field}: ${value}`);
-  };
-
-  const generateTimeSlots = (startHour = 8, endHour = 14.3, interval = 30) => {
+  const generateTimeSlots = (startHour = 8, endHour = 14, interval = 5) => {
     const slots = [];
     const startTime = startHour * 60;
     const endTime = endHour * 60;
-    for (let time = startTime; time < endTime; time += interval) {
+
+    for (let time = startTime; time <= endTime; time += interval) {
       const hours = Math.floor(time / 60);
       const minutes = time % 60;
       const ampm = hours >= 12 ? "PM" : "AM";
       const formattedHour = hours > 12 ? hours - 12 : hours;
-      const formattedMinutes = minutes === 0 ? "00" : minutes;
+      const formattedMinutes = minutes < 10 ? `0${minutes}` : minutes;
       slots.push(`${formattedHour}:${formattedMinutes} ${ampm}`);
     }
+
     return slots;
   };
 
@@ -278,7 +238,107 @@ const CreateTimeTable = () => {
   const timeOptions = generateTimeSlots();
   const satTimeOptions = generateTimeSlots(8, 11.5);
 
-  const handleAdd = async () => {
+  const handleStartSelect = (dayIndex, lectureIndex, selectedTime) => {
+    setTimetable((prevTimetable) => {
+      // const updatedTimetable = [...prevTimetable];
+
+      // updatedTimetable[dayIndex].lectures[lectureIndex]["Time In"] =
+      //   selectedTime;
+      const updatedTimetable = prevTimetable.map((day, i) =>
+        i === dayIndex
+          ? {
+              ...day,
+              lectures: day.lectures.map((lec, j) =>
+                j === lectureIndex ? { ...lec, "Time In": selectedTime } : lec
+              ),
+            }
+          : day
+      );
+      // return updatedTimetable;
+
+      console.log("updatedTimeTable start select", updatedTimetable);
+
+      return updatedTimetable;
+    });
+  };
+
+  const handleEndSelect = (dayIndex, lectureIndex, selectedTime) => {
+    setTimetable((prevTimetable) => {
+      const updatedTimetable = [...prevTimetable];
+
+      // Update the "Time Out" value for the selected day and lecture
+      updatedTimetable[dayIndex].lectures[lectureIndex]["Time Out"] =
+        selectedTime;
+
+      console.log("updated time end select", updatedTimetable);
+
+      return updatedTimetable;
+    });
+  };
+
+  const handleSatStartSelect = (dayIndex, lectureIndex, selectedTime) => {
+    setTimetable((prevTimetable) => {
+      const updatedTimetable = [...prevTimetable];
+
+      // Update the "Sat Time In" value for the selected Saturday lecture
+      updatedTimetable[dayIndex].lectures[lectureIndex]["Sat Time In"] =
+        selectedTime;
+
+      console.log("updatedTimeTable sat start select", updatedTimetable);
+
+      return updatedTimetable;
+    });
+  };
+
+  const handleSatEndSelect = (dayIndex, lectureIndex, selectedTime) => {
+    setTimetable((prevTimetable) => {
+      const updatedTimetable = [...prevTimetable];
+
+      // Update the "Sat Time Out" value for the selected Saturday lecture
+      updatedTimetable[dayIndex].lectures[lectureIndex]["Sat Time Out"] =
+        selectedTime;
+
+      console.log("updatedTimeTable sat end select", updatedTimetable);
+
+      return updatedTimetable;
+    });
+  };
+
+  const toggleDropdown = (dayIndex, lectureIndex) => {
+    setOpenDropdown((prev) => {
+      // Check if the same dropdown is already open
+      if (prev[dayIndex]?.[lectureIndex]) {
+        return {}; // Close the dropdown if clicked again
+      }
+      // Open the new dropdown and close the previous one
+      return { [dayIndex]: { [lectureIndex]: true } };
+    });
+  };
+
+  const handleSubjectSelect = (dayIndex, lectureIndex, subject, isChecked) => {
+    setSelectedSubjects((prev) => {
+      const updated = { ...prev };
+      if (!updated[dayIndex]) updated[dayIndex] = { lectures: [] };
+      if (!updated[dayIndex].lectures[lectureIndex])
+        updated[dayIndex].lectures[lectureIndex] = { subject: [] };
+
+      console.log("selectted subject", updated);
+
+      if (isChecked) {
+        updated[dayIndex].lectures[lectureIndex].subject.push(subject);
+      } else {
+        updated[dayIndex].lectures[lectureIndex].subject = updated[
+          dayIndex
+        ].lectures[lectureIndex].subject.filter(
+          (s) => s.sm_id !== subject.sm_id
+        );
+      }
+
+      return { ...updated };
+    });
+  };
+
+  const handleAddTimetable = async () => {
     if (!selectedClass) {
       toast.error("Please select Class");
       return;
@@ -357,6 +417,218 @@ const CreateTimeTable = () => {
       toast.error("Failed to fetch timetable fields. Please try again later.");
     }
   };
+
+  const handleSubmit = async () => {
+    const token = localStorage.getItem("authToken");
+    if (!token) {
+      toast.error("Authorization token is missing. Please login again");
+      return;
+    }
+    let timeIn;
+    let timeOut;
+    let satTimeIn;
+    let satTimeOut;
+
+    try {
+      if (!selectedClass) {
+        toast.error("Please select a class before submitting.");
+        return;
+      }
+
+      console.log("Timetable Data:", JSON.stringify(timetable, null, 2));
+
+      const monFriLectureCount =
+        parseInt(selectedMonFri?.value?.split(" ")[1]) || 0;
+
+      let timetableData = {
+        class_id: selectedClass.value,
+        section_id: selectedDivision.value,
+        num_lec: monFriLectureCount,
+      };
+      console.log("TimeTable before Submit...", timetableData);
+      //   timetable.forEach((day, dayIndex) => {
+      //     day.lectures.forEach((lecture, index) => {
+      //       let i = index + 1;
+
+      //       console.log(
+      //         `Checking before lecture structure for ${day.day}, Lecture ${i}:`,
+      //         lecture
+      //       );
+
+      //       let timeIn = lecture["Time In"] ?? "N/A";
+      //       let timeOut = lecture["Time Out"] ?? "N/A";
+      //       let satTimeIn = lecture["Sat Time In"] ?? "N/A";
+      //       let satTimeOut = lecture["Sat Time Out"] ?? "N/A";
+      //       console.log("Lectures are:", lecture["Time In"]);
+      //       console.log(`Checking ${timeIn}`);
+      //       console.log(
+      //         "timeIn",
+      //         timeIn,
+      //         "timeOut",
+      //         timeOut,
+      //         "satTimeIn",
+      //         satTimeIn,
+      //         "satTimeOut",
+      //         satTimeOut
+      //       );
+
+      //       switch (day.day) {
+      //         case "Monday":
+      //           timetableData[`mon${i}`] =
+      //             selectedSubjects[dayIndex]?.lectures[index]?.subject
+      //               .map((s) => s.name)
+      //               .join(", ") || "";
+      //           timetableData[`time_in${i}`] = timeIn;
+      //           timetableData[`time_out${i}`] = timeOut;
+      //           break;
+      //         case "Tuesday":
+      //           timetableData[`tue${i}`] =
+      //             selectedSubjects[dayIndex]?.lectures[index]?.subject
+      //               .map((s) => s.name)
+      //               .join(", ") || "";
+      //           break;
+      //         case "Wednesday":
+      //           timetableData[`wed${i}`] =
+      //             selectedSubjects[dayIndex]?.lectures[index]?.subject
+      //               .map((s) => s.name)
+      //               .join(", ") || "";
+      //           break;
+      //         case "Thursday":
+      //           timetableData[`thu${i}`] =
+      //             selectedSubjects[dayIndex]?.lectures[index]?.subject
+      //               .map((s) => s.name)
+      //               .join(", ") || "";
+      //           break;
+      //         case "Friday":
+      //           timetableData[`fri${i}`] =
+      //             selectedSubjects[dayIndex]?.lectures[index]?.subject
+      //               .map((s) => s.name)
+      //               .join(", ") || "";
+      //           break;
+      //         case "Saturday":
+      //           timetableData[`sat${i}`] =
+      //             selectedSubjects[dayIndex]?.lectures[index]?.subject
+      //               .map((s) => s.name)
+      //               .join(", ") || "";
+      //           timetableData[`sat_in${i}`] = satTimeIn;
+      //           timetableData[`sat_out${i}`] = satTimeOut;
+      //           break;
+      //       }
+      //     });
+      //   });
+
+      timetable.forEach((day, dayIndex) => {
+        day.lectures.forEach((lecture, index) => {
+          let i = index + 1;
+
+          console.log(
+            `Checking before lecture structure for ${day.day}, Lecture ${i}:`,
+            lecture
+          );
+
+          // Extract time values with a default fallback
+          timeIn = lecture?.["Time In"];
+          timeOut = lecture?.["Time Out"];
+          satTimeIn = lecture?.["Sat Time In"];
+          satTimeOut = lecture?.["Sat Time Out"];
+
+          console.log("Lecture Data:", lecture);
+          console.log(
+            "Extracted Times - timeIn:",
+            timeIn,
+            "| timeOut:",
+            timeOut,
+            "| satTimeIn:",
+            satTimeIn,
+            "| satTimeOut:",
+            satTimeOut
+          );
+
+          // Fetch subject name safely
+          let subjectNames =
+            selectedSubjects[dayIndex]?.lectures[index]?.subject
+              ?.map((s) => s.name)
+              .join(", ") || "";
+
+          // Assign data based on the day
+          switch (day.day) {
+            case "Monday":
+              timetableData[`mon${i}`] = subjectNames;
+              timetableData[`time_in${i}`] = timeIn;
+              timetableData[`time_out${i}`] = timeOut;
+              break;
+            case "Tuesday":
+              timetableData[`tue${i}`] = subjectNames;
+              break;
+            case "Wednesday":
+              timetableData[`wed${i}`] = subjectNames;
+              break;
+            case "Thursday":
+              timetableData[`thu${i}`] = subjectNames;
+              break;
+            case "Friday":
+              timetableData[`fri${i}`] = subjectNames;
+              break;
+            case "Saturday":
+              timetableData[`sat${i}`] = subjectNames;
+              timetableData[`sat_in${i}`] = satTimeIn;
+              timetableData[`sat_out${i}`] = satTimeOut;
+              break;
+          }
+        });
+      });
+
+      // Final debug check
+      console.log("Final Timetable Data:", timetableData);
+
+      console.log(
+        "Final Timetable Data before submission:",
+        JSON.stringify(timetableData, null, 2)
+      );
+      console.log(
+        "Final Result is:",
+        "Extracted Times - timeIn:",
+        timeIn,
+        "| timeOut:",
+        timeOut,
+        "| satTimeIn:",
+        satTimeIn,
+        "| satTimeOut:",
+        satTimeOut
+      );
+      const response = await axios.post(
+        `${API_URL}/api/save_classtimetable`,
+        timetableData,
+        {
+          headers: {
+            Authorization: `Bearer ${token}`,
+            "Content-Type": "application/json",
+          },
+        }
+      );
+
+      console.log("Response:", response.data);
+
+      if (response.status === 200) {
+        toast.success("Timetable saved successfully!");
+      } else {
+        toast.error(response.data.message || "Failed to save timetable.");
+      }
+    } catch (error) {
+      console.error(
+        "Error saving timetable:",
+        error.response?.data || error.message
+      );
+      toast.error(
+        error.response?.data?.message ||
+          "An error occurred while saving the timetable."
+      );
+    }
+  };
+
+  useEffect(() => {
+    console.log("Updated timetable:", timetable);
+  }, [timetable]);
 
   return (
     <>
@@ -445,10 +717,7 @@ const CreateTimeTable = () => {
                       </div>
                     )}
                   </div>
-                  {/* </div> */}
-                  {/* Mon-Fri and Sat Row */}
-                  {/* <div className="w-full flex justify-between items-center mb-4"> */}
-                  {/* Mon-Fri Dropdown */}
+
                   <div className="w-[25%] p-3">
                     <label
                       htmlFor="monFriSelect"
@@ -492,7 +761,7 @@ const CreateTimeTable = () => {
                   {/* <div className="flex justify-end mt-4"> */}
                   <button
                     type="search"
-                    onClick={handleAdd}
+                    onClick={handleAddTimetable}
                     style={{ backgroundColor: "#2196F3" }}
                     className={`mt-4 my-1 md:my-4 btn h-10 w-18 md:w-auto btn-primary text-white font-bold py-1 border-1 border-blue-500 px-4 rounded ${
                       loadingForSearch ? "opacity-50 cursor-not-allowed" : ""
@@ -534,215 +803,261 @@ const CreateTimeTable = () => {
         </div>
       </div>
 
-      <div className="relative w-[95%] bg-white shadow-xl rounded-lg border border-pink-500 mx-auto mt-3">
-        <div className="overflow-x-auto p-4">
-          <table className="table-auto border-collapse border border-gray-300 w-full">
-            <thead className="bg-gray-200">
-              <tr>
-                <th className="border p-2 font-semibold text-center">Sr No.</th>
-                {timetable.map((day, index) => (
-                  <th
-                    key={index}
-                    className="border p-2 font-semibold text-center"
-                  >
-                    {day.day}
+      {showTimeTable && (
+        <div className="relative w-[95%] bg-white shadow-xl rounded-lg border border-pink-500 mx-auto mt-3">
+          <div className="overflow-x-auto p-4">
+            <div className="p-2 px-3 bg-gray-100 flex justify-between items-center rounded-t-lg">
+              <h3 className="text-gray-700 mt-1 text-[1.2em] lg:text-xl">
+                Create Time Table for {selectedClass.label}
+              </h3>
+              <RxCross1
+                className="float-end relative right-2 text-xl text-red-600 hover:cursor-pointer hover:bg-red-100"
+                onClick={() => {
+                  // setErrors({});
+                  navigate("/timeTable");
+                }}
+              />
+            </div>
+            <div
+              className="relative w-full h-1 mb-3 mx-auto"
+              style={{ backgroundColor: "#C03078" }}
+            ></div>
+            <table className="table-auto border-collapse border border-gray-300 w-full">
+              <thead className="bg-gray-200">
+                <tr>
+                  <th className="border p-2 font-semibold text-center">
+                    Sr No.
                   </th>
-                ))}
-              </tr>
-            </thead>
-            <tbody className="bg-gray-50">
-              {timetable.length > 0 &&
-                [
-                  ...Array(
-                    Math.max(...timetable.map((day) => day.lectures.length))
-                  ),
-                ].map((_, lectureIndex) => (
-                  <tr key={lectureIndex}>
-                    <td className="border p-1 text-center">
-                      {lectureIndex + 1}
-                    </td>
+                  {timetable.map((day, index) => (
+                    <th
+                      key={index}
+                      className="border p-2 font-semibold text-center"
+                    >
+                      {day.day}
+                    </th>
+                  ))}
+                </tr>
+              </thead>
+              <tbody className="bg-gray-50">
+                {timetable.length > 0 &&
+                  [
+                    ...Array(
+                      Math.max(...timetable.map((day) => day.lectures.length))
+                    ),
+                  ].map((_, lectureIndex) => (
+                    <tr key={lectureIndex}>
+                      <td className="border p-1 text-center">
+                        {lectureIndex + 1}
+                      </td>
 
-                    {timetable.map((day, dayIndex) => (
-                      <td key={dayIndex} className="border border-gray-300 p-2">
-                        {/*Ensure lecture exists for this day */}
-                        {console.log(
-                          "day.lectures[lectureIndex]--->Start",
-                          day.lectures[lectureIndex]?.["Time In"]
-                        )}
-                        {console.log(
-                          "Lecture Data:",
-                          day.lectures[lectureIndex]
-                        )}
-                        {console.log(
-                          "Time In--->:",
-                          day.lectures[lectureIndex]?.["Time In"]
-                        )}
-                        {console.log(
-                          "Time Out--->:",
-                          day.lectures[lectureIndex]?.["Time Out"]
-                        )}
-                        {console.log(
-                          "Sat Time In--->:",
-                          day.lectures[lectureIndex]?.["Sat Time In"]
-                        )}
-                        {console.log(
-                          "Sat Time Out--->:",
-                          day.lectures[lectureIndex]?.["Sat Time Out"]
-                        )}
-                        {day.lectures[lectureIndex] ? (
-                          <>
-                            {day.lectures[lectureIndex] &&
-                            (day.lectures[lectureIndex]?.["Time In"] == "" ||
-                              day.lectures[lectureIndex]?.["Time Out"] == "" ||
-                              day.lectures[lectureIndex]?.["Sat Time In"] ==
-                                " " ||
-                              day.lectures[lectureIndex]?.["Sat Time Out"] ==
-                                " ") ? (
-                              <>
-                                {/* Mon-Fri Time Dropdowns */}
-                                {dayIndex < 5 ? (
-                                  <>
-                                    <select
-                                      className="w-full px-1 py-1 border border-gray-300"
-                                      value={
-                                        day.lectures[lectureIndex]?.[
-                                          "Time In"
-                                        ] || ""
-                                      }
-                                      onChange={(e) =>
-                                        handleStartSelect(
-                                          dayIndex,
-                                          lectureIndex,
-                                          e.target.value
-                                        )
-                                      }
-                                    >
-                                      <option value="">Select Time-In</option>
-                                      {timeOptions.map((time, i) => (
-                                        <option key={i} value={time}>
-                                          {time}
-                                        </option>
-                                      ))}
-                                    </select>
-
-                                    <select
-                                      className="w-full px-1 py-1 border border-gray-300 mt-1"
-                                      value={
-                                        day.lectures[lectureIndex]?.[
-                                          "Time Out"
-                                        ] || ""
-                                      }
-                                      onChange={(e) =>
-                                        handleEndSelect(
-                                          dayIndex,
-                                          lectureIndex,
-                                          e.target.value
-                                        )
-                                      }
-                                    >
-                                      <option value="">Select Time-Out</option>
-                                      {getFilteredEndTimeOptions(
-                                        dayIndex,
-                                        lectureIndex
-                                      ).map((time, i) => (
-                                        <option key={i} value={time}>
-                                          {time}
-                                        </option>
-                                      ))}
-                                    </select>
-                                  </>
-                                ) : (
-                                  // Saturday Time Dropdowns
-                                  <>
-                                    <select
-                                      className="w-full px-1 py-1 border border-gray-300"
-                                      value={
-                                        day.lectures[lectureIndex]?.[
-                                          "Sat Time In"
-                                        ] || ""
-                                      }
-                                      onChange={(e) =>
-                                        handleSatStartSelect(
-                                          dayIndex,
-                                          lectureIndex,
-                                          e.target.value
-                                        )
-                                      }
-                                    >
-                                      <option value="">Select Time-In</option>
-                                      {satTimeOptions.map((time, i) => (
-                                        <option key={i} value={time}>
-                                          {time}
-                                        </option>
-                                      ))}
-                                    </select>
-                                    <select
-                                      className="w-full px-1 py-1 border border-gray-300 mt-1"
-                                      value={
-                                        day.lectures[lectureIndex]?.[
-                                          "Sat Time Out"
-                                        ] || ""
-                                      }
-                                      onChange={(e) =>
-                                        handleSatEndSelect(
-                                          dayIndex,
-                                          lectureIndex,
-                                          e.target.value
-                                        )
-                                      }
-                                    >
-                                      <option value="">Select Time-Out</option>
-                                      {getFilteredSatEndTimeOptions(
-                                        dayIndex,
-                                        lectureIndex
-                                      ).map((time, i) => (
-                                        <option key={i} value={time}>
-                                          {time}
-                                        </option>
-                                      ))}
-                                    </select>
-                                  </>
-                                )}
-                              </>
-                            ) : (
-                              // Only show Subject Dropdown when there is a lecture and no time fields exist
-                              day.lectures[lectureIndex]?.subject && (
+                      {timetable.map((day, dayIndex) => (
+                        <td
+                          key={dayIndex}
+                          className="border border-gray-300 p-2"
+                        >
+                          {day.lectures[lectureIndex] ? (
+                            <>
+                              {(day.lectures[lectureIndex]?.["Time In"] ===
+                                "" ||
+                                day.lectures[lectureIndex]?.["Time In"]) && (
                                 <select
-                                  className="w-full px-1 py-1 border border-gray-300 mt-1"
+                                  className="w-full px-1 py-1 border border-gray-300"
                                   value={
-                                    selectedSubjects[dayIndex]?.lectures[
-                                      lectureIndex
-                                    ]?.subject?.sm_id || ""
+                                    day.lectures[lectureIndex]?.["Time In"] ||
+                                    ""
                                   }
                                   onChange={(e) =>
-                                    handleSubjectSelect(
+                                    handleStartSelect(
                                       dayIndex,
                                       lectureIndex,
                                       e.target.value
                                     )
                                   }
                                 >
-                                  <option value="">Select Subject</option>
-                                  {subjects.map((subject, i) => (
-                                    <option key={i} value={subject.sm_id}>
-                                      {subject.name}
+                                  <option value="">Select</option>
+                                  {timeOptions.map((time, i) => (
+                                    <option key={i} value={time}>
+                                      {time}
                                     </option>
                                   ))}
                                 </select>
-                              )
-                            )}
-                          </>
-                        ) : (
-                          "" // Hide empty cells
-                        )}
-                      </td>
-                    ))}
-                  </tr>
-                ))}
-            </tbody>
-          </table>
+                              )}
+
+                              {/* Show Time-Out dropdown only if it's empty  or if time is selected */}
+                              {(day.lectures[lectureIndex]?.["Time Out"] ===
+                                "" ||
+                                day.lectures[lectureIndex]?.["Time Out"]) && (
+                                <select
+                                  className="w-full px-1 py-1 border border-gray-300 mt-1"
+                                  value={
+                                    day.lectures[lectureIndex]?.["Time Out"] ||
+                                    ""
+                                  }
+                                  onChange={(e) =>
+                                    handleEndSelect(
+                                      dayIndex,
+                                      lectureIndex,
+                                      e.target.value
+                                    )
+                                  }
+                                >
+                                  <option value="">Select</option>
+                                  {getFilteredEndTimeOptions(
+                                    dayIndex,
+                                    lectureIndex
+                                  ).map((time, i) => (
+                                    <option key={i} value={time}>
+                                      {time}
+                                    </option>
+                                  ))}
+                                </select>
+                              )}
+
+                              {/* Saturday Time-In dropdown */}
+                              {dayIndex === 5 &&
+                                day.lectures[lectureIndex]?.["Sat Time In"] ===
+                                  "" && (
+                                  <select
+                                    className="w-full px-1 py-1 border border-gray-300"
+                                    value={
+                                      day.lectures[lectureIndex]?.[
+                                        "Sat Time In"
+                                      ] || ""
+                                    }
+                                    onChange={(e) =>
+                                      handleSatStartSelect(
+                                        dayIndex,
+                                        lectureIndex,
+                                        e.target.value
+                                      )
+                                    }
+                                  >
+                                    <option value="">Select Sat </option>
+                                    {satTimeOptions.map((time, i) => (
+                                      <option key={i} value={time}>
+                                        {time}
+                                      </option>
+                                    ))}
+                                  </select>
+                                )}
+
+                              {/* Saturday Time-Out dropdown */}
+                              {dayIndex === 5 &&
+                                day.lectures[lectureIndex]?.["Sat Time Out"] ===
+                                  "" && (
+                                  <select
+                                    className="w-full px-1 py-1 border border-gray-300 mt-1"
+                                    value={
+                                      day.lectures[lectureIndex]?.[
+                                        "Sat Time Out"
+                                      ] || ""
+                                    }
+                                    onChange={(e) =>
+                                      handleSatEndSelect(
+                                        dayIndex,
+                                        lectureIndex,
+                                        e.target.value
+                                      )
+                                    }
+                                  >
+                                    <option value="">
+                                      Select Sat Time-Out
+                                    </option>
+                                    {getFilteredSatEndTimeOptions(
+                                      dayIndex,
+                                      lectureIndex
+                                    ).map((time, i) => (
+                                      <option key={i} value={time}>
+                                        {time}
+                                      </option>
+                                    ))}
+                                  </select>
+                                )}
+
+                              {/* Subject Dropdown */}
+                              {day.lectures[lectureIndex]?.subject && (
+                                <div className="relative">
+                                  {/* Dropdown Trigger */}
+                                  <div
+                                    className="w-full border border-gray-300 p-1 bg-white cursor-pointer inline-block truncate text-sm  items-center justify-between"
+                                    onClick={() =>
+                                      toggleDropdown(dayIndex, lectureIndex)
+                                    }
+                                  >
+                                    <span className="truncate">
+                                      {selectedSubjects[dayIndex]?.lectures[
+                                        lectureIndex
+                                      ]?.subject?.length > 0
+                                        ? selectedSubjects[dayIndex].lectures[
+                                            lectureIndex
+                                          ].subject
+                                            .map((s) => s.name)
+                                            .join(", ")
+                                        : "Select"}
+                                    </span>
+                                    <span className="ml-1 text-gray-500 ">
+                                      ▾
+                                    </span>{" "}
+                                    {/* Small Down Arrow */}
+                                  </div>
+
+                                  {/* Dropdown Menu */}
+                                  {openDropdown[dayIndex]?.[lectureIndex] && (
+                                    <div className="absolute bg-white border border-gray-300 w-48 mt-1 z-10 max-h-48 overflow-y-auto">
+                                      {subjects.map((subject) => (
+                                        <label
+                                          key={subject.sm_id}
+                                          className="flex items-center gap-2 px-2 py-1 whitespace-nowrap"
+                                        >
+                                          <input
+                                            type="checkbox"
+                                            value={subject.sm_id}
+                                            checked={
+                                              selectedSubjects[
+                                                dayIndex
+                                              ]?.lectures[
+                                                lectureIndex
+                                              ]?.subject?.some(
+                                                (s) => s.sm_id === subject.sm_id
+                                              ) || false
+                                            }
+                                            onChange={(e) =>
+                                              handleSubjectSelect(
+                                                dayIndex,
+                                                lectureIndex,
+                                                subject,
+                                                e.target.checked
+                                              )
+                                            }
+                                            className="w-4 h-4"
+                                          />
+                                          <span className="text-sm">
+                                            {subject.name}
+                                          </span>
+                                        </label>
+                                      ))}
+                                    </div>
+                                  )}
+                                </div>
+                              )}
+                            </>
+                          ) : (
+                            ""
+                          )}
+                        </td>
+                      ))}
+                    </tr>
+                  ))}
+              </tbody>
+            </table>
+            <div className="flex justify-end p-2 relative">
+              <button className="btn btn-primary btn-xs" onClick={handleSubmit}>
+                Save
+              </button>
+            </div>
+          </div>
         </div>
-      </div>
+      )}
     </>
   );
 };
