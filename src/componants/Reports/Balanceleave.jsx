@@ -42,14 +42,11 @@ const Balanceleave = () => {
       setLoadingExams(true);
       const token = localStorage.getItem("authToken");
 
-      const response = await axios.get(
-        `${API_URL}/api/get_classofnewadmission`,
-        {
-          headers: { Authorization: `Bearer ${token}` },
-        }
-      );
+      const response = await axios.get(`${API_URL}/api/staff_list`, {
+        headers: { Authorization: `Bearer ${token}` },
+      });
       console.log("Class", response);
-      setStudentNameWithClassId(response?.data?.data || []);
+      setStudentNameWithClassId(response?.data || []);
     } catch (error) {
       toast.error("Error fetching Classes");
       console.error("Error fetching Classes:", error);
@@ -64,31 +61,10 @@ const Balanceleave = () => {
     setSelectedStudentId(selectedOption?.value);
   };
 
-  // Dropdown options
-  const statusOptions = [
-    { value: "Applied", label: "Applied" },
-    { value: "Scheduled", label: "Scheduled" },
-    { value: "Verified", label: "Verified" },
-    { value: "Approved", label: "Approved" },
-    { value: "Hold", label: "Hold" },
-    { value: "Reject", label: "Reject" },
-  ];
-
-  const customStyles = {
-    control: (base, { isFocused }) => ({
-      ...base,
-      borderColor: isFocused ? "#6366F1" : "#d1d5db", // Indigo focus ring
-    }),
-    singleValue: (base, { data }) => ({
-      ...base,
-      color: data.value === "" ? "#9CA3AF" : "#000", // Gray for "Select", black for others
-    }),
-  };
-
   const studentOptions = useMemo(
     () =>
       studentNameWithClassId.map((cls) => ({
-        value: cls?.class_id,
+        value: cls?.teacher_id,
         label: `${cls.name}`,
       })),
     [studentNameWithClassId]
@@ -105,11 +81,10 @@ const Balanceleave = () => {
       setTimetable([]);
       const token = localStorage.getItem("authToken");
       const params = {};
-      if (selectedStudentId) params.class_id = selectedStudentId;
-      if (status) params.status = status;
+      if (selectedStudentId) params.staff_id = selectedStudentId;
 
       const response = await axios.get(
-        `${API_URL}/api/get_reportofnewadmission`,
+        `${API_URL}/api/get_balanceleavereport`,
         {
           headers: { Authorization: `Bearer ${token}` },
           params,
@@ -117,15 +92,15 @@ const Balanceleave = () => {
       );
 
       if (!response?.data?.data || response?.data?.data?.length === 0) {
-        toast.error("Admission forms report data not found.");
+        toast.error("Balance Leave Report data not found.");
         setTimetable([]);
       } else {
         setTimetable(response?.data?.data);
         setPageCount(Math.ceil(response?.data?.data?.length / pageSize)); // Set page count based on response size
       }
     } catch (error) {
-      console.error("Error fetching Admission forms report:", error);
-      toast.error("Error fetching Admission forms report. Please try again.");
+      console.error("Error fetching Balance Leave Report:", error);
+      toast.error("Error fetching Balance Leave Report. Please try again.");
     } finally {
       setIsSubmitting(false); // Re-enable the button after the operation
       setLoadingForSearch(false);
@@ -195,89 +170,14 @@ const Balanceleave = () => {
     }
 
     // Define headers matching the print table
-    const headers = [
-      "Sr No.",
-      "Form Id.",
-      "Student Name",
-      "Class",
-      "Application Date",
-      "Status",
-      "DOB",
-      "Birth Place",
-      "Present Address",
-      "City, State, Pincode",
-      "Permanent Address",
-      "Gender",
-      "Religion",
-      "Caste",
-      "Subcaste",
-      "Nationality",
-      "Mother Tongue",
-      "Category",
-      "Blood Group",
-      "Aadhaar No.",
-      "Sibling",
-      "Father Name",
-      "Occupation",
-      "Mobile No.",
-      "Email Id",
-      "Father Aadhaar No.",
-      "Qualification",
-      "Mother Name",
-      "Occupation",
-      "Mobile No.",
-      "Email Id",
-      "Mother Aadhaar No.",
-      "Qualification",
-      "Areas of Interest",
-      "Order Id",
-    ];
+    const headers = ["Sr No.", "Staff Name", "Leave Type", "Balance Leave"];
 
     // Convert displayedSections data to array format for Excel
     const data = displayedSections.map((student, index) => [
       index + 1,
-      student?.form_id || " ",
-      `${student?.first_name || ""} ${student?.mid_name || ""} ${
-        student?.last_name || ""
-      }`,
-      student?.classname || " ",
-      student?.application_date || " ",
-      student?.admission_form_status || " ",
-      student?.dob || " ",
-      student?.birth_place || " ",
-      student?.locality || " ",
-      `${student?.city || ""}, ${student?.state || ""}, ${
-        student?.pincode || ""
-      }`,
-      student?.perm_address || " ",
-      student?.gender === "M"
-        ? "Male"
-        : student?.gender === "F"
-        ? "Female"
-        : student?.gender || " ",
-      student?.religion || " ",
-      student?.caste || " ",
-      student?.subcaste || " ",
-      student?.nationality || " ",
-      student?.mother_tongue || " ",
-      student?.category || " ",
-      student?.blood_group || " ",
-      student?.stud_aadhar || " ",
-      student?.sibling_student_info || " ",
-      student?.father_name || " ",
-      student?.father_occupation || " ",
-      student?.f_mobile || " ",
-      student?.f_email || " ",
-      student?.f_aadhar_no || " ",
-      student?.f_qualification || " ",
-      student?.mother_name || " ",
-      student?.mother_occupation || " ",
-      student?.m_mobile || " ",
-      student?.m_emailid || " ",
-      student?.m_aadhar_no || " ",
-      student?.m_qualification || " ",
-      student?.area_in_which_parent_can_contribute || " ",
-      student?.OrderId || " ",
+      student?.staffname || " ",
+      student?.name || " ",
+      student?.balance_leave || " ",
     ]);
 
     // Create a worksheet
@@ -292,253 +192,163 @@ const Balanceleave = () => {
     XLSX.utils.book_append_sheet(workbook, worksheet, "Admission Form Data");
 
     // Generate and download the Excel file
-    const fileName = `Admission_Forms_Report_${
-      selectedStudent?.label || "ALL"
+    const fileName = `Balance Leave Report ${
+      selectedStudent?.label
+        ? `List of ${selectedStudent.label}`
+        : ": Complete List of All Staff"
     }.xlsx`;
     XLSX.writeFile(workbook, fileName);
   };
 
   console.log("row", timetable);
 
-  //   const handlePrint = () => {
-  //     const printTitle = `List of Admission Forms Report for ${
-  //       selectedStudent?.label ? `Class ${selectedStudent.label}` : "All Students"
-  //     }`;
+  const handlePrint = () => {
+    const printTitle = `Balance Leave Report  ${
+      selectedStudent?.label
+        ? `List of ${selectedStudent.label}`
+        : ": Complete List of All Staff "
+    }`;
+    const printContent = `
+  <div id="tableMain" class="flex items-center justify-center min-h-screen bg-white">
+         <h5 id="tableHeading5"  class="text-lg font-semibold border-1 border-black">${printTitle}</h5>
+ <div id="tableHeading" class="text-center w-3/4">
+      <table class="min-w-full leading-normal table-auto border border-black mx-auto mt-2">
+        <thead>
+          <tr class="bg-gray-100">
+            <th class="px-2 text-center py-2 border border-black text-sm font-semibold">Sr.No</th>
+            <th class="px-2 text-center py-2 border border-black text-sm font-semibold">Staff Name</th>
+            <th class="px-2 text-center py-2 border border-black text-sm font-semibold">Leave Type</th>
+            <th class="px-2 text-center py-2 border border-black text-sm font-semibold">Balance Leave</th>
+           
+          </tr>
+        </thead>
+        <tbody>
+          ${displayedSections
+            .map(
+              (subject, index) => `
+              <tr class="text-sm">
+                <td class="px-2 text-center py-2 border border-black">${
+                  index + 1
+                }</td>
+                <td class="px-2 text-center py-2 border border-black">${
+                  subject?.staffname || " "
+                }</td>
+                <td class="px-2 text-center py-2 border border-black">${
+                  subject?.name || " "
+                }</td>
+                <td class="px-2 text-center py-2 border border-black">${
+                  subject?.balance_leave || " "
+                }</td>
+              </tr>`
+            )
+            .join("")}
+        </tbody>
+      </table>
+    </div>
+  </div>`;
 
-  //     const printContent = `
-  //     <title>${printTitle}</title>
-  //   <style>
-  //     @page { margin: 4px; padding:4px; box-sizing:border-box;   ;
-  // }
-  //     @media print {
-  //       body {
-  //         font-size: 10px;
-  //       }
-  //       .table-container {
-  //         width: 98%;
+    const printWindow = window.open("", "", "height=800,width=1000");
+    printWindow.document.write(`
+  <html>
+  <head>
+    <title>${printTitle}</title>
+    <style>
+      @page { margin: 0; padding:0; box-sizing:border-box;   ;
+}
+      body { margin: 0; padding: 0; box-sizing:border-box; font-family: Arial, sans-serif; }
+      #tableHeading {
+  width: 100%;
+  margin: auto; /* Centers the div horizontally */
+  display: flex;
+  justify-content: center;
+}
 
-  //         transform: scale(0.99); /* Scale down to 39% */
-  //         transform-origin: top center;
-  //       }
-  //       table {
-  //         width: 100%;
-  //          border-spacing: 0;
+#tableHeading table {
+  width: 100%; /* Ensures the table fills its container */
+  margin:auto;
+  padding:0 10em 0 10em;
 
-  //       }
-  //       th, td {
-  //         border: 1px solid black;
-  //         padding: 2px;
-  //         text-align: center;
-  //         word-wrap: break-word;
-  //       }
-  //     }
-  //       # HeadingForTitleIs{
-  //       width:100%;
-  //       margin:auto;
-  //       border: 2px solid black;
+  
 
-  //       }
-  //       h2 {
-  //   width: 100%;
-  //   text-align: center;
 
-  //   margin: 0;  /* Remove any default margins */
-  //   padding: 5px 0;  /* Adjust padding if needed */
-  // }
-  //   h2 + * { /* Targets the element after h5 */
-  //   margin-top: 0; /* Ensures no extra space after h5 */
-  // }
+}
 
-  //   </style>
+#tableContainer {
+  display: flex;
+  justify-content: center; /* Centers the table horizontally */
+  width: 80%;
+  
+}
 
-  //   <div class="table-container">
-  // <h2 id="tableHeading5"  class="text-lg font-semibold border-1 border-black">${printTitle}</h2>
-  //   <table class="min-w-full leading-normal table-auto border border-black">
-  //       <thead>
-  //         <tr class="bg-gray-100">
-  //           ${[
-  //             "Sr No.",
-  //             "Form Id.",
-  //             "Student Name",
-  //             "Class",
-  //             "Application Date",
-  //             "Status",
-  //             "DOB",
-  //             "Birth Place",
-  //             "Present Address",
-  //             "City, State, Pincode",
-  //             "Permanent Address",
-  //             "Gender",
-  //             "Religion",
-  //             "Caste",
-  //             "Subcaste",
-  //             "Nationality",
-  //             "Mother Tongue",
-  //             "Category",
-  //             "Blood Group",
-  //             "Aadhaar No.",
-  //             "Sibling",
-  //             "Father Name",
-  //             "Occupation",
-  //             "Mobile No.",
-  //             "Email Id",
-  //             "Father Aadhaar No.",
-  //             "Qualification",
-  //             "Mother Name",
-  //             "Occupation",
-  //             "Mobile No.",
-  //             "Email Id",
-  //             "Mother Aadhaar No.",
-  //             "Qualification",
-  //             "Areas of Interest",
-  //             "Order Id",
-  //           ]
-  //             .map(
-  //               (header) =>
-  //                 `<th class="px-1 py-1 text-sm font-semibold border border-black">${header}</th>`
-  //             )
-  //             .join("")}
-  //         </tr>
-  //       </thead>
-  //       <tbody>
-  //         ${displayedSections
-  //           .map(
-  //             (student, index) => `
-  //             <tr>
-  //               <td>${index + 1}</td>
-  //               <td>${student.form_id}</td>
-  //               <td>${student.first_name} ${student.mid_name} ${
-  //               student.last_name
-  //             }</td>
-  //               <td>${student.classname}</td>
-  //               <td>${student.application_date}</td>
-  //               <td>${student.admission_form_status}</td>
-  //               <td>${student.dob}</td>
-  //               <td>${student.birth_place}</td>
-  //               <td>${student.locality}</td>
-  //               <td>${student.city}, ${student.state}, ${student.pincode}</td>
-  //               <td>${student.perm_address}</td>
-  //               <td>${
-  //                 student.gender === "M"
-  //                   ? "Male"
-  //                   : student.gender === "F"
-  //                   ? "Female"
-  //                   : student.gender
-  //               }</td>
-  //               <td>${student.religion}</td>
-  //               <td>${student.caste}</td>
-  //               <td>${student.subcaste}</td>
-  //               <td>${student.nationality}</td>
-  //               <td>${student.mother_tongue}</td>
-  //               <td>${student.category}</td>
-  //               <td>${student.blood_group}</td>
-  //               <td>${student.stud_aadhar}</td>
-  //               <td>${student.sibling_student_info}</td>
-  //               <td>${student.father_name}</td>
-  //               <td>${student.father_occupation}</td>
-  //               <td>${student.f_mobile}</td>
-  //               <td>${student.f_email}</td>
-  //               <td>${student.f_aadhar_no}</td>
-  //               <td>${student.f_qualification}</td>
-  //               <td>${student.mother_name}</td>
-  //               <td>${student.mother_occupation}</td>
-  //               <td>${student.m_mobile}</td>
-  //               <td>${student.m_emailid}</td>
-  //               <td>${student.m_aadhar_no}</td>
-  //               <td>${student.m_qualification}</td>
-  //               <td>${student.area_in_which_parent_can_contribute}</td>
-  //               <td>${student.OrderId}</td>
-  //             </tr>
-  //           `
-  //           )
-  //           .join("")}
-  //       </tbody>
-  //     </table>
-  //   </div>
-  //   `;
+ 
+h5 {  
+  width: 100%;  
+  text-align: center;  
+  margin: 0;  /* Remove any default margins */
+  padding: 5px 0;  /* Adjust padding if needed */
+}
 
-  //     const newWindow = window.open("", "_blank");
-  //     newWindow.document.write(printContent);
-  //     newWindow.document.close();
-  //     newWindow.print();
-  //   };
+#tableMain {
+width:100%;
+margin:auto;
+box-sizing:border-box;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: flex-start; /* Prevent unnecessary space */
+padding:0 10em 0 10em;
+}
+
+h5 + * { /* Targets the element after h5 */
+  margin-top: 0; /* Ensures no extra space after h5 */
+}
+
+
+      table { border-spacing: 0; width: 70%; margin: auto;   }
+      th { font-size: 0.8em; background-color: #f9f9f9; }
+      td { font-size: 12px; }
+      th, td { border: 1px solid gray; padding: 8px; text-align: center; }
+      .student-photo {
+        width: 30px !important; 
+        height: 30px !important;
+        object-fit: cover;
+        border-radius: 50%;
+      }
+    </style>
+  </head>
+  <body>
+    ${printContent}
+  </body>
+  </html>`);
+    printWindow.document.close();
+    printWindow.print();
+  };
 
   const filteredSections = timetable.filter((section) => {
     const searchLower = searchTerm.toLowerCase();
 
     // Extract relevant fields and convert them to lowercase for case-insensitive search
-    const formId = section?.form_id?.toLowerCase() || "";
-    const academicYear = section?.academic_yr?.toLowerCase() || "";
-    const studentName =
-      `${section?.first_name} ${section?.mid_name} ${section?.last_name}`
-        .toLowerCase()
-        .trim() || "";
-    const studentDOB = section?.dob?.toLowerCase() || "";
-    const studentGender = section?.gender?.toLowerCase() || "";
-    const applicationDate = section?.application_date?.toLowerCase() || "";
-    const studentReligion = section?.religion?.toLowerCase() || "";
-    const studentCaste = section?.caste?.toLowerCase() || "";
-    const studentSubcaste = section?.subcaste?.toLowerCase() || "";
-    const studentNationality = section?.nationality?.toLowerCase() || "";
-    const studentMotherTongue = section?.mother_tongue?.toLowerCase() || "";
-    const studentCategory = section?.category?.toLowerCase() || "";
-    const studentLocality = section?.locality?.toLowerCase() || "";
-    const studentCity = section?.city?.toLowerCase() || "";
-    const studentState = section?.state?.toLowerCase() || "";
-    const studentPincode = section?.pincode?.toString().toLowerCase() || "";
-    const permanentAddress = section?.perm_address?.toLowerCase() || "";
-    const fatherName = section?.father_name?.toLowerCase() || "";
-    const fatherMobile = section?.f_mobile?.toLowerCase() || "";
-    const fatherEmail = section?.f_email?.toLowerCase() || "";
-    const motherName = section?.mother_name?.toLowerCase() || "";
-    const motherMobile = section?.m_mobile?.toLowerCase() || "";
-    const motherEmail = section?.m_emailid?.toLowerCase() || "";
-    const studentBloodGroup = section?.blood_group?.toLowerCase() || "";
-    const admissionStatus = section?.admission_form_status?.toLowerCase() || "";
-    const className = section?.classname?.toLowerCase() || "";
-    const orderId = section?.OrderId?.toLowerCase() || "";
+    const formId = section?.staffname?.toLowerCase() || "";
+    const studentDOB = section?.name?.toLowerCase() || "";
+
+    // const orderId = section?.balance_leave || "";
 
     // Check if the search term is present in any of the specified fields
     return (
-      formId.includes(searchLower) ||
-      academicYear.includes(searchLower) ||
-      studentName.includes(searchLower) ||
-      studentDOB.includes(searchLower) ||
-      studentGender.includes(searchLower) ||
-      applicationDate.includes(searchLower) ||
-      studentReligion.includes(searchLower) ||
-      studentCaste.includes(searchLower) ||
-      studentSubcaste.includes(searchLower) ||
-      studentNationality.includes(searchLower) ||
-      studentMotherTongue.includes(searchLower) ||
-      studentCategory.includes(searchLower) ||
-      studentLocality.includes(searchLower) ||
-      studentCity.includes(searchLower) ||
-      studentState.includes(searchLower) ||
-      studentPincode.includes(searchLower) ||
-      permanentAddress.includes(searchLower) ||
-      fatherName.includes(searchLower) ||
-      fatherMobile.includes(searchLower) ||
-      fatherEmail.includes(searchLower) ||
-      motherName.includes(searchLower) ||
-      motherMobile.includes(searchLower) ||
-      motherEmail.includes(searchLower) ||
-      studentBloodGroup.includes(searchLower) ||
-      admissionStatus.includes(searchLower) ||
-      className.includes(searchLower) ||
-      orderId.includes(searchLower)
+      formId.includes(searchLower) || studentDOB.includes(searchLower)
+      //   || orderId.includes(searchLower)
     );
   });
 
   const displayedSections = filteredSections.slice(currentPage * pageSize);
   return (
     <>
-      <div className="w-full md:w-[100%] mx-auto p-4 ">
+      <div className="w-full md:w-[90%] mx-auto p-4 ">
         <ToastContainer />
         <div className="card p-4 rounded-md ">
           <div className=" card-header mb-4 flex justify-between items-center ">
             <h5 className="text-gray-700 mt-1 text-md lg:text-lg">
-              Admission Forms Report
+              Balance Leave Report
             </h5>
             <RxCross1
               className=" relative right-2 text-xl text-red-600 hover:cursor-pointer hover:bg-red-100"
@@ -560,10 +370,10 @@ const Balanceleave = () => {
                 <div className="w-full md:w-[75%] gap-x-0 md:gap-x-12  flex flex-col gap-y-2 md:gap-y-0 md:flex-row">
                   <div className="w-full md:w-[50%] gap-x-2   justify-around  my-1 md:my-4 flex md:flex-row ">
                     <label
-                      className="md:w-[25%] text-md pl-0 md:pl-5 mt-1.5"
+                      className="md:w-[35%] text-md pl-0 md:pl-5 mt-1.5"
                       htmlFor="studentSelect"
                     >
-                      Class
+                      Staff Name <span className="text-red-500">*</span>
                     </label>
                     <div className=" w-full md:w-[65%]">
                       <Select
@@ -576,45 +386,29 @@ const Balanceleave = () => {
                         placeholder={loadingExams ? "Loading..." : "Select"}
                         isSearchable
                         isClearable
-                        className="text-sm"
                         isDisabled={loadingExams}
+                        styles={{
+                          control: (provided) => ({
+                            ...provided,
+                            fontSize: ".9em", // Adjust font size for selected value
+                            minHeight: "30px", // Reduce height
+                          }),
+                          menu: (provided) => ({
+                            ...provided,
+                            fontSize: "1em", // Adjust font size for dropdown options
+                          }),
+                          option: (provided) => ({
+                            ...provided,
+                            fontSize: ".9em", // Adjust font size for each option
+                          }),
+                        }}
                       />
+
                       {studentError && (
                         <div className="h-8 relative ml-1 text-danger text-xs">
                           {studentError}
                         </div>
                       )}
-                    </div>
-                  </div>
-                  <div className="w-full md:w-[45%]  gap-x-4  justify-between  my-1 md:my-4 flex md:flex-row">
-                    <label
-                      className=" ml-0 md:ml-4 w-full md:w-[30%]  text-md mt-1.5 "
-                      htmlFor="studentSelect"
-                    >
-                      Status
-                    </label>{" "}
-                    <div className="w-full">
-                      <Select
-                        id="status"
-                        menuPortalTarget={document.body}
-                        menuPosition="fixed"
-                        options={statusOptions}
-                        value={
-                          statusOptions.find(
-                            (option) => option.value === status
-                          ) || null
-                        }
-                        onChange={(selectedOption) =>
-                          setStatus(
-                            selectedOption ? selectedOption.value : null
-                          )
-                        }
-                        isSearchable
-                        isClearable
-                        className="text-sm"
-                        styles={customStyles}
-                        placeholder="Select"
-                      />
                     </div>
                   </div>
 
@@ -668,7 +462,7 @@ const Balanceleave = () => {
                     <div className="p-2 px-3 bg-gray-100 border-none flex justify-between items-center">
                       <div className="w-full   flex flex-row justify-between mr-0 md:mr-4 ">
                         <h3 className="text-gray-700 mt-1 text-[1.2em] lg:text-xl text-nowrap">
-                          List Of Admission Forms Report
+                          Balance Leave Report List
                         </h3>
                         <div className="w-1/2 md:w-[18%] mr-1 ">
                           <input
@@ -692,7 +486,7 @@ const Balanceleave = () => {
                           </div>
                         </button>
 
-                        {/* <button
+                        <button
                           onClick={handlePrint}
                           className="relative flex flex-row justify-center align-middle items-center gap-x-1 bg-blue-400 hover:bg-blue-500 text-white px-3 rounded group"
                         >
@@ -700,7 +494,7 @@ const Balanceleave = () => {
                           <div className="absolute bottom-full left-1/2 transform -translate-x-1/2 mb-2 hidden group-hover:flex items-center justify-center bg-gray-600  text-white text-[.7em] rounded-md py-1 px-2">
                             Print{" "}
                           </div>
-                        </button> */}
+                        </button>
                       </div>
                     </div>
                     <div
@@ -723,40 +517,9 @@ const Balanceleave = () => {
                             <tr className="bg-gray-100">
                               {[
                                 "Sr No.",
-                                "Form Id.",
-                                "Student Name",
-                                "Class",
-                                "Application Date",
-                                "Status",
-                                "DOB",
-                                "Birth Place",
-                                "Present Address",
-                                "City, State, Pincode",
-                                "Permanent Address",
-                                "Gender",
-                                "Religion",
-                                "Caste",
-                                "Subcaste",
-                                "Nationality",
-                                "Mother Tongue",
-                                "Category",
-                                "Blood Group",
-                                "Aadhaar No.",
-                                "Sibling",
-                                "Father Name",
-                                "Occupation",
-                                "Mobile No.",
-                                "Email Id",
-                                "Father Aadhaar No.",
-                                "Qualification",
-                                "Mother Name",
-                                "Occupation",
-                                "Mobile No.",
-                                "Email Id",
-                                "Mother Aadhaar No.",
-                                "Qualification",
-                                "Areas of Interest",
-                                "Order Id",
+                                "Staff Name",
+                                "Leave Type",
+                                "Balance Leave",
                               ].map((header, index) => (
                                 <th
                                   key={index}
@@ -779,115 +542,13 @@ const Balanceleave = () => {
                                     {index + 1}
                                   </td>
                                   <td className="px-2 py-2 text-center border border-gray-300">
-                                    {student.form_id}
+                                    {student?.staffname || " "}
                                   </td>
                                   <td className="px-2 py-2 text-center border border-gray-300">
-                                    {student.first_name} {student.mid_name}{" "}
-                                    {student.last_name}
+                                    {student?.name || " "}
                                   </td>
                                   <td className="px-2 py-2 text-center border border-gray-300">
-                                    {student.classname}
-                                  </td>
-                                  <td className="px-2 py-2 text-center border border-gray-300">
-                                    {student.application_date}
-                                  </td>
-                                  <td className="px-2 py-2 text-center border border-gray-300">
-                                    {student.admission_form_status}
-                                  </td>
-                                  <td className="px-2 py-2 text-center border border-gray-300">
-                                    {student.dob}
-                                  </td>
-                                  <td className="px-2 py-2 text-center border border-gray-300">
-                                    {student.birth_place}
-                                  </td>
-                                  <td className="px-2 py-2 text-center border border-gray-300">
-                                    {student.locality}
-                                  </td>
-                                  <td className="px-2 py-2 text-center border border-gray-300">
-                                    {student.city}, {student.state},{" "}
-                                    {student.pincode}
-                                  </td>
-                                  <td className="px-2 py-2 text-center border border-gray-300">
-                                    {student.perm_address}
-                                  </td>
-                                  <td className="px-2 py-2 text-center border border-gray-300">
-                                    {/* {student.gender} */}
-                                    {student.gender === "M"
-                                      ? "Male"
-                                      : student.gender === "F"
-                                      ? "Female"
-                                      : student.gender}
-                                  </td>
-                                  <td className="px-2 py-2 text-center border border-gray-300">
-                                    {student.religion}
-                                  </td>
-                                  <td className="px-2 py-2 text-center border border-gray-300">
-                                    {student.caste}
-                                  </td>
-                                  <td className="px-2 py-2 text-center border border-gray-300">
-                                    {student.subcaste}
-                                  </td>
-                                  <td className="px-2 py-2 text-center border border-gray-300">
-                                    {student.nationality}
-                                  </td>
-                                  <td className="px-2 py-2 text-center border border-gray-300">
-                                    {student.mother_tongue}
-                                  </td>
-                                  <td className="px-2 py-2 text-center border border-gray-300">
-                                    {student.category}
-                                  </td>
-                                  <td className="px-2 py-2 text-center border border-gray-300">
-                                    {student.blood_group}
-                                  </td>
-                                  <td className="px-2 py-2 text-center border border-gray-300">
-                                    {student.stud_aadhar}
-                                  </td>
-                                  <td className="px-2 py-2 text-center border border-gray-300">
-                                    {student.sibling_student_info}
-                                  </td>
-                                  <td className="px-2 py-2 text-center border border-gray-300">
-                                    {student.father_name}
-                                  </td>
-                                  <td className="px-2 py-2 text-center border border-gray-300">
-                                    {student.father_occupation}
-                                  </td>
-                                  <td className="px-2 py-2 text-center border border-gray-300">
-                                    {student.f_mobile}
-                                  </td>
-                                  <td className="px-2 py-2 text-center border border-gray-300">
-                                    {student.f_email}
-                                  </td>
-                                  <td className="px-2 py-2 text-center border border-gray-300">
-                                    {student.f_aadhar_no}
-                                  </td>
-                                  <td className="px-2 py-2 text-center border border-gray-300">
-                                    {student.f_qualification}
-                                  </td>
-                                  <td className="px-2 py-2 text-center border border-gray-300">
-                                    {student.mother_name}
-                                  </td>
-                                  <td className="px-2 py-2 text-center border border-gray-300">
-                                    {student.mother_occupation}
-                                  </td>
-                                  <td className="px-2 py-2 text-center border border-gray-300">
-                                    {student.m_mobile}
-                                  </td>
-                                  <td className="px-2 py-2 text-center border border-gray-300">
-                                    {student.m_emailid}
-                                  </td>
-                                  <td className="px-2 py-2 text-center border border-gray-300">
-                                    {student.m_aadhar_no}
-                                  </td>
-                                  <td className="px-2 py-2 text-center border border-gray-300">
-                                    {student.m_qualification}
-                                  </td>
-                                  <td className="px-2 py-2 text-center border border-gray-300">
-                                    {
-                                      student.area_in_which_parent_can_contribute
-                                    }
-                                  </td>
-                                  <td className="px-2 py-2 text-center border border-gray-300">
-                                    {student.OrderId}
+                                    {student?.balance_leave || " "}
                                   </td>
                                 </tr>
                               ))
