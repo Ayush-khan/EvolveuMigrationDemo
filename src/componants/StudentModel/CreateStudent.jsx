@@ -14,6 +14,7 @@ function Form() {
   const API_URL = import.meta.env.VITE_API_URL;
   // for unique user name
   const [usernameError, setUsernameError] = useState(""); // To store the error message
+  const [isImageCropped, setIsImageCropped] = useState(false);
 
   const navigate = useNavigate();
   const location = useLocation();
@@ -1090,6 +1091,7 @@ function Form() {
   // };
 
   const handleImageCropped = (croppedImageData) => {
+    setIsImageCropped(true); // Mark that cropping has occurred
     setFormData((prevData) => ({
       ...prevData,
       image_name: croppedImageData,
@@ -1149,8 +1151,10 @@ function Form() {
       // console.log("formattedFormData", formattedFormData);
       console.log("selectedUsername------>", selectedUsername);
       // Create a local copy of formData with the updated field
+
       const updatedFormData = {
         ...formData,
+        image_name: isImageCropped ? formData.image_name : "",
         SetEmailIDAsUsername: selectedUsername || "",
       };
       console.log("formData Before submitting", updatedFormData);
