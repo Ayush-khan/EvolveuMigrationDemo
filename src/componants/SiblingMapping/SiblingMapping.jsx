@@ -884,18 +884,21 @@ const SiblingMapping = () => {
                           </div>
 
                           {/* Radio Button */}
-                          <div className="flex flex-row items-center gap-x-4 mt-4">
+                          <div className="flex  relative left-0 md:left-7 flex-row items-center justify-center gap-x-4 mt-4 ">
                             <input
                               type="radio"
                               id="parent1"
                               name="setAsParent"
                               value="form1"
-                              className="w-4 h-4"
+                              className="w-4 h-4    hover:cursor-pointer "
                               checked={selectedParent === "1"} // Controlled component
                               onChange={() => handleChange("1")}
                               required
                             />
-                            <label htmlFor="parent1" className="text-gray-700">
+                            <label
+                              htmlFor="parent1"
+                              className="text-gray-700 hover:cursor-pointer"
+                            >
                               Set this as parent
                             </label>{" "}
                           </div>
@@ -1102,18 +1105,21 @@ const SiblingMapping = () => {
                             </p>
                           </div>
                           {/* Radio Button */}
-                          <div className="flex flex-row items-center gap-x-4 mt-4">
+                          <div className="flex flex-row relative left-0 md:left-7 items-center justify-center gap-x-4 mt-4 ">
                             <input
                               type="radio"
                               id="parent2"
                               name="setAsParent"
                               value="form2"
-                              className="w-4 h-4"
+                              className="w-4 h-4 hover:cursor-pointer"
                               checked={selectedParent === "2"} // Controlled component
                               onChange={() => handleChange("2")}
                               required
                             />
-                            <label htmlFor="parent2" className="text-gray-700">
+                            <label
+                              htmlFor="parent2"
+                              className=" hover:cursor-pointer text-gray-700"
+                            >
                               Set this as parent
                             </label>
                             {radioButtonError && (

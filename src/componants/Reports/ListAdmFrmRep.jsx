@@ -301,9 +301,9 @@ const ListAdmFrmRep = () => {
   console.log("row", timetable);
 
   //   const handlePrint = () => {
-    //   const printTitle = `List of Admission Forms Report for ${
-    //     selectedStudent?.label ? `Class ${selectedStudent.label}` : "All Students"
-    //   }`;
+  //   const printTitle = `List of Admission Forms Report for ${
+  //     selectedStudent?.label ? `Class ${selectedStudent.label}` : "All Students"
+  //   }`;
 
   //     const printContent = `
   //     <title>${printTitle}</title>

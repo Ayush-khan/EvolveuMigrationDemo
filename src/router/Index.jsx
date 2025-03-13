@@ -191,6 +191,8 @@ import Balanceleave from "../componants/Reports/Balanceleave.jsx";
 import ConsolidatedLeave from "../componants/Reports/ConsolidatedLeave.jsx";
 import StudentReport from "../componants/Reports/StudentReport.jsx";
 import StudentContactDetailsReport from "../componants/Reports/StudentContactDetailsReport.jsx";
+import PendingStudentId from "../componants/IDCards/PendingStudentId.jsx";
+import CatWiseStudRepo from "../componants/Reports/CatWiseStudRepo.jsx";
 // import Menus from "../c";
 function Index() {
   return (
@@ -587,6 +589,11 @@ function Index() {
           path="/teacherIdCard"
           element={<PrivateRoute element={<TeacherIdCard />} />}
         />
+        {/* Pending StudentID Card Module */}
+        <Route
+          path="/pendingStudentId"
+          element={<PrivateRoute element={<PendingStudentId />} />}
+        />
         {/* Id Card Details */}
 
         <Route
@@ -617,6 +624,11 @@ function Index() {
         <Route
           path="/studentContactDetailsReport"
           element={<PrivateRoute element={<StudentContactDetailsReport />} />}
+        />
+        {/* Student Categorywise  Report Module */}
+        <Route
+          path="/catWiseStudRepo"
+          element={<PrivateRoute element={<CatWiseStudRepo />} />}
         />
         <Route path="/notification" element={<NotificationPage />} />
         <Route path="/changepassword" element={<ChangePassword />} />
