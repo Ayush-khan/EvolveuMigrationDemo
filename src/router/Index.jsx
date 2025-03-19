@@ -193,6 +193,10 @@ import StudentReport from "../componants/Reports/StudentReport.jsx";
 import StudentContactDetailsReport from "../componants/Reports/StudentContactDetailsReport.jsx";
 import PendingStudentId from "../componants/IDCards/PendingStudentId.jsx";
 import CatWiseStudRepo from "../componants/Reports/CatWiseStudRepo.jsx";
+import RelgWiseStudRepo from "../componants/Reports/RelgWiseStudRepo.jsx";
+import GendrWiseStudRepo from "../componants/Reports/GendrWiseStudRepo.jsx";
+import StudentRemarkReport from "../componants/Reports/StudentRemarkReport.jsx";
+import GenWiseCatRepo from "../componants/Reports/GenWiseCatRepo.jsx";
 // import Menus from "../c";
 function Index() {
   return (
@@ -629,6 +633,26 @@ function Index() {
         <Route
           path="/catWiseStudRepo"
           element={<PrivateRoute element={<CatWiseStudRepo />} />}
+        />
+        {/* Student Religion Wise  Report Module */}
+        <Route
+          path="/relgWiseStudRepo"
+          element={<PrivateRoute element={<RelgWiseStudRepo />} />}
+        />
+        {/* Student Gender Wise  Report Module */}
+        <Route
+          path="/gendrWiseStudRepo"
+          element={<PrivateRoute element={<GendrWiseStudRepo />} />}
+        />
+        {/* Student StudentRemarkReport  Module */}
+        <Route
+          path="/StudentRemarkReport"
+          element={<PrivateRoute element={<StudentRemarkReport />} />}
+        />
+        {/* Student Gender Wise  Report Module */}
+        <Route
+          path="/GenWiseCatRepo"
+          element={<PrivateRoute element={<GenWiseCatRepo />} />}
         />
         <Route path="/notification" element={<NotificationPage />} />
         <Route path="/changepassword" element={<ChangePassword />} />

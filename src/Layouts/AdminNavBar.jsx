@@ -845,14 +845,14 @@ const AdminNavBar = () => {
           >
             Consolidated Leave
           </NavDropdown.Item>
-          <NavDropdown.Item
+          {/* <NavDropdown.Item
             as={Link}
             // to="/studentReport"
             to="#"
             className="text-sm font-bold hover:text-black"
           >
             Student Report
-          </NavDropdown.Item>
+          </NavDropdown.Item> */}
           <NavDropdown.Item
             as={Link}
             to="/studentContactDetailsReport"
@@ -862,7 +862,7 @@ const AdminNavBar = () => {
           </NavDropdown.Item>
           <NavDropdown.Item
             as={Link}
-            to="#"
+            to="/StudentRemarkReport"
             className="text-sm font-bold hover:text-black"
           >
             Student Remarks Report
@@ -876,10 +876,25 @@ const AdminNavBar = () => {
           </NavDropdown.Item>
           <NavDropdown.Item
             as={Link}
-            to="#"
+            to="/relgWiseStudRepo"
             className="text-sm font-bold hover:text-black"
           >
             Student - Religion wise Report
+          </NavDropdown.Item>
+          {/* <NavDropdown.Item
+            as={Link}
+            // to="/gendrWiseStudRepo"
+            to="#"
+            className="text-sm font-bold hover:text-black"
+          >
+            Student - Gender wise Report
+          </NavDropdown.Item> */}
+          <NavDropdown.Item
+            as={Link}
+            to="/GenWiseCatRepo"
+            className="text-sm font-bold hover:text-black"
+          >
+            Student - Genderwise Categorywise Report
           </NavDropdown.Item>
         </NavDropdown>
 
