@@ -847,8 +847,8 @@ const AdminNavBar = () => {
           </NavDropdown.Item>
           {/* <NavDropdown.Item
             as={Link}
-            // to="/studentReport"
-            to="#"
+            to="/studentReport"
+            // to="#"
             className="text-sm font-bold hover:text-black"
           >
             Student Report
@@ -862,7 +862,7 @@ const AdminNavBar = () => {
           </NavDropdown.Item>
           <NavDropdown.Item
             as={Link}
-            to="/StudentRemarkReport"
+            to="/studentRemarkReport"
             className="text-sm font-bold hover:text-black"
           >
             Student Remarks Report
@@ -881,17 +881,24 @@ const AdminNavBar = () => {
           >
             Student - Religion wise Report
           </NavDropdown.Item>
-          {/* <NavDropdown.Item
+          <NavDropdown.Item
             as={Link}
-            // to="/gendrWiseStudRepo"
-            to="#"
+            to="/gendrWiseStudRepo"
+            // to="#"
             className="text-sm font-bold hover:text-black"
           >
             Student - Gender wise Report
-          </NavDropdown.Item> */}
+          </NavDropdown.Item>
           <NavDropdown.Item
             as={Link}
-            to="/GenWiseCatRepo"
+            to="/genWiseRelignRepo"
+            className="text-sm font-bold hover:text-black"
+          >
+            Student -Genderwise Religionwise Report
+          </NavDropdown.Item>
+          <NavDropdown.Item
+            as={Link}
+            to="/genWiseCatRepo"
             className="text-sm font-bold hover:text-black"
           >
             Student - Genderwise Categorywise Report

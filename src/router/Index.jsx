@@ -197,6 +197,7 @@ import RelgWiseStudRepo from "../componants/Reports/RelgWiseStudRepo.jsx";
 import GendrWiseStudRepo from "../componants/Reports/GendrWiseStudRepo.jsx";
 import StudentRemarkReport from "../componants/Reports/StudentRemarkReport.jsx";
 import GenWiseCatRepo from "../componants/Reports/GenWiseCatRepo.jsx";
+import GenWiseRelignRepo from "../componants/Reports/GenWiseRelignRepo.jsx";
 // import Menus from "../c";
 function Index() {
   return (
@@ -639,6 +640,11 @@ function Index() {
           path="/relgWiseStudRepo"
           element={<PrivateRoute element={<RelgWiseStudRepo />} />}
         />
+        {/* Student GenWiseRelignRepo Report Module */}
+        <Route
+          path="/genWiseRelignRepo"
+          element={<PrivateRoute element={<GenWiseRelignRepo />} />}
+        />
         {/* Student Gender Wise  Report Module */}
         <Route
           path="/gendrWiseStudRepo"
@@ -646,12 +652,12 @@ function Index() {
         />
         {/* Student StudentRemarkReport  Module */}
         <Route
-          path="/StudentRemarkReport"
+          path="/studentRemarkReport"
           element={<PrivateRoute element={<StudentRemarkReport />} />}
         />
         {/* Student Gender Wise  Report Module */}
         <Route
-          path="/GenWiseCatRepo"
+          path="/genWiseCatRepo"
           element={<PrivateRoute element={<GenWiseCatRepo />} />}
         />
         <Route path="/notification" element={<NotificationPage />} />

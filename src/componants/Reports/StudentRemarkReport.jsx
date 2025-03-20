@@ -193,10 +193,10 @@ const StudentRemarkReport = () => {
         setStudentRemarkList(response?.data?.data);
         setPageCount(Math.ceil(response?.data?.data?.length / pageSize));
       }
-      setSelectedStudent(null);
-      setSelectedTeacher(null);
-      setSelectedClass(null);
-      setToDate("");
+      //   setSelectedStudent(null);
+      //   setSelectedTeacher(null);
+      //   setSelectedClass(null);
+      //   setToDate("");
     } catch (error) {
       console.error("❌ Error fetching Student Remark Report:", error);
       toast.error("Error fetching Student Remark Report. Please try again.");

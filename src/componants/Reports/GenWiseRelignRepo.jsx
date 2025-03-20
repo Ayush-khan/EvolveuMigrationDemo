@@ -10,7 +10,7 @@ import { FiPrinter } from "react-icons/fi";
 import { FaFileExcel } from "react-icons/fa";
 import * as XLSX from "xlsx";
 
-const GenWiseCatRepo = () => {
+const GenWiseRelignRepo = () => {
   const API_URL = import.meta.env.VITE_API_URL;
   const [selectedStudent, setSelectedStudent] = useState(null);
   const [currentPage, setCurrentPage] = useState(0);
@@ -86,16 +86,16 @@ const GenWiseCatRepo = () => {
       if (selectedStudentId) params.class_id = selectedStudentId;
 
       const response = await axios.get(
-        `${API_URL}/api/get_gendercategorywisestudentreport`,
+        `${API_URL}/api/get_religiongenderwisestudentreport`,
         {
           headers: { Authorization: `Bearer ${token}` },
           params,
         }
       );
-      console.log("genderwise category report", response);
+      console.log("Genderwise Religionwise Student Report report", response);
 
       if (!response?.data?.data || response?.data?.data?.length === 0) {
-        toast.error("Student Contact Details Report data not found.");
+        toast.error("Genderwise Religionwise Student Report data not found.");
         setTimetable([]);
       } else {
         setTimetable(response?.data?.data);
@@ -104,9 +104,12 @@ const GenWiseCatRepo = () => {
       //   setSelectedStudent(null);
       //   setSelectedStudentId(null);
     } catch (error) {
-      console.error("Error fetching Student Contact Details Report:", error);
+      console.error(
+        "Error fetching Genderwise Religionwise Student Report:",
+        error
+      );
       toast.error(
-        "Error fetching Student Contact Details Report. Please try again."
+        "Error fetching Genderwise Religionwise Student Report. Please try again."
       );
     } finally {
       setIsSubmitting(false); // Re-enable the button after the operation
@@ -115,7 +118,7 @@ const GenWiseCatRepo = () => {
   };
 
   const handlePrint = () => {
-    const printTitle = `Genderwise Categorywise Student Report ${
+    const printTitle = `Genderwise Religionwise Student Report ${
       selectedStudent?.label
         ? `List of Class ${selectedStudent.label}`
         : ": For All Students "
@@ -130,7 +133,7 @@ const GenWiseCatRepo = () => {
             <th class="px-2 text-center py-2 border border-black text-sm font-semibold">Sr.No</th>
             <th class="px-2 text-center py-2 border border-black text-sm font-semibold">Class</th>
             <th class="px-2 text-center py-2 border border-black text-sm font-semibold">Gender</th>
-            <th class="px-2 text-center py-2 border border-black text-sm font-semibold">Category</th>
+            <th class="px-2 text-center py-2 border border-black text-sm font-semibold">Religion</th>
             <th class="px-2 text-center py-2 border border-black text-sm font-semibold">No.of Students</th>
           </tr>
         </thead>
@@ -153,7 +156,7 @@ const GenWiseCatRepo = () => {
                     : " "
                 }</td>
                 <td class="px-2 text-center py-2 border border-black">
-                ${subject?.category || " "}
+                ${subject?.religion || " "}
                 </td>
                  <td class="px-2 text-center py-2 border border-black">${
                    subject?.counts || " "
@@ -246,7 +249,7 @@ h5 + * { /* Targets the element after h5 */
     }
 
     // Define headers matching the print table
-    const headers = ["Sr No.", "Class", "Gender", "Category", "No.of Students"];
+    const headers = ["Sr No.", "Class", "Gender", "Religion", "No.of Students"];
 
     // Convert displayedSections data to array format for Excel
     const data = displayedSections.map((student, index) => [
@@ -254,7 +257,7 @@ h5 + * { /* Targets the element after h5 */
       student?.name || " ",
 
       student.gender === "F" ? "Female" : student.gender === "M" ? "Male" : " ",
-      student?.category || " ",
+      student?.religion || " ",
       student?.counts || " ",
     ]);
     // Create a worksheet
@@ -267,7 +270,7 @@ h5 + * { /* Targets the element after h5 */
     XLSX.utils.book_append_sheet(workbook, worksheet, "Admission Form Data");
 
     // Generate and download the Excel file
-    const fileName = `Genderwise_Categorywise_Student_Report_${
+    const fileName = `Genderwise_Religionwise_Student_Report_${
       selectedStudent?.label || "For ALL Students"
     }.xlsx`;
     XLSX.writeFile(workbook, fileName);
@@ -282,14 +285,14 @@ h5 + * { /* Targets the element after h5 */
     const regNo = student?.counts?.toString() || ""; // Convert counts to string for comparison
     const className = student?.name?.toLowerCase() || "";
     const gender = student?.gender?.toLowerCase() || "";
-    const category = student?.category?.toLowerCase() || "";
+    const Religion = student?.religion?.toLowerCase() || "";
 
     // Check if the search term matches any field
     return (
       regNo.includes(searchLower) ||
       className.includes(searchLower) ||
       gender.includes(searchLower) ||
-      category.includes(searchLower)
+      Religion.includes(searchLower)
     );
   });
 
@@ -301,7 +304,7 @@ h5 + * { /* Targets the element after h5 */
         <div className="card p-4 rounded-md ">
           <div className=" card-header mb-4 flex justify-between items-center ">
             <h5 className="text-gray-700 mt-1 text-md lg:text-lg">
-              Genderwise Categorywise Student Report
+              Genderwise Religionwise Student Report
             </h5>
             <RxCross1
               className=" relative right-2 text-xl text-red-600 hover:cursor-pointer hover:bg-red-100"
@@ -398,7 +401,7 @@ h5 + * { /* Targets the element after h5 */
                     <div className="p-2 px-3 bg-gray-100 border-none flex justify-between items-center">
                       <div className="w-full   flex flex-row justify-between mr-0 md:mr-4 ">
                         <h3 className="text-gray-700 mt-1 text-[1.2em] lg:text-xl text-nowrap">
-                          List of Genderwise Categorywise Students Report
+                          List of Genderwise Religionwise Student Report
                         </h3>
                         <div className="w-1/2 md:w-[18%] mr-1 ">
                           <input
@@ -455,7 +458,7 @@ h5 + * { /* Targets the element after h5 */
                                 "Sr No.",
                                 "Class",
                                 "Gender",
-                                "Category",
+                                "Religion",
                                 "No.of Students",
                               ].map((header, index) => (
                                 <th
@@ -489,7 +492,7 @@ h5 + * { /* Targets the element after h5 */
                                       : " "}{" "}
                                   </td>
                                   <td className="px-2 py-2 text-nowrap text-center border border-gray-300">
-                                    {student.category || " "}
+                                    {student.religion || " "}
                                   </td>
                                   <td className="px-2 py-2 text-nowrap text-center border border-gray-300">
                                     {student.counts || " "}
@@ -518,4 +521,4 @@ h5 + * { /* Targets the element after h5 */
   );
 };
 
-export default GenWiseCatRepo;
+export default GenWiseRelignRepo;
