@@ -999,7 +999,8 @@ function NavBar() {
               {/* {localStorage.getItem("instituteName")} {"("}
               {localStorage.getItem("academicYear")} */}
               {/* {")"} */}
-              St. Arnolds Central School{" ("}
+              {/* St. Arnolds Central School{" ("} */}
+              EvolvU Smart School{" ("}
               {sessionData.custom_claims?.academic_year}
               {")"}
             </h1>
