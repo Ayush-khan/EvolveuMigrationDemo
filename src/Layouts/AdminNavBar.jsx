@@ -903,6 +903,27 @@ const AdminNavBar = () => {
           >
             Student - Genderwise Categorywise Report
           </NavDropdown.Item>
+          <NavDropdown.Item
+            as={Link}
+            to="/newStudentsRepo"
+            className="text-sm font-bold hover:text-black"
+          >
+            New Students Report
+          </NavDropdown.Item>
+          <NavDropdown.Item
+            as={Link}
+            to="/leftStudentsRepo"
+            className="text-sm font-bold hover:text-black"
+          >
+            Left Students Report
+          </NavDropdown.Item>
+          {/* <NavDropdown.Item
+            as={Link}
+            to="/feePaymentRepo"
+            className="text-sm font-bold hover:text-black"
+          >
+            Fees Payment Report
+          </NavDropdown.Item> */}
         </NavDropdown>
 
         {/* Ticket Dropdown */}

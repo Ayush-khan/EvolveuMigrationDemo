@@ -198,6 +198,9 @@ import GendrWiseStudRepo from "../componants/Reports/GendrWiseStudRepo.jsx";
 import StudentRemarkReport from "../componants/Reports/StudentRemarkReport.jsx";
 import GenWiseCatRepo from "../componants/Reports/GenWiseCatRepo.jsx";
 import GenWiseRelignRepo from "../componants/Reports/GenWiseRelignRepo.jsx";
+import NewStudentsRepo from "../componants/Reports/NewStudentsRepo.jsx";
+import LeftStudentsRepo from "../componants/Reports/LeftStudentsRepo.jsx";
+import FeesPaymentReport from "../componants/Reports/FeesPaymentReport.jsx";
 // import Menus from "../c";
 function Index() {
   return (
@@ -659,6 +662,21 @@ function Index() {
         <Route
           path="/genWiseCatRepo"
           element={<PrivateRoute element={<GenWiseCatRepo />} />}
+        />
+        {/* Student Gender Wise  Report Module */}
+        <Route
+          path="/newStudentsRepo"
+          element={<PrivateRoute element={<NewStudentsRepo />} />}
+        />
+        {/* Student Gender Wise  Report Module */}
+        <Route
+          path="/leftStudentsRepo"
+          element={<PrivateRoute element={<LeftStudentsRepo />} />}
+        />
+        {/* Fee payment report module */}
+        <Route
+          path="/feePaymentRepo"
+          element={<PrivateRoute element={<FeesPaymentReport />} />}
         />
         <Route path="/notification" element={<NotificationPage />} />
         <Route path="/changepassword" element={<ChangePassword />} />
