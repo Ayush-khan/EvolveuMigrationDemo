@@ -917,13 +917,27 @@ const AdminNavBar = () => {
           >
             Left Students Report
           </NavDropdown.Item>
-          {/* <NavDropdown.Item
+          <NavDropdown.Item
+            as={Link}
+            to="/hSCStudSubjectsRepo"
+            className="text-sm font-bold hover:text-black"
+          >
+            HSC Students Subjects Report
+          </NavDropdown.Item>
+          <NavDropdown.Item
+            as={Link}
+            to="/staffReport"
+            className="text-sm font-bold hover:text-black"
+          >
+            Staff Report
+          </NavDropdown.Item>
+          <NavDropdown.Item
             as={Link}
             to="/feePaymentRepo"
             className="text-sm font-bold hover:text-black"
           >
             Fees Payment Report
-          </NavDropdown.Item> */}
+          </NavDropdown.Item>
         </NavDropdown>
 
         {/* Ticket Dropdown */}

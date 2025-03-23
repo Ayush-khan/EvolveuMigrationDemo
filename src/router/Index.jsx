@@ -201,6 +201,8 @@ import GenWiseRelignRepo from "../componants/Reports/GenWiseRelignRepo.jsx";
 import NewStudentsRepo from "../componants/Reports/NewStudentsRepo.jsx";
 import LeftStudentsRepo from "../componants/Reports/LeftStudentsRepo.jsx";
 import FeesPaymentReport from "../componants/Reports/FeesPaymentReport.jsx";
+import StaffReport from "../componants/Reports/StaffReport.jsx";
+import HSCStudentsSubjectsReport from "../componants/Reports/HSCStudentsSubjectsReport.jsx";
 // import Menus from "../c";
 function Index() {
   return (
@@ -673,6 +675,17 @@ function Index() {
           path="/leftStudentsRepo"
           element={<PrivateRoute element={<LeftStudentsRepo />} />}
         />
+        {/* Staff Report Module */}
+        <Route
+          path="/staffReport"
+          element={<PrivateRoute element={<StaffReport />} />}
+        />
+        {/* Student Gender Wise  Report Module */}
+        <Route
+          path="/hSCStudSubjectsRepo"
+          element={<PrivateRoute element={<HSCStudentsSubjectsReport />} />}
+        />
+
         {/* Fee payment report module */}
         <Route
           path="/feePaymentRepo"

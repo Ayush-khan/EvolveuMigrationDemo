@@ -1,5 +1,6 @@
 import React, { useState, useEffect } from "react";
 import { DateRangePicker } from "react-date-range";
+import { DateRange } from "react-date-range";
 import {
   format,
   startOfWeek,
@@ -25,35 +26,41 @@ const DateRangePickerComponent = ({ onDateChange }) => {
   const [selectedPreset, setSelectedPreset] = useState("Today");
 
   const presetOptions = [
-    { label: "Today", range: [today, today] },
+    {
+      label: "Today",
+      // range: [today, today]
+    },
     {
       label: "Yesterday",
-      range: [new Date(today.setDate(today.getDate() - 1)), new Date(today)],
+      //   range: [new Date(today.setDate(today.getDate() - 1)), new Date(today)],
     },
     { label: "This Week", range: [startOfWeek(today), endOfWeek(today)] },
     {
       label: "This Month",
-      range: [new Date(today.getFullYear(), today.getMonth(), 1), today],
+      //   range: [new Date(today.getFullYear(), today.getMonth(), 1), today],
     },
     {
       label: "Last Month",
-      range: [
-        new Date(today.getFullYear(), today.getMonth() - 1, 1),
-        new Date(today.getFullYear(), today.getMonth(), 0),
-      ],
+      //   range: [
+      //     new Date(today.getFullYear(), today.getMonth() - 1, 1),
+      //     new Date(today.getFullYear(), today.getMonth(), 0),
+      //   ],
     },
     {
       label: "This Quarter",
-      range: [startOfQuarter(today), endOfQuarter(today)],
+      //   range: [startOfQuarter(today), endOfQuarter(today)],
     },
     {
       label: "This Half Year",
-      range: [
-        new Date(today.getFullYear(), today.getMonth() < 6 ? 0 : 6, 1),
-        new Date(today.getFullYear(), today.getMonth() < 6 ? 5 : 11, 30),
-      ],
+      //   range: [
+      //     new Date(today.getFullYear(), today.getMonth() < 6 ? 0 : 6, 1),
+      //     new Date(today.getFullYear(), today.getMonth() < 6 ? 5 : 11, 30),
+      //   ],
     },
-    { label: "This Year", range: [startOfYear(today), endOfYear(today)] },
+    {
+      label: "This Year",
+      // range: [startOfYear(today), endOfYear(today)]
+    },
     { label: "Custom Range", range: null },
   ];
 
@@ -89,7 +96,7 @@ const DateRangePickerComponent = ({ onDateChange }) => {
   const formatDate = (date) => format(date, "MMMM d, yyyy");
 
   return (
-    <div className="relative w-96">
+    <div className="relative ">
       <div
         className="border border-gray-300 rounded-lg px-4 py-2 cursor-pointer shadow-md bg-white flex items-center gap-2 hover:ring-2 hover:ring-blue-500 transition-all duration-200"
         onClick={() => setShowPicker(!showPicker)}
@@ -103,15 +110,15 @@ const DateRangePickerComponent = ({ onDateChange }) => {
       </div>
 
       {showPicker && (
-        <div className="absolute top-12 left-0 bg-white border border-gray-300 rounded-lg shadow-lg z-10 w-full">
-          <div className="flex flex-wrap p-3 gap-2">
+        <div className="absolute top-12 text-black left-0 bg-white border border-gray-300 rounded-lg shadow-lg z-1 w-full md:w-[70%]">
+          <div className="flex flex-col p-3 gap-2">
             {presetOptions.map((preset, index) => (
               <button
                 key={index}
-                className={`px-3 py-1 text-sm rounded-md transition-all duration-300 ${
+                className={`px-3 py-1 text-md rounded-md transition-all duration-300 ${
                   selectedPreset === preset.label
                     ? "bg-blue-500 text-white"
-                    : "bg-gray-100 hover:bg-blue-100 hover:text-blue-500"
+                    : "bg-gray-100 hover:bg-blue-100 hover:text-blue-500 hover:font-medium"
                 }`}
                 onClick={() => handlePresetSelect(preset)}
               >
@@ -119,8 +126,38 @@ const DateRangePickerComponent = ({ onDateChange }) => {
               </button>
             ))}
           </div>
-
           {selectedPreset === "Custom Range" && (
+            <div
+              className="
+            absolute top-0 left-full 
+            bg-white border border-gray-300 rounded-lg shadow-md 
+            w-0  
+            [&_.rdrDay]:!bg-transparent 
+            [&_.rdrDay]:!shadow-none 
+            [&_.rdrDayHovered]:!bg-transparent 
+            [&_.rdrDayHovered]:!shadow-none
+          "
+            >
+              <DateRange
+                onChange={(item) => setTempDateRange([item.selection])}
+                // ranges={tempDateRange}
+                moveRangeOnFirstSelection={false}
+                editableDateInputs={true}
+                showSelectionPreview={true}
+              />
+              {/* With custom inputs of today this weak last weak this month last month */}
+              {/* <DateRangePicker
+                onChange={(item) => setTempDateRange([item.selection])}
+                // ranges={tempDateRange}
+                moveRangeOnFirstSelection={false}
+                editableDateInputs={true}
+                showSelectionPreview={true}
+                // staticRanges={[]} // Removes predefined ranges like 'Today', 'Yesterday', etc.
+                // inputRanges={[]} // Removes custom input ranges
+              /> */}
+            </div>
+          )}
+          {/* {selectedPreset === "Custom Range" && (
             <div className="[&_.rdrDay]:!bg-transparent [&_.rdrDay]:!shadow-none [&_.rdrDayHovered]:!bg-transparent [&_.rdrDayHovered]:!shadow-none">
               <DateRangePicker
                 onChange={(item) => setTempDateRange([item.selection])}
@@ -129,17 +166,17 @@ const DateRangePickerComponent = ({ onDateChange }) => {
                 editableDateInputs={true}
               />
             </div>
-          )}
+          )} */}
 
-          <div className="flex justify-end p-3 border-t border-gray-200 gap-2">
+          <div className="flex justify-end p-2 border-t border-gray-200 gap-2">
             <button
-              className="bg-green-500 text-white px-4 py-2 rounded-md hover:bg-green-600"
+              className="bg-green-400 text-white px-4 py-2 rounded-md hover:bg-green-500 font-medium"
               onClick={handleApply}
             >
               Apply
             </button>
             <button
-              className="bg-red-500 text-white px-4 py-2 rounded-md hover:bg-red-600"
+              className="bg-red-400 text-white px-4 py-2 rounded-md hover:bg-red-500 font-medium "
               onClick={() => setShowPicker(false)}
             >
               Cancel

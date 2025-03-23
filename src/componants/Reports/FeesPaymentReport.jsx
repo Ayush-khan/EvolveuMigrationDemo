@@ -57,10 +57,10 @@ const FeesPaymentReport = () => {
       setTimetable([]);
       const token = localStorage.getItem("authToken");
       const params = {};
-      if (selectedStudentId) params.staff_id = selectedStudentId;
-
+      if (searchFrom) params.searchFrom = searchFrom;
+      if (searchTo) params.searchTo = searchTo;
       const response = await axios.get(
-        `${API_URL}/api/get_balanceleavereport`,
+        `${API_URL}/api/getfeepaymentrecordreport`,
         {
           headers: { Authorization: `Bearer ${token}` },
           params,
@@ -68,15 +68,17 @@ const FeesPaymentReport = () => {
       );
 
       if (!response?.data?.data || response?.data?.data?.length === 0) {
-        toast.error("Balance Leave Report data not found.");
+        toast.error("Fee Payment Record Report data not found.");
         setTimetable([]);
       } else {
         setTimetable(response?.data?.data);
         setPageCount(Math.ceil(response?.data?.data?.length / pageSize)); // Set page count based on response size
       }
     } catch (error) {
-      console.error("Error fetching Balance Leave Report:", error);
-      toast.error("Error fetching Balance Leave Report. Please try again.");
+      console.error("Error fetching Fee Payment Record Report:", error);
+      toast.error(
+        "Error fetching Fee Payment Record Report. Please try again."
+      );
     } finally {
       setIsSubmitting(false); // Re-enable the button after the operation
       setLoadingForSearch(false);
@@ -89,14 +91,25 @@ const FeesPaymentReport = () => {
     }
 
     // Define headers matching the print table
-    const headers = ["Sr No.", "Staff Name", "Leave Type", "Balance Leave"];
+    const headers = [
+      "Sr No.",
+      "Receipt No.",
+      "Student Name",
+      "Payment date",
+      "Amount",
+      "Payment mode",
+    ];
 
     // Convert displayedSections data to array format for Excel
     const data = displayedSections.map((student, index) => [
       index + 1,
-      student?.staffname || " ",
-      student?.name || " ",
-      student?.balance_leave || " ",
+      student?.receipt_no || " ",
+      `${student?.first_name || ""} ${student?.mid_name || ""} ${
+        student?.last_name || ""
+      }`,
+      student?.payment_date || " ",
+      student?.payment_amount || " ",
+      student?.payment_mode || " ",
     ]);
 
     // Create a worksheet
@@ -111,22 +124,14 @@ const FeesPaymentReport = () => {
     XLSX.utils.book_append_sheet(workbook, worksheet, "Admission Form Data");
 
     // Generate and download the Excel file
-    const fileName = `Balance Leave Report ${
-      selectedStudent?.label
-        ? `List of ${selectedStudent.label}`
-        : ": Complete List of All Staff"
-    }.xlsx`;
+    const fileName = `Fee Payment Record Report (From ${searchFrom} to ${searchTo}).xlsx`;
     XLSX.writeFile(workbook, fileName);
   };
 
   console.log("row", timetable);
 
   const handlePrint = () => {
-    const printTitle = `Balance Leave Report  ${
-      selectedStudent?.label
-        ? `List of ${selectedStudent.label}`
-        : ": Complete List of All Staff "
-    }`;
+    const printTitle = `Fee Payment Record Report (From ${searchFrom} to ${searchTo})`;
     const printContent = `
   <div id="tableMain" class="flex items-center justify-center min-h-screen bg-white">
          <h5 id="tableHeading5"  class="text-lg font-semibold border-1 border-black">${printTitle}</h5>
@@ -135,10 +140,12 @@ const FeesPaymentReport = () => {
         <thead>
           <tr class="bg-gray-100">
             <th class="px-2 text-center py-2 border border-black text-sm font-semibold">Sr.No</th>
-            <th class="px-2 text-center py-2 border border-black text-sm font-semibold">Staff Name</th>
-            <th class="px-2 text-center py-2 border border-black text-sm font-semibold">Leave Type</th>
-            <th class="px-2 text-center py-2 border border-black text-sm font-semibold">Balance Leave</th>
-           
+            <th class="px-2 text-center py-2 border border-black text-sm font-semibold">Receipt No.</th>
+            <th class="px-2 text-center py-2 border border-black text-sm font-semibold">Student Name</th>
+            <th class="px-2 text-center py-2 border border-black text-sm font-semibold">Payment date</th>
+                       <th class="px-2 text-center py-2 border border-black text-sm font-semibold">Amount</th>
+                                   <th class="px-2 text-center py-2 border border-black text-sm font-semibold">Payment mode</th>
+
           </tr>
         </thead>
         <tbody>
@@ -150,14 +157,24 @@ const FeesPaymentReport = () => {
                   index + 1
                 }</td>
                 <td class="px-2 text-center py-2 border border-black">${
-                  subject?.staffname || " "
+                  subject?.receipt_no || " "
                 }</td>
+           <td className="px-2 text-center py-2 border border-black">
+             ${subject?.first_name && `${subject.first_name} `}
+             ${subject?.mid_name && `${subject.mid_name} `}
+             ${subject?.last_name && `${subject.last_name} `}
+             ${subject?.last_name && subject.last_name}
+           </td>
+
                 <td class="px-2 text-center py-2 border border-black">${
-                  subject?.name || " "
+                  subject?.payment_date || " "
                 }</td>
-                <td class="px-2 text-center py-2 border border-black">${
-                  subject?.balance_leave || " "
-                }</td>
+                 <td class="px-2 text-center py-2 border border-black">${
+                   subject?.payment_amount || " "
+                 }</td>
+                  <td class="px-2 text-center py-2 border border-black">${
+                    subject?.payment_mode || " "
+                  }</td>
               </tr>`
             )
             .join("")}
@@ -247,15 +264,23 @@ h5 + * { /* Targets the element after h5 */
     const searchLower = searchTerm.toLowerCase();
 
     // Extract relevant fields and convert them to lowercase for case-insensitive search
-    const formId = section?.staffname?.toLowerCase() || "";
-    const studentDOB = section?.name?.toLowerCase() || "";
-
-    // const orderId = section?.balance_leave || "";
+    const receiptNo = section?.receipt_no?.toLowerCase() || "";
+    const studentName = `${section?.first_name || ""} ${
+      section?.mid_name || ""
+    } ${section?.last_name || ""}`
+      .toLowerCase()
+      .trim();
+    const paymentDate = section?.payment_date?.toLowerCase() || "";
+    const amount = section?.amount?.toLowerCase() || "";
+    const paymentMode = section?.payment_mode?.toLowerCase() || "";
 
     // Check if the search term is present in any of the specified fields
     return (
-      formId.includes(searchLower) || studentDOB.includes(searchLower)
-      //   || orderId.includes(searchLower)
+      receiptNo.includes(searchLower) ||
+      studentName.includes(searchLower) ||
+      paymentDate.includes(searchLower) ||
+      amount.includes(searchLower) ||
+      paymentMode.includes(searchLower)
     );
   });
 
@@ -286,10 +311,10 @@ h5 + * { /* Targets the element after h5 */
           <>
             <div className=" w-full md:w-[85%]   flex justify-center flex-col md:flex-row gap-x-1     ml-0    p-2">
               <div className="w-full md:w-[99%] flex md:flex-row justify-between items-center mt-0 md:mt-4">
-                <div className="w-full md:w-[75%] gap-x-0 md:gap-x-12  flex flex-col gap-y-2 md:gap-y-0 md:flex-row">
-                  <div className="w-full md:w-[80%] gap-x-2   justify-around  my-1 md:my-4 flex md:flex-row ">
+                <div className="w-full md:w-[75%]  gap-x-0 md:gap-x-12  flex flex-col gap-y-2 md:gap-y-0 md:flex-row">
+                  <div className="w-full  md:w-[70%] gap-x-2   justify-around  my-1 md:my-4 flex md:flex-row ">
                     <label
-                      className="md:w-[35%] text-md pl-0 md:pl-5 mt-1.5"
+                      className="w-full md:w-[15%] text-md  mt-1.5"
                       htmlFor="studentSelect"
                     >
                       <span className=" text-nowrap text-gray-500 font-medium">
@@ -360,7 +385,7 @@ h5 + * { /* Targets the element after h5 */
                     <div className="p-2 px-3 bg-gray-100 border-none flex justify-between items-center">
                       <div className="w-full   flex flex-row justify-between mr-0 md:mr-4 ">
                         <h3 className="text-gray-700 mt-1 text-[1.2em] lg:text-xl text-nowrap">
-                          Balance Leave Report List
+                          Fees payment report List
                         </h3>
                         <div className="w-1/2 md:w-[18%] mr-1 ">
                           <input
@@ -415,9 +440,11 @@ h5 + * { /* Targets the element after h5 */
                             <tr className="bg-gray-100">
                               {[
                                 "Sr No.",
-                                "Staff Name",
-                                "Leave Type",
-                                "Balance Leave",
+                                "Receipt No.",
+                                "Student Name",
+                                "Payment date",
+                                "Amount",
+                                "Payment mode",
                               ].map((header, index) => (
                                 <th
                                   key={index}
@@ -440,13 +467,31 @@ h5 + * { /* Targets the element after h5 */
                                     {index + 1}
                                   </td>
                                   <td className="px-2 py-2 text-center border border-gray-300">
-                                    {student?.staffname || " "}
+                                    {student?.receipt_no || " "}
                                   </td>
                                   <td className="px-2 py-2 text-center border border-gray-300">
-                                    {student?.name || " "}
+                                    {student?.first_name
+                                      ? `${student.first_name} `
+                                      : ""}
+                                    {student?.mid_name
+                                      ? `${student.mid_name} `
+                                      : ""}
+                                    {student?.last_name
+                                      ? `${student.last_name} `
+                                      : ""}
+                                    {student?.last_name
+                                      ? `${student.last_name}`
+                                      : ""}
+                                  </td>
+
+                                  <td className="px-2 py-2 text-center border border-gray-300">
+                                    {student?.date || " "}
                                   </td>
                                   <td className="px-2 py-2 text-center border border-gray-300">
-                                    {student?.balance_leave || " "}
+                                    {student?.payment_amount || " "}
+                                  </td>
+                                  <td className="px-2 py-2 text-center border border-gray-300">
+                                    {student?.payment_mode || " "}
                                   </td>
                                 </tr>
                               ))
