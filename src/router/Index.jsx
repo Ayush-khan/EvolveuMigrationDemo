@@ -203,6 +203,8 @@ import LeftStudentsRepo from "../componants/Reports/LeftStudentsRepo.jsx";
 import FeesPaymentReport from "../componants/Reports/FeesPaymentReport.jsx";
 import StaffReport from "../componants/Reports/StaffReport.jsx";
 import HSCStudentsSubjectsReport from "../componants/Reports/HSCStudentsSubjectsReport.jsx";
+import WorldlineFeePaymentReport from "../componants/Reports/WorldlineFeePaymentReport.jsx";
+import RazorpayFeePaymentReport from "../componants/Reports/RazorpayFeePaymentReport.jsx";
 // import Menus from "../c";
 function Index() {
   return (
@@ -690,6 +692,16 @@ function Index() {
         <Route
           path="/feePaymentRepo"
           element={<PrivateRoute element={<FeesPaymentReport />} />}
+        />
+        {/* Worldline Fee Payment Report  module */}
+        <Route
+          path="/worldlinfeePayRepo"
+          element={<PrivateRoute element={<WorldlineFeePaymentReport />} />}
+        />
+        {/* Razorpay Fee Payment Reportmodule */}
+        <Route
+          path="/rozorpayfeePayRepo"
+          element={<PrivateRoute element={<RazorpayFeePaymentReport />} />}
         />
         <Route path="/notification" element={<NotificationPage />} />
         <Route path="/changepassword" element={<ChangePassword />} />

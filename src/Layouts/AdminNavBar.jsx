@@ -756,7 +756,7 @@ const AdminNavBar = () => {
             Update Category and Religion
           </NavDropdown.Item>
           <NavDropdown.Item as={Link} to="/updateStudentID">
-            Update Student ID Other Details
+            Update Student ID and Other Details
           </NavDropdown.Item>
           <NavDropdown.Item as={Link} to="/timeTable">
             Time Table
@@ -845,14 +845,14 @@ const AdminNavBar = () => {
           >
             Consolidated Leave
           </NavDropdown.Item>
-          {/* <NavDropdown.Item
+          <NavDropdown.Item
             as={Link}
             to="/studentReport"
             // to="#"
             className="text-sm font-bold hover:text-black"
           >
             Student Report
-          </NavDropdown.Item> */}
+          </NavDropdown.Item>
           <NavDropdown.Item
             as={Link}
             to="/studentContactDetailsReport"
@@ -937,6 +937,20 @@ const AdminNavBar = () => {
             className="text-sm font-bold hover:text-black"
           >
             Fees Payment Report
+          </NavDropdown.Item>
+          <NavDropdown.Item
+            as={Link}
+            to="/worldlinfeePayRepo"
+            className="text-sm font-bold hover:text-black"
+          >
+            Worldline Fee Payment Report{" "}
+          </NavDropdown.Item>
+          <NavDropdown.Item
+            as={Link}
+            to="/rozorpayfeePayRepo"
+            className="text-sm font-bold hover:text-black"
+          >
+            Razorpay Fee Payment Report{" "}
           </NavDropdown.Item>
         </NavDropdown>
 
