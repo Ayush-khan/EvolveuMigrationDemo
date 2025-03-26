@@ -42,14 +42,14 @@ const StudentSearchUsingGRN = () => {
             style={{ backgroundColor: "#C03078" }}
           ></div>
 
-          <div className="bg-white w-full  mx-2 rounded-md ">
+          <div className="bg-white w-full md:w-[95%] mx-2 rounded-md ">
             <div className="w-full mx-auto">
               <div className="">
                 {" "}
                 {/* mb-4 */}
                 <div className="w-full flex gap-4">
                   {/* Profile Image Card */}
-                  <div className="card p-3 w-full md:w-[20%] shadow-md flex flex-col items-center h-auto min-h-full">
+                  <div className="card p-3 w-[25%] shadow-md flex flex-col items-center h-auto min-h-full">
                     {/* Profile Image */}
                     <img
                       src=""
@@ -63,119 +63,238 @@ const StudentSearchUsingGRN = () => {
                   </div>
 
                   {/* Student  and Prent Information Card */}
-                  <div className="card p-3 w-full md:w-[80%] shadow-md flex flex-col h-auto min-h-full">
+                  <div className="card p-3 w-[75%] shadow-md flex flex-col h-auto min-h-full">
                     {/* Student Information */}
                     <div className="flex flex-col gap-y-3 p-2 flex-grow">
+                      {/* Title */}
                       <h3 className="text-gray-700 mt-1 mb-0 text-[1em] lg:text-xl text-nowrap">
                         Student Information
                       </h3>
                       <div
-                        className="relative w-full h-0.5 mx-auto bg-red-700"
+                        className="relative w-full  h-0.5 mx-auto bg-red-700"
                         style={{ backgroundColor: "#C03078" }}
                       ></div>
+                      {/* Student Fields */}
+                      <div className="flex flex-col gap-y-4 flex-grow mt-3">
+                        {/* First Row */}
+                        <div className="flex gap-x-4">
+                          {/* Student Full Name */}
+                          <strong>Student Full Name:</strong>
+                          <p className="">
+                            {`${student?.first_name || ""} ${
+                              student?.mid_name || ""
+                            } ${student?.last_name || ""}`.trim() || "N/A"}
+                          </p>
+                        </div>
 
-                      <div className=" text-sm grid grid-cols-3 gap-x-4 mt-3">
+                        <div className="grid grid-cols-2 gap-8 ">
+                          {/* Student Details */}
+                          <div>
+                            {[
+                              {
+                                label: "Student Name",
+                                value: student.student_name || "N/A",
+                              },
+                              {
+                                label: "Date of Birth",
+                                value: student.dob || "N/A",
+                              },
+                              {
+                                label: "Admission Date",
+                                value: student.admission_date || "N/A",
+                              },
+                              {
+                                label: "GR No.",
+                                value: student.reg_no || "N/A",
+                              },
+                              {
+                                label: "Student ID",
+                                value: student.student_id || "N/A",
+                              },
+                              {
+                                label: "Udise Pen No.",
+                                value: student.udise_pen_no || "N/A",
+                              },
+                              {
+                                label: "Aadhaar no.",
+                                value: student.stu_aadhaar_no || "N/A",
+                              },
+                              {
+                                label: "Class",
+                                value: student.get_class?.name || "N/A",
+                              },
+                              {
+                                label: "Division",
+                                value: student.get_division?.name || "N/A",
+                              },
+                              {
+                                label: "Roll No.",
+                                value: student.roll_no || "N/A",
+                              },
+                              {
+                                label: "House",
+                                value: student.house || "N/A",
+                              },
+                              {
+                                label: "Admitted In Class",
+                                value: student.admission_class || "N/A",
+                              },
+                              {
+                                label: "Gender",
+                                value: student.gender || "N/A",
+                              },
+                              {
+                                label: "Blood Group",
+                                value: student.blood_group || "N/A",
+                              },
+                              {
+                                label: "Permanant Address",
+                                value: student.permant_add || "N/A",
+                              },
+                              {
+                                label: "City",
+                                value: student.city || "N/A",
+                              },
+                            ].map((item, index) => (
+                              <div key={index} className="flex">
+                                <p className="w-40 font-bold">{item.label}:</p>
+                                <p className="flex-1">{item.value}</p>
+                              </div>
+                            ))}
+                          </div>
+
+                          <div>
+                            {[
+                              {
+                                label: "State",
+                                value: student.state || "N/A",
+                              },
+                              {
+                                label: "Pincode",
+                                value: student.pincode || "N/A",
+                              },
+                              {
+                                label: "Religion",
+                                value: student.religion || "N/A",
+                              },
+                              {
+                                label: "Caste",
+                                value: student.caste || "N/A",
+                              },
+                              {
+                                label: "Category",
+                                value: student.category || "N/A",
+                              },
+                              {
+                                label: "Nationality",
+                                value: student.nationality || "N/A",
+                              },
+                              {
+                                label: "Birth Place",
+                                value: student.birth_place || "N/A",
+                              },
+                              {
+                                label: "Mother Tongue",
+                                value: student.mother_tongue || "N/A",
+                              },
+                              {
+                                label: "Emergency Name",
+                                value: student.emergency_name || "N/A",
+                              },
+                              {
+                                label: "Emergency Contact",
+                                value: student.emergency_contact || "N/A",
+                              },
+                              {
+                                label: "Emergency Address",
+                                value: student.emergency_add || "N/A",
+                              },
+                              {
+                                label: "Transport Mode",
+                                value: student.transport_mode || "N/A",
+                              },
+                              {
+                                label: "Allergies",
+                                value: student.allergies || "N/A",
+                              },
+                              {
+                                label: "Weight",
+                                value: student.weight || "N/A",
+                              },
+                              {
+                                label: "Height",
+                                value: student.height || "N/A",
+                              },
+                              {
+                                label: "Has spectacles",
+                                value: student.has_spec || "N/A",
+                              },
+                            ].map((item, index) => (
+                              <div key={index} className="flex">
+                                <p className="w-40 font-bold">{item.label}:</p>
+                                <p className="flex-1">{item.value}</p>
+                              </div>
+                            ))}
+                          </div>
+                        </div>
+                      </div>
+                    </div>
+
+                    {/* Parent Information */}
+                    <div className="flex flex-col gap-y-3 p-2 flex-grow">
+                      {/* Title */}
+                      <h3 className="text-gray-700 mt-1 mb-0 text-[1em] lg:text-xl text-nowrap">
+                        Parent Information
+                      </h3>
+                      <div
+                        className="relative w-full  h-0.5 mx-auto bg-red-700"
+                        style={{ backgroundColor: "#C03078" }}
+                      ></div>
+                    </div>
+
+                    <div className="grid grid-cols-2 gap-8 mt-3 p-2">
+                      {/* Father Details */}
+                      <div>
                         {[
                           {
-                            label: "Student Name",
-                            value: student.student_name || " ",
+                            label: "Father Name",
+                            value: student.parents?.father_name || "N/A",
                           },
                           {
-                            label: "Date of Birth",
-                            value: student.dob || " ",
+                            label: "Occupation",
+                            value: student.parents?.father_occupation || "N/A",
                           },
                           {
-                            label: "Admission Date",
-                            value: student.admission_date || " ",
-                          },
-                          { label: "GR No.", value: student.reg_no || " " },
-                          {
-                            label: "Student ID",
-                            value: student.student_id || " ",
+                            label: "Office Address",
+                            value: student.parents?.f_office_add || "N/A",
                           },
                           {
-                            label: "Udise Pen No.",
-                            value: student.udise_pen_no || " ",
+                            label: "Telephone",
+                            value: student.parents?.f_office_tel || "N/A",
+                          },
+                          {
+                            label: "Mobile Number",
+                            value: student.parents?.f_mobile || "N/A",
+                          },
+                          {
+                            label: "Email Id",
+                            value: student.parents?.f_email || "N/A",
                           },
                           {
                             label: "Aadhaar no.",
-                            value: student.stu_aadhaar_no || " ",
+                            value: student.parents?.f_aadhaar_no || "N/A",
                           },
                           {
-                            label: "Class",
-                            value: student.get_class?.name || " ",
+                            label: "Date of Birth",
+                            value: student.parents?.f_dob || "N/A",
                           },
-                          {
-                            label: "Division",
-                            value: student.get_division?.name || " ",
-                          },
-                          {
-                            label: "Roll No.",
-                            value: student.roll_no || " ",
-                          },
-                          { label: "House", value: student.house || " " },
-                          {
-                            label: "Admitted In Class",
-                            value: student.admission_class || " ",
-                          },
-                          { label: "Gender", value: student.gender || " " },
                           {
                             label: "Blood Group",
-                            value: student.blood_group || " ",
+                            value: student.parents?.f_blood_group || "N/A",
                           },
                           {
-                            label: "Permanant Address",
-                            value: student.permant_add || " ",
-                          },
-                          { label: "City", value: student.city || " " },
-                          { label: "State", value: student.state || " " },
-                          { label: "Pincode", value: student.pincode || " " },
-                          {
-                            label: "Religion",
-                            value: student.religion || " ",
-                          },
-                          { label: "Caste", value: student.caste || " " },
-                          {
-                            label: "Category",
-                            value: student.category || " ",
-                          },
-                          {
-                            label: "Nationality",
-                            value: student.nationality || " ",
-                          },
-                          {
-                            label: "Birth Place",
-                            value: student.birth_place || " ",
-                          },
-                          {
-                            label: "Mother Tongue",
-                            value: student.mother_tongue || " ",
-                          },
-                          {
-                            label: "Emergency Name",
-                            value: student.emergency_name || " ",
-                          },
-                          {
-                            label: "Emergency Contact",
-                            value: student.emergency_contact || " ",
-                          },
-                          {
-                            label: "Emergency Address",
-                            value: student.emergency_add || " ",
-                          },
-                          {
-                            label: "Transport Mode",
-                            value: student.transport_mode || " ",
-                          },
-                          {
-                            label: "Allergies",
-                            value: student.allergies || " ",
-                          },
-                          { label: "Weight", value: student.weight || " " },
-                          { label: "Height", value: student.height || " " },
-                          {
-                            label: "Has spectacles",
-                            value: student.has_spec || " ",
+                            label: "User Id",
+                            value: student.parents?.user?.user_id || "N/A",
                           },
                         ].map((item, index) => (
                           <div key={index} className="flex">
@@ -184,95 +303,45 @@ const StudentSearchUsingGRN = () => {
                           </div>
                         ))}
                       </div>
-                    </div>
 
-                    {/* Parent Information */}
-                    <div className="flex flex-col gap-y-3 p-2 flex-grow">
-                      <h3 className="text-gray-700 mt-1 mb-0 text-[1em] lg:text-xl text-nowrap">
-                        Parent Information
-                      </h3>
-                      <div
-                        className="relative w-full h-0.5 mx-auto bg-red-700"
-                        style={{ backgroundColor: "#C03078" }}
-                      ></div>
-
-                      <div className="text-sm grid grid-cols-3 gap-x-4 mt-3">
+                      {/* Mother Details */}
+                      <div>
                         {[
                           {
-                            label: "Father Name",
-                            value: student.parents?.father_name || " ",
-                          },
-                          {
-                            label: "Occupation",
-                            value: student.parents?.father_occupation || " ",
-                          },
-                          {
-                            label: "Office Address",
-                            value: student.parents?.f_office_add || " ",
-                          },
-                          {
-                            label: "Telephone",
-                            value: student.parents?.f_office_tel || " ",
-                          },
-                          {
-                            label: "Mobile Number",
-                            value: student.parents?.f_mobile || " ",
-                          },
-                          {
-                            label: "Email Id",
-                            value: student.parents?.f_email || " ",
-                          },
-                          {
-                            label: "Aadhaar no.",
-                            value: student.parents?.f_aadhaar_no || " ",
-                          },
-                          {
-                            label: "Date of Birth",
-                            value: student.parents?.f_dob || " ",
-                          },
-                          {
-                            label: "Blood Group",
-                            value: student.parents?.f_blood_group || " ",
-                          },
-                          {
-                            label: "User Id",
-                            value: student.parents?.user?.user_id || " ",
-                          },
-                          {
                             label: "Mother Name",
-                            value: student.parents?.mother_name || " ",
+                            value: student.parents?.mother_name || "N/A",
                           },
                           {
                             label: "Occupation",
-                            value: student.parents?.mother_occupation || " ",
+                            value: student.parents?.mother_occupation || "N/A",
                           },
                           {
                             label: "Office Address",
-                            value: student.parents?.m_office_add || " ",
+                            value: student.parents?.m_office_add || "N/A",
                           },
                           {
                             label: "Telephone",
-                            value: student.parents?.m_office_tel || " ",
+                            value: student.parents?.m_office_tel || "N/A",
                           },
                           {
                             label: "Mobile Number",
-                            value: student.parents?.m_mobile || " ",
+                            value: student.parents?.m_mobile || "N/A",
                           },
                           {
                             label: "Email Id",
-                            value: student.parents?.m_email || " ",
+                            value: student.parents?.m_email || "N/A",
                           },
                           {
                             label: "Aadhaar no.",
-                            value: student.parents?.m_aadhaar_no || " ",
+                            value: student.parents?.m_aadhaar_no || "N/A",
                           },
                           {
                             label: "Date of Birth",
-                            value: student.parents?.m_dob || " ",
+                            value: student.parents?.m_dob || "N/A",
                           },
                           {
                             label: "Blood Group",
-                            value: student.parents?.m_blood_group || " ",
+                            value: student.parents?.m_blood_group || "N/A",
                           },
                         ].map((item, index) => (
                           <div key={index} className="flex">
