@@ -10,7 +10,7 @@ import { FiPrinter } from "react-icons/fi";
 import { FaFileExcel } from "react-icons/fa";
 import * as XLSX from "xlsx";
 
-const StudentReport = () => {
+const PendingStudentIdCardReport = () => {
   const API_URL = import.meta.env.VITE_API_URL;
   const [selectedStudent, setSelectedStudent] = useState(null);
   const [currentPage, setCurrentPage] = useState(0);
@@ -58,6 +58,7 @@ const StudentReport = () => {
     setSelectedStudent(selectedOption);
     setSelectedStudentId(selectedOption?.value);
   };
+
   const studentOptions = useMemo(
     () =>
       studentNameWithClassId.map((cls) => ({
@@ -71,7 +72,11 @@ const StudentReport = () => {
 
   const handleSearch = async () => {
     setLoadingForSearch(false);
-
+    if (!selectedStudentId) {
+      setStudentError("Please select Class.");
+      setLoadingForSearch(false);
+      return;
+    }
     setSearchTerm("");
     try {
       setLoadingForSearch(true); // Start loading
@@ -80,26 +85,186 @@ const StudentReport = () => {
       const params = {};
       if (selectedStudentId) params.section_id = selectedStudentId;
 
-      const response = await axios.get(`${API_URL}/api/get_studentreport`, {
-        headers: { Authorization: `Bearer ${token}` },
-        params,
-      });
+      const response = await axios.get(
+        `${API_URL}/api/getpendingstudentidcardreport`,
+        {
+          headers: { Authorization: `Bearer ${token}` },
+          params,
+        }
+      );
 
       if (!response?.data?.data || response?.data?.data?.length === 0) {
-        toast.error("Student Report data not found.");
+        toast.error("Pending Students Id Card Report data not found.");
         setTimetable([]);
       } else {
         setTimetable(response?.data?.data);
         setPageCount(Math.ceil(response?.data?.data?.length / pageSize)); // Set page count based on response size
       }
     } catch (error) {
-      console.error("Error fetching Student Report:", error);
-      toast.error("Error fetching Student Report. Please try again.");
+      console.error("Error fetching Pending Students Id Card Report:", error);
+      toast.error(
+        "Error fetching Pending Students Id Card Report. Please try again."
+      );
     } finally {
       setIsSubmitting(false); // Re-enable the button after the operation
       setLoadingForSearch(false);
     }
   };
+
+  const handlePrint = () => {
+    const printTitle = `Pending Student Id Report ${
+      selectedStudent?.label
+        ? `List of Class ${selectedStudent.label}`
+        : ": For All Students "
+    }`;
+    const printContent = `
+  <div id="tableMain" class="flex items-center justify-center min-h-screen bg-white">
+         <h5 id="tableHeading5"  class="text-lg font-semibold border-1 border-black">${printTitle}</h5>
+ <div id="tableHeading" class="text-center w-3/4">
+      <table class="min-w-full leading-normal table-auto border border-black mx-auto mt-2">
+        <thead>
+          <tr class="bg-gray-100">
+            <th class="px-2 text-center py-2 border border-black text-sm font-semibold">Sr.No</th>
+            <th class="px-2 text-center py-2 border border-black text-sm font-semibold">Roll No.</th>
+            <th class="px-2 text-center py-2 border border-black text-sm font-semibold">Student Full Name</th>
+            <th class="px-2 text-center py-2 border border-black text-sm font-semibold">Class</th>
+            <th class="px-2 text-center py-2 border border-black text-sm font-semibold">Date of Birth</th>
+            <th class="px-2 text-center py-2 border border-black text-sm font-semibold">Address</th>
+            <th class="px-2 text-center py-2 border border-black text-sm font-semibold">Blood Group</th>
+            <th class="px-2 text-center py-2 border border-black text-sm font-semibold">House</th>
+            <th class="px-2 text-center py-2 border border-black text-sm font-semibold">Parent Name</th>
+            <th class="px-2 text-center py-2 border border-black text-sm font-semibold">Father Mobile No.</th>
+            <th class="px-2 text-center py-2 border border-black text-sm font-semibold">Mother Mobile No.</th>
+          </tr>
+        </thead>
+        <tbody>
+          ${displayedSections
+            .map(
+              (subject, index) => `
+              <tr class="text-sm">
+                <td class="px-2 text-center py-2 border border-black">${
+                  index + 1
+                }</td>
+                <td class="px-2 text-center py-2 border border-black">${
+                  subject?.roll_no || " "
+                }</td>
+                <td class="px-2 text-center py-2 border border-black">
+                ${subject?.first_name || " "}${subject?.mid_name || " "} ${
+                subject?.last_name || " "
+              } </td>
+                <td class="px-2 text-center py-2 border border-black">${
+                  subject?.class_name || " "
+                } ${subject?.sec_name || " "}</td>
+                <td class="px-2 text-center py-2 border border-black">
+                ${
+                  subject?.dob
+                    ? new Date(subject.dob).toLocaleDateString("en-GB")
+                    : " "
+                }
+                </td>
+                 <td class="px-2 text-center py-2 border border-black">${
+                   subject?.permant_add || " "
+                 }</td>
+                  <td class="px-2 text-center py-2 border border-black">${
+                    subject?.blood_group || " "
+                  }</td>
+                   <td class="px-2 text-center py-2 border border-black">${
+                     subject?.house || " "
+                   }</td>
+                    <td class="px-2 text-center py-2 border border-black">${
+                      subject?.father_name || " "
+                    }</td>
+                     <td class="px-2 text-center py-2 border border-black">${
+                       subject?.f_mobile || " "
+                     }</td>
+                      <td class="px-2 text-center py-2 border border-black">${
+                        subject?.m_mobile || " "
+                      }</td>
+              </tr>`
+            )
+            .join("")}
+        </tbody>
+      </table>
+    </div>
+  </div>`;
+
+    const printWindow = window.open("", "", "height=800,width=1000");
+    printWindow.document.write(`
+  <html>
+  <head>
+    <title>${printTitle}</title>
+    <style>
+      @page { margin: 0; padding:0; box-sizing:border-box;   ;
+}
+      body { margin: 0; padding: 0; box-sizing:border-box; font-family: Arial, sans-serif; }
+      #tableHeading {
+  width: 100%;
+  margin: auto; /* Centers the div horizontally */
+  display: flex;
+  justify-content: center;
+}
+
+#tableHeading table {
+  width: 100%; /* Ensures the table fills its container */
+  margin:auto;
+  padding:0 10em 0 10em;
+
+  
+
+
+}
+
+#tableContainer {
+  display: flex;
+  justify-content: center; /* Centers the table horizontally */
+  width: 80%;
+  
+}
+
+ 
+h5 {  
+  width: 100%;  
+  text-align: center;  
+  margin: 0;  /* Remove any default margins */
+  padding: 5px 0;  /* Adjust padding if needed */
+}
+
+#tableMain {
+width:100%;
+margin:auto;
+box-sizing:border-box;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: flex-start; /* Prevent unnecessary space */
+padding:0 10em 0 10em;
+}
+
+h5 + * { /* Targets the element after h5 */
+  margin-top: 0; /* Ensures no extra space after h5 */
+}
+
+
+      table { border-spacing: 0; width: 70%; margin: auto;   }
+      th { font-size: 0.8em; background-color: #f9f9f9; }
+      td { font-size: 12px; }
+      th, td { border: 1px solid gray; padding: 8px; text-align: center; }
+      .student-photo {
+        width: 30px !important; 
+        height: 30px !important;
+        object-fit: cover;
+        border-radius: 50%;
+      }
+    </style>
+  </head>
+  <body>
+    ${printContent}
+  </body>
+  </html>`);
+    printWindow.document.close();
+    printWindow.print();
+  };
+
   const handleDownloadEXL = () => {
     if (!displayedSections || displayedSections.length === 0) {
       toast.error("No data available to download the Excel sheet.");
@@ -110,123 +275,35 @@ const StudentReport = () => {
     const headers = [
       "Sr No.",
       "Roll No.",
-      "GRN No.",
-      "Class",
       "Student Full Name",
-      "DOB",
-      "DOA",
+      "Class",
+      "Date Of Birth",
       "Address",
-      "City",
-      "State",
-      "Pincode",
-      "Nationality",
-      "Mother Tongue",
-      "Gender",
       "Blood Group",
-      "Religion",
-      "Caste",
-      "Category",
-      "Emergency name",
-      "Emergency Address",
-      "Emergency Contact",
-      "Student Aadhaar No.",
-      "Father Name",
+      "House",
+      "Parent Name",
       "Father Mobile No.",
-      "Father Email-Id",
-      "Mother Name",
       "Mother Mobile No.",
-      "Mother Email-Id",
-      "Parent's Aadhaar No.",
-      "Last year %",
-      "Last year attendance",
     ];
 
     // Convert displayedSections data to array format for Excel
     const data = displayedSections.map((student, index) => [
       index + 1,
       student?.roll_no || " ",
-      student?.reg_no || " ",
-      student?.admission_class || " ",
-      `${student?.first_name || ""} ${student?.mid_name?.trim() || ""} ${
+      `${student?.first_name || ""} ${student?.mid_name || ""} ${
         student?.last_name || ""
       }`,
-      student?.dob || " ",
-      student?.admission_date || " ",
+      `${student?.class_name || " "} ${student?.sec_nname || ""}`,
+      `${
+        student?.dob ? new Date(student.dob).toLocaleDateString("en-GB") : " "
+      }`,
       student?.permant_add || " ",
-      student?.city || " ",
-      student?.state || " ",
-      student?.pincode || " ",
-      student?.nationality || " ",
-      student?.mother_tongue || " ",
-      student?.gender === "M"
-        ? "Male"
-        : student?.gender === "F"
-        ? "Female"
-        : student?.gender || " ",
       student?.blood_group || " ",
-      student?.religion || " ",
-      student?.caste || " ",
-      student?.category || " ",
-      student?.emergency_name || " ",
-      student?.emergency_add || " ",
-      student?.emergency_contact || " ",
-      student?.stu_aadhaar_no || " ",
+      student?.house || " ",
       student?.father_name || " ",
       student?.f_mobile || " ",
-      student?.f_email || " ",
-      student?.mother_name || " ",
       student?.m_mobile || " ",
-      student?.m_emailid || " ",
-      student?.parent_adhar_no || " ",
-      student?.total_percent || " ",
-      student?.total_attendance || " ",
     ]);
-
-    // const data = displayedSections.map((student, index) => [
-    //   index + 1,
-    //   student?.form_id || " ",
-    //   `${student?.first_name || ""} ${student?.mid_name || ""} ${
-    //     student?.last_name || ""
-    //   }`,
-    //   student?.classname || " ",
-    //   student?.application_date || " ",
-    //   student?.admission_form_status || " ",
-    //   student?.dob || " ",
-    //   student?.birth_place || " ",
-    //   student?.locality || " ",
-    //   `${student?.city || ""}, ${student?.state || ""}, ${
-    //     student?.pincode || ""
-    //   }`,
-    //   student?.perm_address || " ",
-    //   student?.gender === "M"
-    //     ? "Male"
-    //     : student?.gender === "F"
-    //     ? "Female"
-    //     : student?.gender || " ",
-    //   student?.religion || " ",
-    //   student?.caste || " ",
-    //   student?.subcaste || " ",
-    //   student?.nationality || " ",
-    //   student?.mother_tongue || " ",
-    //   student?.category || " ",
-    //   student?.blood_group || " ",
-    //   student?.stud_aadhar || " ",
-    //   student?.sibling_student_info || " ",
-    //   student?.father_name || " ",
-    //   student?.father_occupation || " ",
-    //   student?.f_mobile || " ",
-    //   student?.f_email || " ",
-    //   student?.f_aadhar_no || " ",
-    //   student?.f_qualification || " ",
-    //   student?.mother_name || " ",
-    //   student?.mother_occupation || " ",
-    //   student?.m_mobile || " ",
-    //   student?.m_emailid || " ",
-    //   student?.m_aadhar_no || " ",
-    //   student?.m_qualification || " ",
-    //   student?.area_in_which_parent_can_contribute || " ",
-    //   student?.OrderId || " ",
-    // ]);
     // Create a worksheet
     const worksheet = XLSX.utils.aoa_to_sheet([headers, ...data]);
     const columnWidths = headers.map(() => ({ wch: 20 })); // Approx. width of 20 characters per column
@@ -234,90 +311,58 @@ const StudentReport = () => {
 
     // Create a workbook and append the worksheet
     const workbook = XLSX.utils.book_new();
-    XLSX.utils.book_append_sheet(workbook, worksheet, "Student Report Data");
+    XLSX.utils.book_append_sheet(workbook, worksheet, "Admission Form Data");
 
     // Generate and download the Excel file
-    const fileName = `Student_Report_${selectedStudent?.label || "ALL"}.xlsx`;
+    const fileName = `Pending_Student_Id_Card_Report_${
+      selectedStudent?.label || "For ALL Students"
+    }.xlsx`;
     XLSX.writeFile(workbook, fileName);
   };
 
   console.log("row", timetable);
 
-  const filteredSections = timetable.filter((section) => {
+  const filteredSections = timetable.filter((student) => {
     const searchLower = searchTerm.toLowerCase();
 
-    // Extract relevant fields and convert them to lowercase for case-insensitive search
+    const formatDate = (dateString) => {
+      if (!dateString) return "";
 
-    const regNo = section?.reg_no?.toLowerCase() || "";
-    const admissionClass = section?.admission_class?.toLowerCase() || "";
-    const studentName = `${section?.first_name || ""} ${
-      section?.mid_name?.trim() || ""
-    } ${section?.last_name || ""}`
-      .toLowerCase()
-      .trim();
-    const studentDOB = section?.dob?.toLowerCase() || "";
-    const admissionDate = section?.admission_date?.toLowerCase() || "";
-    const permanentAddress = section?.permant_add?.toLowerCase() || "";
-    const studentCity = section?.city?.toLowerCase() || "";
-    const studentState = section?.state?.toLowerCase() || "";
-    const studentPincode = section?.pincode?.toString().toLowerCase() || "";
-    const studentNationality = section?.nationality?.toLowerCase() || "";
-    const studentMotherTongue = section?.mother_tongue?.toLowerCase() || "";
-    const studentGender =
-      section?.gender === "M"
-        ? "male"
-        : section?.gender === "F"
-        ? "female"
-        : section?.gender?.toLowerCase() || "";
-    const studentBloodGroup = section?.blood_group?.toLowerCase() || "";
-    const studentReligion = section?.religion?.toLowerCase() || "";
-    const studentCaste = section?.caste?.toLowerCase() || "";
-    const studentCategory = section?.category?.toLowerCase() || "";
-    const emergencyName = section?.emergency_name?.toLowerCase() || "";
-    const emergencyAddress = section?.emergency_add?.toLowerCase() || "";
-    const emergencyContact = section?.emergency_contact?.toLowerCase() || "";
-    const studentAadhaar = section?.stu_aadhaar_no?.toLowerCase() || "";
-    const fatherName = section?.father_name?.toLowerCase() || "";
-    const fatherMobile = section?.f_mobile?.toLowerCase() || "";
-    const fatherEmail = section?.f_email?.toLowerCase() || "";
-    const motherName = section?.mother_name?.toLowerCase() || "";
-    const motherMobile = section?.m_mobile?.toLowerCase() || "";
-    const motherEmail = section?.m_emailid?.toLowerCase() || "";
-    const parentAadhaar = section?.parent_adhar_no?.toLowerCase() || "";
-    const totalPercent = section?.total_percent?.toLowerCase() || "";
-    const totalAttendance = section?.total_attendance?.toLowerCase() || "";
+      // Ensure we remove the time part if present
+      const cleanDate = dateString.split(" ")[0]; // Extract only YYYY-MM-DD
+
+      const [year, month, day] = cleanDate.split("-");
+      return `${day}/${month}/${year} || ${day}-${month}-${year}`;
+    };
+
+    // Extract relevant fields and convert them to lowercase for case-insensitive search
+    const rollNo = student?.roll_no ? String(student.roll_no) : "";
+    const className = student?.class_name?.toLowerCase() || "";
+    const studentName =
+      `${student?.first_name} ${student?.mid_name} ${student?.last_name}`
+        .toLowerCase()
+        .trim() || "";
+
+    const dateofBirth = formatDate(student?.dob).toLowerCase();
+    const permanantAddress = student?.permant_add?.toLowerCase() || "";
+    const bloodGroup = student?.blood_group?.toLowerCase() || "";
+    const house = student?.house?.toLowerCase() || "";
+    const parentName = student?.father_name?.toLowerCase() || "";
+    const motherMobile = student?.m_mobile?.toLowerCase() || "";
+    const fatherMobile = student?.f_mobile?.toLowerCase() || "";
 
     // Check if the search term is present in any of the specified fields
     return (
-      regNo.includes(searchLower) ||
-      admissionClass.includes(searchLower) ||
+      rollNo.includes(searchLower) ||
+      className.includes(searchLower) ||
       studentName.includes(searchLower) ||
-      studentDOB.includes(searchLower) ||
-      admissionDate.includes(searchLower) ||
-      permanentAddress.includes(searchLower) ||
-      studentCity.includes(searchLower) ||
-      studentState.includes(searchLower) ||
-      studentPincode.includes(searchLower) ||
-      studentNationality.includes(searchLower) ||
-      studentMotherTongue.includes(searchLower) ||
-      studentGender.includes(searchLower) ||
-      studentBloodGroup.includes(searchLower) ||
-      studentReligion.includes(searchLower) ||
-      studentCaste.includes(searchLower) ||
-      studentCategory.includes(searchLower) ||
-      emergencyName.includes(searchLower) ||
-      emergencyAddress.includes(searchLower) ||
-      emergencyContact.includes(searchLower) ||
-      studentAadhaar.includes(searchLower) ||
-      fatherName.includes(searchLower) ||
-      fatherMobile.includes(searchLower) ||
-      fatherEmail.includes(searchLower) ||
-      motherName.includes(searchLower) ||
+      dateofBirth.includes(searchLower) ||
+      permanantAddress.includes(searchLower) ||
+      bloodGroup.includes(searchLower) ||
+      house.includes(searchLower) ||
+      parentName.includes(searchLower) ||
       motherMobile.includes(searchLower) ||
-      motherEmail.includes(searchLower) ||
-      parentAadhaar.includes(searchLower) ||
-      totalPercent.includes(searchLower) ||
-      totalAttendance.includes(searchLower)
+      fatherMobile.includes(searchLower)
     );
   });
 
@@ -329,7 +374,7 @@ const StudentReport = () => {
         <div className="card p-4 rounded-md ">
           <div className=" card-header mb-4 flex justify-between items-center ">
             <h5 className="text-gray-700 mt-1 text-md lg:text-lg">
-              Student Report
+              Pending Students ID Crad Report
             </h5>
             <RxCross1
               className=" relative right-2 text-xl text-red-600 hover:cursor-pointer hover:bg-red-100"
@@ -354,7 +399,7 @@ const StudentReport = () => {
                       className="md:w-[25%] text-md pl-0 md:pl-5 mt-1.5"
                       htmlFor="studentSelect"
                     >
-                      Class
+                      Class <span className="text-red-500">*</span>
                     </label>
                     <div className=" w-full md:w-[65%]">
                       <Select
@@ -409,10 +454,10 @@ const StudentReport = () => {
                               d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4z"
                             ></path>
                           </svg>
-                          Browsing...
+                          Searching...
                         </span>
                       ) : (
-                        "Browse"
+                        "Search"
                       )}
                     </button>
                   </div>
@@ -427,7 +472,7 @@ const StudentReport = () => {
                     <div className="p-2 px-3 bg-gray-100 border-none flex justify-between items-center">
                       <div className="w-full   flex flex-row justify-between mr-0 md:mr-4 ">
                         <h3 className="text-gray-700 mt-1 text-[1.2em] lg:text-xl text-nowrap">
-                          List Of Student Report
+                          List Of Pending Students ID Card Report
                         </h3>
                         <div className="w-1/2 md:w-[18%] mr-1 ">
                           <input
@@ -451,7 +496,7 @@ const StudentReport = () => {
                           </div>
                         </button>
 
-                        {/* <button
+                        <button
                           onClick={handlePrint}
                           className="relative flex flex-row justify-center align-middle items-center gap-x-1 bg-blue-400 hover:bg-blue-500 text-white px-3 rounded group"
                         >
@@ -459,7 +504,7 @@ const StudentReport = () => {
                           <div className="absolute bottom-full left-1/2 transform -translate-x-1/2 mb-2 hidden group-hover:flex items-center justify-center bg-gray-600  text-white text-[.7em] rounded-md py-1 px-2">
                             Print{" "}
                           </div>
-                        </button> */}
+                        </button>
                       </div>
                     </div>
                     <div
@@ -483,35 +528,15 @@ const StudentReport = () => {
                               {[
                                 "Sr No.",
                                 "Roll No.",
-                                "GRN No.",
+                                "Student Name",
                                 "Class",
-                                "Student Full Name",
-                                "DOB",
-                                "DOA",
+                                "Date Of Birth",
                                 "Address",
-                                "City",
-                                "State",
-                                "Pincode",
-                                "Nationality",
-                                "Mother Tongue",
-                                "Gender",
                                 "Blood Group",
-                                "Religion",
-                                "Caste",
-                                "Category",
-                                "Emergency name",
-                                "Emergency Address",
-                                "Emergency Contact",
-                                "Student Aadhaar No.",
-                                "Father Name",
+                                "House",
+                                "Parent Name",
                                 "Father Mobile No.",
-                                "Father Email-Id",
-                                "Mother Name",
                                 "Mother Mobile No.",
-                                "Mother Email-Id",
-                                "Parent's Aadhaar No.",
-                                "Last year %",
-                                "Last year attendance",
                               ].map((header, index) => (
                                 <th
                                   key={index}
@@ -527,114 +552,58 @@ const StudentReport = () => {
                             {displayedSections.length ? (
                               displayedSections?.map((student, index) => (
                                 <tr
-                                  key={student.student_id}
+                                  key={student.adm_form_pk}
                                   className="border border-gray-300"
                                 >
                                   <td className="px-2 py-2 text-center border border-gray-300">
                                     {index + 1}
                                   </td>
+                                  {console.log("sroll no", student)}
                                   <td className="px-2 py-2 text-center border border-gray-300">
                                     {student.roll_no || " "}
                                   </td>
                                   <td className="px-2 py-2 text-center border border-gray-300">
-                                    {student.reg_no || " "}
+                                    {student.first_name || " "}{" "}
+                                    {student.mid_name || " "}{" "}
+                                    {student.last_name || " "}
+                                  </td>
+                                  <td className="px-2 py-2 text-nowrap text-center border border-gray-300">
+                                    {student.class_name || " "}{" "}
+                                    {student.sec_name || " "}
                                   </td>
                                   <td className="px-2 py-2 text-center border border-gray-300">
-                                    {student.admission_class || " "}
+                                    {student.dob
+                                      ? new Date(
+                                          student.dob
+                                        ).toLocaleDateString("en-GB")
+                                      : " "}
                                   </td>
-                                  <td className="px-2 py-2 text-center border border-gray-300">
-                                    {student.first_name}{" "}
-                                    {student.mid_name?.trim() || ""}{" "}
-                                    {student.last_name}
-                                  </td>
-                                  <td className="px-2 py-2 text-center border border-gray-300">
-                                    {student.dob || " "}
-                                  </td>
-                                  <td className="px-2 py-2 text-center border border-gray-300">
-                                    {student.admission_date || " "}
-                                  </td>
+
                                   <td className="px-2 py-2 text-center border border-gray-300">
                                     {student.permant_add || " "}
-                                  </td>
-                                  <td className="px-2 py-2 text-center border border-gray-300">
-                                    {student.city || " "}
-                                  </td>
-                                  <td className="px-2 py-2 text-center border border-gray-300">
-                                    {student.state || " "}
-                                  </td>
-                                  <td className="px-2 py-2 text-center border border-gray-300">
-                                    {student.pincode || " "}
-                                  </td>
-                                  <td className="px-2 py-2 text-center border border-gray-300">
-                                    {student.nationality || " "}
-                                  </td>
-                                  <td className="px-2 py-2 text-center border border-gray-300">
-                                    {student.mother_tongue || " "}
-                                  </td>
-                                  <td className="px-2 py-2 text-center border border-gray-300">
-                                    {student.gender === "M"
-                                      ? "Male"
-                                      : student.gender === "F"
-                                      ? "Female"
-                                      : student.gender}
                                   </td>
                                   <td className="px-2 py-2 text-center border border-gray-300">
                                     {student.blood_group || " "}
                                   </td>
                                   <td className="px-2 py-2 text-center border border-gray-300">
-                                    {student.religion || " "}
-                                  </td>
-                                  <td className="px-2 py-2 text-center border border-gray-300">
-                                    {student.caste || " "}
-                                  </td>
-
-                                  <td className="px-2 py-2 text-center border border-gray-300">
-                                    {student.category || " "}
-                                  </td>
-                                  <td className="px-2 py-2 text-center border border-gray-300">
-                                    {student.emergency_name || " "}
-                                  </td>
-                                  <td className="px-2 py-2 text-center border border-gray-300">
-                                    {student.emergency_add || " "}
-                                  </td>
-                                  <td className="px-2 py-2 text-center border border-gray-300">
-                                    {student.emergency_contact || " "}
-                                  </td>
-                                  <td className="px-2 py-2 text-center border border-gray-300">
-                                    {student.stu_aadhaar_no || " "}
+                                    {student.house || " "}
                                   </td>
                                   <td className="px-2 py-2 text-center border border-gray-300">
                                     {student.father_name || " "}
                                   </td>
+
                                   <td className="px-2 py-2 text-center border border-gray-300">
                                     {student.f_mobile || " "}
                                   </td>
-                                  <td className="px-2 py-2 text-center border border-gray-300">
-                                    {student.f_email || " "}
-                                  </td>
-                                  <td className="px-2 py-2 text-center border border-gray-300">
-                                    {student.mother_name || " "}
-                                  </td>
+
                                   <td className="px-2 py-2 text-center border border-gray-300">
                                     {student.m_mobile || " "}
-                                  </td>
-                                  <td className="px-2 py-2 text-center border border-gray-300">
-                                    {student.m_emailid || " "}
-                                  </td>
-                                  <td className="px-2 py-2 text-center border border-gray-300">
-                                    {student.parent_adhar_no || " "}
-                                  </td>
-                                  <td className="px-2 py-2 text-center border border-gray-300">
-                                    {student.total_percent || " "}
-                                  </td>
-                                  <td className="px-2 py-2 text-center border border-gray-300">
-                                    {student.total_attendance || " "}
                                   </td>
                                 </tr>
                               ))
                             ) : (
-                              <div className="absolute left-[1%] w-[100%] text-center flex justify-center items-center mt-14">
-                                <div className="text-center text-xl text-red-700">
+                              <div className=" absolute left-[1%] w-[100%]  text-center flex justify-center items-center mt-14">
+                                <div className=" text-center text-xl text-red-700">
                                   Oops! No data found..
                                 </div>
                               </div>
@@ -654,4 +623,4 @@ const StudentReport = () => {
   );
 };
 
-export default StudentReport;
+export default PendingStudentIdCardReport;

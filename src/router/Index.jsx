@@ -205,6 +205,10 @@ import StaffReport from "../componants/Reports/StaffReport.jsx";
 import HSCStudentsSubjectsReport from "../componants/Reports/HSCStudentsSubjectsReport.jsx";
 import WorldlineFeePaymentReport from "../componants/Reports/WorldlineFeePaymentReport.jsx";
 import RazorpayFeePaymentReport from "../componants/Reports/RazorpayFeePaymentReport.jsx";
+import SubstituteTeacherMonthlyReport from "../componants/Reports/SubstituteTeacherMonthlyReport.jsx";
+import SubstitutionWeeklyHoursReport from "../componants/Reports/SubstitutionWeeklyHoursReport.jsx";
+import LeavingCertificateReport from "../componants/Reports/LeavingCertificateReport.jsx";
+import PendingStudentIdCardReport from "../componants/Reports/PendingStudentIdCardReport.jsx";
 // import Menus from "../c";
 function Index() {
   return (
@@ -702,6 +706,28 @@ function Index() {
         <Route
           path="/rozorpayfeePayRepo"
           element={<PrivateRoute element={<RazorpayFeePaymentReport />} />}
+        />
+        {/* Substitute Teacher Monthly Report Reportmodule */}
+        <Route
+          path="/SubsTeaMonthlyRepo"
+          element={
+            <PrivateRoute element={<SubstituteTeacherMonthlyReport />} />
+          }
+        />
+        {/* Substitution Weekly Hours Report Report Reportmodule */}
+        <Route
+          path="/SubsWklyHrsRepo"
+          element={<PrivateRoute element={<SubstitutionWeeklyHoursReport />} />}
+        />
+        {/* Leaving certificate Report Report Reportmodule */}
+        <Route
+          path="/LeavCertifRepo"
+          element={<PrivateRoute element={<LeavingCertificateReport />} />}
+        />
+        {/* PendingStudentIdcard Report Reportmodule */}
+        <Route
+          path="/PndingStudIdCrdRepo"
+          element={<PrivateRoute element={<PendingStudentIdCardReport />} />}
         />
         <Route path="/notification" element={<NotificationPage />} />
         <Route path="/changepassword" element={<ChangePassword />} />

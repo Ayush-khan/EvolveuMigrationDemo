@@ -824,134 +824,172 @@ const AdminNavBar = () => {
           className="custom-nav-dropdown"
           style={{ color: "black", fontWeight: "700" }}
         >
-          <NavDropdown.Item
-            as={Link}
-            to="/listAdmFrmRep"
-            className="text-sm font-bold hover:text-black"
+          <div
+            style={{
+              maxHeight: "400px",
+              overflowY: "auto",
+              scrollbarWidth: "thin", // For Firefox
+              scrollbarColor: "#C03178 transparent", // For Firefox
+              msOverflowStyle: "none", // Hide scrollbar in IE and Edge
+            }}
           >
-            List of Admission Forms Report
-          </NavDropdown.Item>
-          <NavDropdown.Item
-            as={Link}
-            to="/balanceleave"
-            className="text-sm font-bold hover:text-black"
-          >
-            Balance Leave
-          </NavDropdown.Item>
-          <NavDropdown.Item
-            as={Link}
-            to="/consolidatedLeave"
-            className="text-sm font-bold hover:text-black"
-          >
-            Consolidated Leave
-          </NavDropdown.Item>
-          <NavDropdown.Item
-            as={Link}
-            to="/studentReport"
-            // to="#"
-            className="text-sm font-bold hover:text-black"
-          >
-            Student Report
-          </NavDropdown.Item>
-          <NavDropdown.Item
-            as={Link}
-            to="/studentContactDetailsReport"
-            className="text-sm font-bold hover:text-black"
-          >
-            Student Contact Details Report
-          </NavDropdown.Item>
-          <NavDropdown.Item
-            as={Link}
-            to="/studentRemarkReport"
-            className="text-sm font-bold hover:text-black"
-          >
-            Student Remarks Report
-          </NavDropdown.Item>
-          <NavDropdown.Item
-            as={Link}
-            to="/catWiseStudRepo"
-            className="text-sm font-bold hover:text-black"
-          >
-            Student - Category wise Report
-          </NavDropdown.Item>
-          <NavDropdown.Item
-            as={Link}
-            to="/relgWiseStudRepo"
-            className="text-sm font-bold hover:text-black"
-          >
-            Student - Religion wise Report
-          </NavDropdown.Item>
-          <NavDropdown.Item
-            as={Link}
-            to="/gendrWiseStudRepo"
-            // to="#"
-            className="text-sm font-bold hover:text-black"
-          >
-            Student - Gender wise Report
-          </NavDropdown.Item>
-          <NavDropdown.Item
-            as={Link}
-            to="/genWiseRelignRepo"
-            className="text-sm font-bold hover:text-black"
-          >
-            Student -Genderwise Religionwise Report
-          </NavDropdown.Item>
-          <NavDropdown.Item
-            as={Link}
-            to="/genWiseCatRepo"
-            className="text-sm font-bold hover:text-black"
-          >
-            Student - Genderwise Categorywise Report
-          </NavDropdown.Item>
-          <NavDropdown.Item
-            as={Link}
-            to="/newStudentsRepo"
-            className="text-sm font-bold hover:text-black"
-          >
-            New Students Report
-          </NavDropdown.Item>
-          <NavDropdown.Item
-            as={Link}
-            to="/leftStudentsRepo"
-            className="text-sm font-bold hover:text-black"
-          >
-            Left Students Report
-          </NavDropdown.Item>
-          <NavDropdown.Item
-            as={Link}
-            to="/hSCStudSubjectsRepo"
-            className="text-sm font-bold hover:text-black"
-          >
-            HSC Students Subjects Report
-          </NavDropdown.Item>
-          <NavDropdown.Item
-            as={Link}
-            to="/staffReport"
-            className="text-sm font-bold hover:text-black"
-          >
-            Staff Report
-          </NavDropdown.Item>
-          <NavDropdown.Item
-            as={Link}
-            to="/feePaymentRepo"
-            className="text-sm font-bold hover:text-black"
-          >
-            Fees Payment Report
-          </NavDropdown.Item>
-          <NavDropdown.Item
-            as={Link}
-            to="/worldlinfeePayRepo"
-            className="text-sm font-bold hover:text-black"
-          >
-            Worldline Fee Payment Report{" "}
-          </NavDropdown.Item>
-          <NavDropdown.Item
-            as={Link}
-            to="/rozorpayfeePayRepo"
-            className="text-sm font-bold hover:text-black"
-          >
-            Razorpay Fee Payment Report{" "}
-          </NavDropdown.Item>
+            <NavDropdown.Item
+              as={Link}
+              to="/listAdmFrmRep"
+              className="text-sm font-bold hover:text-black"
+            >
+              List of Admission Forms Report
+            </NavDropdown.Item>
+            <NavDropdown.Item
+              as={Link}
+              to="/balanceleave"
+              className="text-sm font-bold hover:text-black"
+            >
+              Balance Leave
+            </NavDropdown.Item>
+            <NavDropdown.Item
+              as={Link}
+              to="/consolidatedLeave"
+              className="text-sm font-bold hover:text-black"
+            >
+              Consolidated Leave
+            </NavDropdown.Item>
+            <NavDropdown.Item
+              as={Link}
+              to="/studentReport"
+              // to="#"
+              className="text-sm font-bold hover:text-black"
+            >
+              Student Report
+            </NavDropdown.Item>
+            <NavDropdown.Item
+              as={Link}
+              to="/studentContactDetailsReport"
+              className="text-sm font-bold hover:text-black"
+            >
+              Student Contact Details Report
+            </NavDropdown.Item>
+            <NavDropdown.Item
+              as={Link}
+              to="/studentRemarkReport"
+              className="text-sm font-bold hover:text-black"
+            >
+              Student Remarks Report
+            </NavDropdown.Item>
+            <NavDropdown.Item
+              as={Link}
+              to="/catWiseStudRepo"
+              className="text-sm font-bold hover:text-black"
+            >
+              Student - Category wise Report
+            </NavDropdown.Item>
+            <NavDropdown.Item
+              as={Link}
+              to="/relgWiseStudRepo"
+              className="text-sm font-bold hover:text-black"
+            >
+              Student - Religion wise Report
+            </NavDropdown.Item>
+            <NavDropdown.Item
+              as={Link}
+              to="/gendrWiseStudRepo"
+              // to="#"
+              className="text-sm font-bold hover:text-black"
+            >
+              Student - Gender wise Report
+            </NavDropdown.Item>
+            <NavDropdown.Item
+              as={Link}
+              to="/genWiseRelignRepo"
+              className="text-sm font-bold hover:text-black"
+            >
+              Student -Genderwise Religionwise Report
+            </NavDropdown.Item>
+            <NavDropdown.Item
+              as={Link}
+              to="/genWiseCatRepo"
+              className="text-sm font-bold hover:text-black"
+            >
+              Student - Genderwise Categorywise Report
+            </NavDropdown.Item>
+            <NavDropdown.Item
+              as={Link}
+              to="/newStudentsRepo"
+              className="text-sm font-bold hover:text-black"
+            >
+              New Students Report
+            </NavDropdown.Item>
+            <NavDropdown.Item
+              as={Link}
+              to="/leftStudentsRepo"
+              className="text-sm font-bold hover:text-black"
+            >
+              Left Students Report
+            </NavDropdown.Item>
+            <NavDropdown.Item
+              as={Link}
+              to="/hSCStudSubjectsRepo"
+              className="text-sm font-bold hover:text-black"
+            >
+              HSC Students Subjects Report
+            </NavDropdown.Item>
+            <NavDropdown.Item
+              as={Link}
+              to="/staffReport"
+              className="text-sm font-bold hover:text-black"
+            >
+              Staff Report
+            </NavDropdown.Item>
+            <NavDropdown.Item
+              as={Link}
+              to="/feePaymentRepo"
+              className="text-sm font-bold hover:text-black"
+            >
+              Fees Payment Report
+            </NavDropdown.Item>
+            <NavDropdown.Item
+              as={Link}
+              to="/worldlinfeePayRepo"
+              className="text-sm font-bold hover:text-black"
+            >
+              Worldline Fee Payment Report{" "}
+            </NavDropdown.Item>
+            <NavDropdown.Item
+              as={Link}
+              to="/rozorpayfeePayRepo"
+              className="text-sm font-bold hover:text-black"
+            >
+              Razorpay Fee Payment Report{" "}
+            </NavDropdown.Item>
+            <NavDropdown.Item
+              as={Link}
+              to="/PndingStudIdCrdRepo"
+              className="text-sm font-bold hover:text-black"
+            >
+              Pending Student ID Card Report
+            </NavDropdown.Item>
+            <NavDropdown.Item
+              as={Link}
+              to="/SubsTeaMonthlyRepo"
+              className="text-sm font-bold hover:text-black"
+            >
+              Substitute Teacher Monthly Report{" "}
+            </NavDropdown.Item>
+            <NavDropdown.Item
+              as={Link}
+              to="/SubsWklyHrsRepo"
+              className="text-sm font-bold hover:text-black"
+            >
+              Substitution Weekly Hours Report{" "}
+            </NavDropdown.Item>
+            <NavDropdown.Item
+              as={Link}
+              to="/LeavCertifRepo"
+              className="text-sm font-bold hover:text-black"
+            >
+              Leaving Certificate Report
+            </NavDropdown.Item>
+          </div>
         </NavDropdown>
 
         {/* Ticket Dropdown */}
