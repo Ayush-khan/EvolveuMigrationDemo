@@ -113,21 +113,36 @@ const EventCard = () => {
         <div
           className={`${Styles.eventsList} rounded-lg pb-20 sm:pb-20  bg-gray-100 px-2`}
         >
-          {filteredEvents.lenght ? (
+          {filteredEvents.length ? (
             filteredEvents.map((event, index) => (
               <div key={index} className={`${Styles.eventCard} rounded-lg `}>
                 <div
-                  className={` h-full w-1/4  bg-gray-500   text-cyan-900 text-lg rounded-l-lg  flex flex-col items-center justify-between     `}
+                  className={` h-full box-border max-w-3/4 px-2  bg-gray-500   text-cyan-900 text-lg rounded-l-lg      `}
                   style={{ background: "#00FFFF", color: "#C3347D" }}
                 >
-                  <span className=" relative top-4">
-                    {new Date(event.start_date).getDate() + 1}{" "}
-                    {new Date(event.start_date).toLocaleString("default", {
-                      month: "long",
-                    })}
-                  </span>
-                  <br />
-                  <span className=" relative bottom-4">{event.start_time}</span>
+                  <div
+                    className={` box-border w-full text-center  text-cyan-900 text-lg rounded-l-lg  flex flex-col items-center justify-between     `}
+                  >
+                    {" "}
+                    <span className="    flex flex-col justify-start max-h-10px">
+                      <p className=" relative top-4 text-2.5em w-8 mx-auto font-medium text-center h-8 bg-gray-600 text-white rounded-lg">
+                        {new Date(event.start_date).getDate() + 1}{" "}
+                      </p>
+                      <p>
+                        {new Date(event.start_date).toLocaleString("default", {
+                          month: "long",
+                        })}
+                      </p>
+                      <p>
+                        <span
+                          style={{ color: "#C3347D" }}
+                          className=" relative bottom-4 text-[.8em]"
+                        >
+                          {event.start_time}
+                        </span>
+                      </p>
+                    </span>
+                  </div>
                 </div>
 
                 <div className={Styles.details}>
@@ -147,8 +162,14 @@ const EventCard = () => {
                   </h5>
                   <div className="mb-3">
                     <div
-                      className={`${Styles.discription}{mb-0 p-0 text-sm  sm:mb-1 mt-0 text-gray-800}`}
-                      // dangerouslySetInnerHTML={{ __html: event.event_desc }}
+                      className={`${Styles.discription} box-border shadow-inner mb-0 p-2 text-sm sm:mb-1 mt-0 text-gray-800`}
+                      style={{
+                        maxHeight: "80px", // Adjust height as needed
+                        overflowY: "auto", // Enables vertical scrolling
+
+                        padding: "8px",
+                        backgroundColor: "#f9f9f9", // Optional: Light background
+                      }}
                     >
                       {event.event_desc}
                     </div>
@@ -161,12 +182,6 @@ const EventCard = () => {
                         marginBottom: "-10px",
                       }}
                     >
-                      {" "}
-                      {/* {new Date(event.end_date).getDate() + 1}{" "}
-                  {new Date(event.end_date).toLocaleString("default", {
-                    month: "long",
-                  })} */}
-                      {/* The event will conclude on March 8th, 2024, at 12:00 PM. */}
                       {`The event will conclude on ${
                         new Date(event.end_date).getDate() + 1
                       } ${new Date(event.end_date).toLocaleString("default", {

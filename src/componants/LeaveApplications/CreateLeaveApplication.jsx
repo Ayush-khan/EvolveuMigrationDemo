@@ -7,8 +7,6 @@ import { ToastContainer, toast } from "react-toastify";
 const CreateLeaveApplication = () => {
   const API_URL = import.meta.env.VITE_API_URL;
   const [loading, setLoading] = useState(false);
-  const [isSubmitting, setIsSubmitting] = useState(false);
-
   const [formData, setFormData] = useState({
     staff_name: "",
     leave_type_id: "",
@@ -188,18 +186,13 @@ const CreateLeaveApplication = () => {
   };
 
   const handleSubmit = async (event) => {
-    if (isSubmitting) return; // Prevent re-submitting
-    setIsSubmitting(true);
     event.preventDefault();
     const validationErrors = validate();
 
     if (Object.keys(validationErrors).length > 0) {
       setErrors(validationErrors);
-      setIsSubmitting(false); // Reset submitting state if validation fails
-
       Object.values(validationErrors).forEach((error) => {
-        console.log("error", error);
-        // toast.error(error);
+        toast.error(error);
       });
       return;
     }
@@ -243,7 +236,7 @@ const CreateLeaveApplication = () => {
       toast.error("Error submitting leave application");
       console.error("Error:", error);
     } finally {
-      setIsSubmitting(false); // Re-enable the button after the operation
+      setLoading(false);
     }
   };
 
@@ -289,7 +282,7 @@ const CreateLeaveApplication = () => {
             backgroundColor: "#C03078",
           }}
         ></div>
-        <p className="  md:absolute md:right-10  md:top-[15%]  text-gray-500  ">
+        <p className="  md:absolute md:right-10  md:top-[14%]  text-gray-500  ">
           <span className="text-red-500">*</span>indicates mandatory information
         </p>
 
@@ -311,9 +304,8 @@ const CreateLeaveApplication = () => {
                 title="Name should not start with a number"
                 required
                 value={formData.staff_name}
-                readOnly
-                className="w-full bg-gray-200 no-underline p-1.5 shadow-md mb-2 pl-2 "
-                // className="w-full form-control shadow-md mb-2"
+                className="w-full form-control shadow-md mb-2"
+                disabled
               />
               <div className="absolute top-9 left-1/3">
                 {errors.staff_name && (
@@ -336,7 +328,7 @@ const CreateLeaveApplication = () => {
                 className="form-control shadow-md"
               >
                 <option className="bg-gray-300" value="">
-                  Select{" "}
+                  Select Leave{" "}
                 </option>
                 {leaveType.length === 0 ? (
                   <option>No Options</option>
@@ -369,11 +361,11 @@ const CreateLeaveApplication = () => {
               <input
                 type="date"
                 id="leave_start_date"
-                // max={today}
+                min={today}
                 name="leave_start_date"
                 value={formData.leave_start_date}
                 onChange={handleChange}
-                max={formData.leave_end_date || ""}
+                // max={formData.leave_end_date || ""}
                 required
                 className="form-control shadow-md"
               />
@@ -393,11 +385,11 @@ const CreateLeaveApplication = () => {
               <input
                 type="date"
                 id="leave_end_date"
-                // max={today}
+                min={today}
                 name="leave_end_date"
                 value={formData.leave_end_date}
                 onChange={handleChange}
-                min={formData.leave_start_date || ""}
+                // min={formData.leave_start_date || ""}
                 required
                 className="form-control shadow-md"
               />
@@ -451,9 +443,8 @@ const CreateLeaveApplication = () => {
                 className="mr-2 bg-blue-500 text-white py-1 px-3 rounded hover:bg-blue-700"
                 onClick={handleSubmit}
                 // disabled={loadingForSearch}
-                disabled={isSubmitting}
               >
-                {isSubmitting ? "Saving..." : "Save"}
+                Save
               </button>
             </div>
           </div>

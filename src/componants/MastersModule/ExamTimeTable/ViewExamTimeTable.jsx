@@ -20,7 +20,6 @@ const ViewExamTimeTable = () => {
   const [description, setDescription] = useState("");
 
   const navigate = useNavigate();
-
   // Fetch timetable data on component mount
   useEffect(() => {
     const fetchTimetableData = async () => {

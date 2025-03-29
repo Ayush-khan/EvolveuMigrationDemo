@@ -33,6 +33,12 @@ const ViewLeaveApplication = () => {
   const MAX_DATE = "2006-12-31";
   const today = new Date().toISOString().split("T")[0];
 
+  const formatDateString = (dateString) => {
+    if (!dateString) return "NA"; // Handle empty dates
+    const [year, month, day] = dateString.split("-");
+    return `${day}-${month}-${year}`; // Convert to DD-MM-YYYY format
+  };
+
   const validateDays = (days) => {
     if (!days) return "Number of days is required";
     if (!/^\d{1,2}(\.\d{1,2})?$/.test(days)) {
@@ -61,10 +67,6 @@ const ViewLeaveApplication = () => {
     if (!formData.leave_end_date) {
       newErrors.leave_end_date = "Leave end date is required";
     }
-
-    // if (!formData.reason) {
-    //   newErrors.reason = "Reason for leave is required";
-    // }
 
     const daysError = validateDays(formData.no_of_days);
     if (daysError) {
@@ -182,12 +184,6 @@ const ViewLeaveApplication = () => {
         }));
       }
     }
-  };
-
-  const formatDateString = (dateString) => {
-    if (!dateString) return "";
-    const [year, month, day] = dateString.split("-");
-    return `${year}-${month}-${day}`;
   };
 
   useEffect(() => {
@@ -345,7 +341,7 @@ const ViewLeaveApplication = () => {
                 name="staff_name"
                 className="block border w-full border-gray-300 rounded-md py-1 px-3 bg-gray-200 shadow-inner"
               >
-                {formData.staff_name || "N/A"}
+                {formData.staff_name}
               </div>
               <label htmlFor="leavetype" className="w-1/2 mt-2 ml-7">
                 Leave Type<span className="text-red-500">*</span>
@@ -367,7 +363,7 @@ const ViewLeaveApplication = () => {
                 name="leave_start_date"
                 className="block border w-full border-gray-300 rounded-md py-1 px-3 bg-gray-200 shadow-inner"
               >
-                {formData.leave_start_date || "NA"}
+                {formatDateString(formData.leave_start_date || "NA")}
               </div>
 
               <label htmlFor="leaveenddate" className="w-1/2 mt-2 ml-7">
@@ -378,7 +374,7 @@ const ViewLeaveApplication = () => {
                 name="leave_end_date"
                 className="block border w-full border-gray-300 rounded-md py-1 px-3 bg-gray-200 shadow-inner"
               >
-                {formData.leave_end_date || "NA"}
+                {formatDateString(formData.leave_end_date || "NA")}
               </div>
 
               <label htmlFor="status" className="w-1/2 mt-2 ml-7">

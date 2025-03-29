@@ -494,12 +494,12 @@
 //
 
 // //  Finallly working navbar dynamically
-import React, { useEffect, useState } from "react";
+import { useEffect, useState } from "react";
 import { Navbar, Nav, NavDropdown, NavItem } from "react-bootstrap";
 import { Link, useNavigate } from "react-router-dom";
 import axios from "axios";
 import { FaHome, FaUserCircle } from "react-icons/fa";
-import { CiUser, CiLogout } from "react-icons/ci";
+import { CiLogout } from "react-icons/ci";
 import { LiaEdit } from "react-icons/lia";
 import "./NabarstyleBootstrap.css";
 import authManage from "../utils/PrivateRoute";
@@ -624,6 +624,9 @@ function NavBar() {
       localStorage.setItem("authToken", response.data.token);
       // Refresh the page after updating the token
       window.location.reload();
+      setTimeout(() => {
+        navigate("/dashboard");
+      }, 100);
     } catch (error) {
       console.error("Error updating academic year:", error);
     }
@@ -996,7 +999,8 @@ function NavBar() {
               {/* {localStorage.getItem("instituteName")} {"("}
               {localStorage.getItem("academicYear")} */}
               {/* {")"} */}
-              St. Arnolds Central School{" ("}
+              {/* St. Arnolds Central School{" ("} */}
+              EvolvU Smart School{" ("}
               {sessionData.custom_claims?.academic_year}
               {")"}
             </h1>

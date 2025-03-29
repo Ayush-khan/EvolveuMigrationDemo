@@ -180,6 +180,35 @@ import CategoryReligion from "../componants/CategoryReligion/CategoryReligion.js
 import AllotGRNumbers from "../componants/AllotGRNumber/AllotGRNumbers.jsx";
 import UpdateStudentID from "../componants/UpdateStudentID/UpdateStudentID.jsx";
 import StudentSearchUsingGRN from "../componants/StudentSearchUsingGRN/StudentSearchUsingGRN.jsx";
+import HolidayList from "../componants/HolidayList/HolidayList.jsx";
+import StudentIdCard from "../componants/IDCards/StudentIdCard.jsx";
+import TeacherIdCard from "../componants/IDCards/TeacherIdCard.jsx";
+import TimeTable from "../componants/TimeTableModule/TimeTable.jsx";
+import CreateTimeTable from "../componants/TimeTableModule/CreateTimeTable.jsx";
+import IDCardDetails from "../componants/IDCards/IDCardDetails.jsx";
+import ListAdmFrmRep from "../componants/Reports/ListAdmFrmRep.jsx";
+import Balanceleave from "../componants/Reports/Balanceleave.jsx";
+import ConsolidatedLeave from "../componants/Reports/ConsolidatedLeave.jsx";
+import StudentReport from "../componants/Reports/StudentReport.jsx";
+import StudentContactDetailsReport from "../componants/Reports/StudentContactDetailsReport.jsx";
+import PendingStudentId from "../componants/IDCards/PendingStudentId.jsx";
+import CatWiseStudRepo from "../componants/Reports/CatWiseStudRepo.jsx";
+import RelgWiseStudRepo from "../componants/Reports/RelgWiseStudRepo.jsx";
+import GendrWiseStudRepo from "../componants/Reports/GendrWiseStudRepo.jsx";
+import StudentRemarkReport from "../componants/Reports/StudentRemarkReport.jsx";
+import GenWiseCatRepo from "../componants/Reports/GenWiseCatRepo.jsx";
+import GenWiseRelignRepo from "../componants/Reports/GenWiseRelignRepo.jsx";
+import NewStudentsRepo from "../componants/Reports/NewStudentsRepo.jsx";
+import LeftStudentsRepo from "../componants/Reports/LeftStudentsRepo.jsx";
+import FeesPaymentReport from "../componants/Reports/FeesPaymentReport.jsx";
+import StaffReport from "../componants/Reports/StaffReport.jsx";
+import HSCStudentsSubjectsReport from "../componants/Reports/HSCStudentsSubjectsReport.jsx";
+import WorldlineFeePaymentReport from "../componants/Reports/WorldlineFeePaymentReport.jsx";
+import RazorpayFeePaymentReport from "../componants/Reports/RazorpayFeePaymentReport.jsx";
+import SubstituteTeacherMonthlyReport from "../componants/Reports/SubstituteTeacherMonthlyReport.jsx";
+import SubstitutionWeeklyHoursReport from "../componants/Reports/SubstitutionWeeklyHoursReport.jsx";
+import LeavingCertificateReport from "../componants/Reports/LeavingCertificateReport.jsx";
+import PendingStudentIdCardReport from "../componants/Reports/PendingStudentIdCardReport.jsx";
 // import Menus from "../c";
 function Index() {
   return (
@@ -199,7 +228,6 @@ function Index() {
           path="//manage-role-access/:roleId"
           element={<PrivateRoute element={<ManageRoleAccess />} />}
         />
-
         {/* <Route
           path="/TestForAllfunctionlity"
           // path="#"
@@ -275,7 +303,6 @@ function Index() {
           // path="#"
           element={<PrivateRoute element={<EditSimpleBonafied />} />}
         />
-
         {/* LC Student */}
         <Route
           path="/leavingCertificate"
@@ -310,7 +337,6 @@ function Index() {
           // path="#"
           element={<PrivateRoute element={<EditLCforDeleteStudent />} />}
         />
-
         {/* <Route
           path="/student/edit/:id"
           element={<PrivateRoute element={<CreateStudent/>} />}
@@ -370,7 +396,6 @@ function Index() {
           path="/LeaveApplication"
           element={<PrivateRoute element={<LeaveApplication />} />}
         />
-
         <Route
           path="/createLeaveApplication"
           element={<PrivateRoute element={<CreateLeaveApplication />} />}
@@ -401,6 +426,11 @@ function Index() {
           path="/noticeAndSms"
           element={<PrivateRoute element={<NoticeAndSms />} />}
         />
+        {/* Holiday List module */}
+        <Route
+          path="/holidayList"
+          element={<PrivateRoute element={<HolidayList />} />}
+        />
         {/* CareTacker */}
         <Route
           path="/careTacker"
@@ -418,7 +448,6 @@ function Index() {
           path="/CareTacker/view/:id"
           element={<PrivateRoute element={<ViewCareTacker />} />}
         />
-
         {/* Set Late Time module */}
         <Route
           path="/SetLateTime"
@@ -440,7 +469,6 @@ function Index() {
           path="/classes"
           element={<PrivateRoute element={<ClassList />} />}
         />
-
         {/* Division module */}
         <Route
           path="/division"
@@ -496,7 +524,6 @@ function Index() {
           path="/newStudetEdit/edit/:id"
           element={<PrivateRoute element={<EditOfNewStudentList />} />}
         />
-
         {/* AllotClassTeacher */}
         <Route
           path="/allotClassTeacher"
@@ -517,6 +544,16 @@ function Index() {
           path="/updateStudentID"
           element={<PrivateRoute element={<UpdateStudentID />} />}
         />
+        {/* TimeTable Module */}
+        <Route
+          path="/timeTable"
+          element={<PrivateRoute element={<TimeTable />} />}
+        />
+        {/* Create TimeTable Module */}
+        <Route
+          path="/createTimeTable"
+          element={<PrivateRoute element={<CreateTimeTable />} />}
+        />
         {/*Update CategoryReligion Module */}
         <Route
           path="/categoryReligion"
@@ -527,7 +564,6 @@ function Index() {
         {/* Grade Module */}
         <Route path="/grades" element={<PrivateRoute element={<Grade />} />} />
         {/* MarksHeading Moudle */}
-
         <Route
           path="/marksHeading"
           element={<PrivateRoute element={<MarksHeading />} />}
@@ -554,10 +590,144 @@ function Index() {
           path="/examTimeTable/view/:id"
           element={<PrivateRoute element={<ViewExamTimeTable />} />}
         />
-
         <Route
           path="/sections"
           element={<PrivateRoute element={<Sections />} />}
+        />
+        {/* Id Cards Module */}
+        {/* Student Id Card Module */}
+        <Route
+          path="/studentIdCard"
+          element={<PrivateRoute element={<StudentIdCard />} />}
+        />
+        {/* Teacher ID Card Module */}
+        <Route
+          path="/teacherIdCard"
+          element={<PrivateRoute element={<TeacherIdCard />} />}
+        />
+        {/* Pending StudentID Card Module */}
+        <Route
+          path="/pendingStudentId"
+          element={<PrivateRoute element={<PendingStudentId />} />}
+        />
+        {/* Id Card Details */}
+
+        <Route
+          path="/iDCardDetails/:id"
+          element={<PrivateRoute element={<IDCardDetails />} />}
+        />
+        {/* List Of Admission Form Reports */}
+        <Route
+          path="/listAdmFrmRep"
+          element={<PrivateRoute element={<ListAdmFrmRep />} />}
+        />
+        {/* Balance Leave Module */}
+        <Route
+          path="/balanceleave"
+          element={<PrivateRoute element={<Balanceleave />} />}
+        />
+        {/* Consolidated Leave Report Module */}
+        <Route
+          path="/consolidatedLeave"
+          element={<PrivateRoute element={<ConsolidatedLeave />} />}
+        />
+        {/* Student Report Module */}
+        <Route
+          path="/studentReport"
+          element={<PrivateRoute element={<StudentReport />} />}
+        />
+        {/* Student Report Module */}
+        <Route
+          path="/studentContactDetailsReport"
+          element={<PrivateRoute element={<StudentContactDetailsReport />} />}
+        />
+        {/* Student Categorywise  Report Module */}
+        <Route
+          path="/catWiseStudRepo"
+          element={<PrivateRoute element={<CatWiseStudRepo />} />}
+        />
+        {/* Student Religion Wise  Report Module */}
+        <Route
+          path="/relgWiseStudRepo"
+          element={<PrivateRoute element={<RelgWiseStudRepo />} />}
+        />
+        {/* Student GenWiseRelignRepo Report Module */}
+        <Route
+          path="/genWiseRelignRepo"
+          element={<PrivateRoute element={<GenWiseRelignRepo />} />}
+        />
+        {/* Student Gender Wise  Report Module */}
+        <Route
+          path="/gendrWiseStudRepo"
+          element={<PrivateRoute element={<GendrWiseStudRepo />} />}
+        />
+        {/* Student StudentRemarkReport  Module */}
+        <Route
+          path="/studentRemarkReport"
+          element={<PrivateRoute element={<StudentRemarkReport />} />}
+        />
+        {/* Student Gender Wise  Report Module */}
+        <Route
+          path="/genWiseCatRepo"
+          element={<PrivateRoute element={<GenWiseCatRepo />} />}
+        />
+        {/* Student Gender Wise  Report Module */}
+        <Route
+          path="/newStudentsRepo"
+          element={<PrivateRoute element={<NewStudentsRepo />} />}
+        />
+        {/* Student Gender Wise  Report Module */}
+        <Route
+          path="/leftStudentsRepo"
+          element={<PrivateRoute element={<LeftStudentsRepo />} />}
+        />
+        {/* Staff Report Module */}
+        <Route
+          path="/staffReport"
+          element={<PrivateRoute element={<StaffReport />} />}
+        />
+        {/* Student Gender Wise  Report Module */}
+        <Route
+          path="/hSCStudSubjectsRepo"
+          element={<PrivateRoute element={<HSCStudentsSubjectsReport />} />}
+        />
+
+        {/* Fee payment report module */}
+        <Route
+          path="/feePaymentRepo"
+          element={<PrivateRoute element={<FeesPaymentReport />} />}
+        />
+        {/* Worldline Fee Payment Report  module */}
+        <Route
+          path="/worldlinfeePayRepo"
+          element={<PrivateRoute element={<WorldlineFeePaymentReport />} />}
+        />
+        {/* Razorpay Fee Payment Reportmodule */}
+        <Route
+          path="/rozorpayfeePayRepo"
+          element={<PrivateRoute element={<RazorpayFeePaymentReport />} />}
+        />
+        {/* Substitute Teacher Monthly Report Reportmodule */}
+        <Route
+          path="/SubsTeaMonthlyRepo"
+          element={
+            <PrivateRoute element={<SubstituteTeacherMonthlyReport />} />
+          }
+        />
+        {/* Substitution Weekly Hours Report Report Reportmodule */}
+        <Route
+          path="/SubsWklyHrsRepo"
+          element={<PrivateRoute element={<SubstitutionWeeklyHoursReport />} />}
+        />
+        {/* Leaving certificate Report Report Reportmodule */}
+        <Route
+          path="/LeavCertifRepo"
+          element={<PrivateRoute element={<LeavingCertificateReport />} />}
+        />
+        {/* PendingStudentIdcard Report Reportmodule */}
+        <Route
+          path="/PndingStudIdCrdRepo"
+          element={<PrivateRoute element={<PendingStudentIdCardReport />} />}
         />
         <Route path="/notification" element={<NotificationPage />} />
         <Route path="/changepassword" element={<ChangePassword />} />
