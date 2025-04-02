@@ -729,7 +729,32 @@ const AdminNavBar = () => {
               Leave Application
             </NavDropdown.Item>
           </NavDropdown>
-
+          {/* Time Table Planner */}
+          {/* Leave Sub-dropdown */}
+          <NavDropdown
+            title={
+              <span
+                className="nav-dropdown-titleSubUnder"
+                onClick={() => toggleDropdown("timetableplanner")}
+                onMouseEnter={() => handleMouseEnter("timetableplanner")}
+              >
+                Time Table Planner
+              </span>
+            }
+            className="dropend custom-submenu"
+            show={openDropdown === "timetableplanner"}
+            onMouseLeave={handleMouseLeave}
+          >
+            <NavDropdown.Item as={Link} to="/teacherPeriodAlloction">
+              Teacher Period Allocation
+            </NavDropdown.Item>
+            {/* <NavDropdown.Item as={Link} to="#">
+              
+            </NavDropdown.Item>
+            <NavDropdown.Item as={Link} to="/LeaveApplication">
+              Leave Application
+            </NavDropdown.Item> */}
+          </NavDropdown>
           {/* Other Items */}
           <NavDropdown.Item as={Link} to="/leavingCertificate">
             Leaving Certificate
@@ -758,6 +783,7 @@ const AdminNavBar = () => {
           <NavDropdown.Item as={Link} to="/updateStudentID">
             Update Student ID and Other Details
           </NavDropdown.Item>
+
           <NavDropdown.Item as={Link} to="/timeTable">
             Time Table
           </NavDropdown.Item>

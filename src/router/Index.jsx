@@ -209,6 +209,8 @@ import SubstituteTeacherMonthlyReport from "../componants/Reports/SubstituteTeac
 import SubstitutionWeeklyHoursReport from "../componants/Reports/SubstitutionWeeklyHoursReport.jsx";
 import LeavingCertificateReport from "../componants/Reports/LeavingCertificateReport.jsx";
 import PendingStudentIdCardReport from "../componants/Reports/PendingStudentIdCardReport.jsx";
+// import TimetablePlanner from "../componants/TimeTablePlanner/TimetablePlanner.jsx";
+import TeacherPeriodAllocation from "../componants/TimeTablePlanner/CommonTableForAllTable/TeacherPeriodAllocation.jsx";
 // import Menus from "../c";
 function Index() {
   return (
@@ -448,6 +450,11 @@ function Index() {
           path="/CareTacker/view/:id"
           element={<PrivateRoute element={<ViewCareTacker />} />}
         />
+        {/* TimeTablePlanner module */}
+        <Route
+          path="/teacherPeriodAlloction"
+          element={<PrivateRoute element={<TeacherPeriodAllocation />} />}
+        />
         {/* Set Late Time module */}
         <Route
           path="/SetLateTime"
@@ -544,6 +551,12 @@ function Index() {
           path="/updateStudentID"
           element={<PrivateRoute element={<UpdateStudentID />} />}
         />
+        {/* TimetablePlanner module */}
+        {/* Create TimeTable Module */}
+        {/* <Route
+          path="/TimetablePlanner"
+          element={<PrivateRoute element={<TimetablePlanner />} />}
+        /> */}
         {/* TimeTable Module */}
         <Route
           path="/timeTable"
