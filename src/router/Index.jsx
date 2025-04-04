@@ -209,8 +209,11 @@ import SubstituteTeacherMonthlyReport from "../componants/Reports/SubstituteTeac
 import SubstitutionWeeklyHoursReport from "../componants/Reports/SubstitutionWeeklyHoursReport.jsx";
 import LeavingCertificateReport from "../componants/Reports/LeavingCertificateReport.jsx";
 import PendingStudentIdCardReport from "../componants/Reports/PendingStudentIdCardReport.jsx";
-// import TimetablePlanner from "../componants/TimeTablePlanner/TimetablePlanner.jsx";
+import TimetablePlanner from "../componants/TimeTablePlanner/TimetablePlanner.jsx";
 import TeacherPeriodAllocation from "../componants/TimeTablePlanner/CommonTableForAllTable/TeacherPeriodAllocation.jsx";
+import CreateClassWisePeriodAllotment from "../componants/TimeTablePlanner/CommonTableForAllTable/CreateClassWisePeriodAllotment.jsx";
+import ClassWisePeriodAllotment from "../componants/TimeTablePlanner/CommonTableForAllTable/ClassWisePeriodAllotment.jsx";
+
 // import Menus from "../c";
 function Index() {
   return (
@@ -455,6 +458,18 @@ function Index() {
           path="/teacherPeriodAlloction"
           element={<PrivateRoute element={<TeacherPeriodAllocation />} />}
         />
+        {/* CreateClassWisePeriodAllotment module */}
+        <Route
+          path="/createClassWisePAllot"
+          element={
+            <PrivateRoute element={<CreateClassWisePeriodAllotment />} />
+          }
+        />
+        {/* ClassWisePeriodAllotment Module */}
+        <Route
+          path="/classWisePAllot"
+          element={<PrivateRoute element={<ClassWisePeriodAllotment />} />}
+        />
         {/* Set Late Time module */}
         <Route
           path="/SetLateTime"
@@ -553,10 +568,10 @@ function Index() {
         />
         {/* TimetablePlanner module */}
         {/* Create TimeTable Module */}
-        {/* <Route
+        <Route
           path="/TimetablePlanner"
           element={<PrivateRoute element={<TimetablePlanner />} />}
-        /> */}
+        />
         {/* TimeTable Module */}
         <Route
           path="/timeTable"
