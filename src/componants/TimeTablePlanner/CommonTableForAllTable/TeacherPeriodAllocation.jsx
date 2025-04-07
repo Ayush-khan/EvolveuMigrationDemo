@@ -54,8 +54,9 @@ const TeacherPeriodAllocation = () => {
       const response = await axios.get(`${API_URL}/api/get_departments`, {
         headers: { Authorization: `Bearer ${token}` },
       });
-      console.log("Class", response);
+      console.log("Departments", response);
       setDepartmentNameId(response?.data?.data || []);
+      console.log("Departments", response?.data?.data);
     } catch (error) {
       toast.error("Error fetching Departments");
       console.error("Error fetching Departments:", error);
@@ -106,11 +107,20 @@ const TeacherPeriodAllocation = () => {
     [subjects]
   );
 
+  // const departmentOptions = useMemo(
+  //   () =>
+  //     departmentNameId.map((cls) => ({
+  //       value: cls?.department_group,
+  //       label: `${cls.department_group}`,
+  //     })),
+  //   [departmentNameId]
+  // );
+
   const departmentOptions = useMemo(
     () =>
       departmentNameId.map((cls) => ({
-        value: cls?.department_id,
-        label: `${cls.name}`,
+        value: cls?.teacher_group,
+        label: cls?.teacher_group,
       })),
     [departmentNameId]
   );
@@ -862,7 +872,7 @@ const TeacherPeriodAllocation = () => {
 
   return (
     <>
-      <div className="w-full md:w-[65%] mx-auto p-4 ">
+      <div className="w-full md:w-[70%] mx-auto p-4 ">
         <ToastContainer />
         <div className="card p-4 rounded-md ">
           <div className=" card-header mb-4 flex justify-between items-center ">
@@ -1042,6 +1052,7 @@ const TeacherPeriodAllocation = () => {
                     ></div>
 
                     <div className="card-body w-full">
+                      {/* w-[80%] md:ml-20 */}
                       <div
                         className="h-96 lg:h-96 overflow-y-scroll overflow-x-scroll"
                         style={{

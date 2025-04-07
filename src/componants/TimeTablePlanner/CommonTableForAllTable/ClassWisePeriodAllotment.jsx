@@ -5,12 +5,9 @@ import { toast, ToastContainer } from "react-toastify";
 import "react-toastify/dist/ReactToastify.css";
 import { useNavigate } from "react-router-dom";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
-import {
-  faEdit,
-  faTrash,
-  faPlus,
-  faRibbon,
-} from "@fortawesome/free-solid-svg-icons";
+import { faEdit, faTrash, faPlus } from "@fortawesome/free-solid-svg-icons";
+import ReactPaginate from "react-paginate";
+
 import "react-toastify/dist/ReactToastify.css";
 const ClassWisePeriodAllotment = () => {
   const API_URL = import.meta.env.VITE_API_URL;
@@ -37,6 +34,7 @@ const ClassWisePeriodAllotment = () => {
 
   const [timetable, setTimetable] = useState([]);
 
+  const [newPeriod, setNewPeriod] = useState(null);
   const pageSize = 10;
   const [pageCount, setPageCount] = useState(0);
   const [searchTerm, setSearchTerm] = useState("");
@@ -133,40 +131,6 @@ const ClassWisePeriodAllotment = () => {
     }
   };
 
-  // const validateSectionName = (classname, monFri, sat) => {
-  // const errors = {};
-
-  // if (!classname) {
-  //   errors.classname = "Please select Class name.";
-  // }
-
-  // if (!monFri || isNaN(Number(monFri))) {
-  //   errors["mon-fri"] = "Please enter Mon-Fri Period.";
-  // } else if (Number(monFri) <= 0 || Number(monFri) >= 9) {
-  //   errors["mon-fri"] = "Mon-Fri Period must be greater than 0 and less than 9.";
-  // }
-
-  // if (!sat || isNaN(Number(sat))) {
-  //   errors.sat = "Please enter Sat Period.";
-  // } else if (Number(sat) <= 0 || Number(sat) >= 5) {
-  //   errors.sat = "Sat Period must be greater than 0 and less than 5.";
-  // }
-
-  // return errors;
-  // };
-
-  // const handleEdit = (section) => {
-  // setCurrentClassPeriod(section.class_id);
-  // setCurrentSectionPeriod(section.section_id);
-  // setCurrentClassPeriodName(section?.classname);
-
-  // // Set previously saved periods if available
-  // setMonFriPeriod(section?.["mon-fri"] || "");
-  // setSatPeriod(section?.sat || "");
-
-  // setShowEditModal(true);
-  // };
-
   const handleEdit = (section) => {
     setCurrentClassPeriod(section.class_id);
     setCurrentSectionPeriod(section.section_id);
@@ -183,86 +147,84 @@ const ClassWisePeriodAllotment = () => {
   };
 
   // const handleSubmitEdit = async () => {
-  //     if (isSubmitting) return; // Prevent re-submitting
-  //     setIsSubmitting(true);
+  //   setLoadingForSearch(true);
 
-  //     const validationErrors = validateSectionName(
-  //       currentClassPeriodName,
-  //       monfriPeriod,
-  //       satPeriod
-  //     );
-  //     if (Object.keys(validationErrors).length > 0) {
-  //       setFieldErrors(validationErrors);
-  //       console.log("setFieldErrors", fieldErrors);
-  //       setIsSubmitting(false); // Reset submitting state if validation fails
+  //   if (isSubmitting) return; // Prevent re-submitting
+  //   setIsSubmitting(true);
+
+  //   const newErrors = {};
+  //    if (!periods["mon-fri"]) {
+  //      newErrors["mon-fri"] = "Mon-Fri Periods are required.";
+  //    }
+  //    if (!periods["sat"]) {
+  //      newErrors["sat"] = "Saturday Periods are required.";
+  //    }
+
+  //     if (Object.keys(newErrors).length > 0) {
+  //       setErrors(newErrors);
+  //        toast.error("Please fill in all required fields before submitting.");
+  //       setLoadingForSearch(false);
   //       return;
   //     }
 
-  //     try {
-  //       const token = localStorage.getItem("authToken");
-  //       if (
-  //         !token ||
-  //         !currentClassPeriodName ||
-  //         !monfriPeriod.["mon-fri"] ||
-  //         !satPeriod.sat
-  //       ) {
-  //         throw new Error("No authentication token or required IDs found");
+  //   try {
+  //     const token = localStorage.getItem("authToken");
+
+  //     const response = await axios.put(
+  //       `${API_URL}/api/update_classwiseperiod/${currentClassPeriod}/${currentSectionPeriod}`,
+  //       {
+  //         "mon-fri": periods["mon-fri"], // Pass the selected value for mon-fri
+  //         sat: periods["sat"],
+  //       },
+  //       {
+  //         headers: { Authorization: `Bearer ${token}` },
+  //         withCredentials: true,
   //       }
+  //     );
 
-  //       const response = await axios.put(
-  //         `${API_URL}/api/update_classwiseperiod/${currentClassPeriod}/${currentSectionPeriod}`,
-  //         {
-  //           [mon-fri]: monfriPeriod,
-  //           sat: satPeriod
-  //         },
-  //         {
-  //           headers: { Authorization: `Bearer ${token}` },
-  //           withCredentials: true,
-  //         }
-  //       );
+  //     console.log("Update response:", response.data);
 
-  //       console.log("Update response:", response.data);
-  //       console.log("Sections fetched after update:", sections);
+  //     handleSearch();
+  //     handleCloseModal();
+  //     toast.success("Class Period Allocation updated successfully!");
+  //   } catch (error) {
 
-  //       fetchSections();
-  //       handleCloseModal();
-  //       toast.success("Class Period Allocation updated successfully!");
-  //     } catch (error) {
-  //       console.error("Error editing Staff Leave:", error);
-  //       console.log("Error details:", error.response?.data || error.message);
-  //       if (error.response && error.response.data.status === 422) {
-  //         const errors = error.response.data.errors;
-  //         // if (errors.staff_id) {
-  //         //   setFieldErrors((prev) => ({
-  //         //     ...prev,
-  //         //     staff_id: errors.staff_id,
-  //         //   }));
-  //         //   errors.staff_id.forEach((err) => toast.error(err));
-  //         // }
-  //       } else {
-  //         toast.error("Server error. Please try again later.");
-  //       }
-  //     } finally {
-  //       setIsSubmitting(false); // Re-enable the button after the operation
+  //     if (error.response && error.response.data.status === 422) {
+  //       const errors = error.response.data.errors;
+  //       console.log("error", errors);
+
+  //     } else {
+  //       toast.error("Server error. Please try again later.");
   //     }
+  //   } finally {
+  //     setIsSubmitting(false); // Re-enable the button after the operation
+  //     setLoadingForSearch(false);
+  //   }
   // };
 
   const handleSubmitEdit = async () => {
-    if (isSubmitting) return; // Prevent re-submitting
+    setLoadingForSearch(true);
+
+    if (isSubmitting) return;
+
+    // ✅ Do validation first
+    const newErrors = {};
+    if (!periods["mon-fri"]) {
+      newErrors["mon-fri"] = "Mon-Fri Periods are required.";
+    }
+    if (!periods["sat"]) {
+      newErrors["sat"] = "Saturday Periods are required.";
+    }
+
+    if (Object.keys(newErrors).length > 0) {
+      setErrors(newErrors);
+      toast.error("Please fill in all required fields before submitting.");
+      setLoadingForSearch(false);
+      return;
+    }
+
+    // ✅ If validation passed, allow submission
     setIsSubmitting(true);
-
-    // const validationErrors = validateSectionName(
-    //   currentClassPeriodName,
-    //   monfriPeriod,
-    //   satPeriod
-    // );
-
-    // if (Object.keys(validationErrors).length > 0) {
-    //   setFieldErrors(validationErrors);
-    //   console.log("setFieldErrors", validationErrors);
-    //   setIsSubmitting(false); // Reset submitting state if validation fails
-    //   return;
-    // }
 
     try {
       const token = localStorage.getItem("authToken");
@@ -270,7 +232,7 @@ const ClassWisePeriodAllotment = () => {
       const response = await axios.put(
         `${API_URL}/api/update_classwiseperiod/${currentClassPeriod}/${currentSectionPeriod}`,
         {
-          "mon-fri": periods["mon-fri"], // Pass the selected value for mon-fri
+          "mon-fri": periods["mon-fri"],
           sat: periods["sat"],
         },
         {
@@ -285,100 +247,20 @@ const ClassWisePeriodAllotment = () => {
       handleCloseModal();
       toast.success("Class Period Allocation updated successfully!");
     } catch (error) {
-      console.error("Error editing Staff Leave:", error);
-      console.log("Error details:", error.response?.data || error.message);
+      console.error("Error editing Class Period:", error);
 
       if (error.response && error.response.data.status === 422) {
         const errors = error.response.data.errors;
         console.log("error", errors);
-        // Handle specific validation errors from API response if needed
       } else {
         toast.error("Server error. Please try again later.");
       }
     } finally {
-      setIsSubmitting(false); // Re-enable the button after the operation
+      setIsSubmitting(false);
+      setLoadingForSearch(false);
     }
   };
 
-  // const handlePeriodChange = (dayType, value) => {
-  // // Parse the value to ensure it's a number
-  // let parsedValue = parseInt(value, 10);
-
-  // // If parsedValue is not a valid number (NaN), reset to empty or previous valid value
-  // if (isNaN(parsedValue)) {
-  //   parsedValue = "";
-  // }
-
-  // // Handle Mon-Fri Periods (value cannot exceed 9)
-  // if (dayType === "mon-fri") {
-  //   if (parsedValue === "") {
-  //     // Allow clearing the value
-  //     setPeriods((prevPeriods) => ({
-  //       ...prevPeriods,
-  //       [dayType]: parsedValue,
-  //     }));
-  //     setErrors((prevErrors) => ({
-  //       ...prevErrors,
-  //       "mon-fri": "",
-  //     }));
-  //     return;
-  //   }
-
-  //   if (parsedValue > 9) {
-  //     // Show error if the value exceeds 9
-  //     setErrors((prevErrors) => ({
-  //       ...prevErrors,
-  //       "mon-fri": "Mon-Fri Periods cannot be greater than 9.",
-  //     }));
-  //     return; // Prevent value change if the limit is exceeded
-  //   } else if (parsedValue >= 1 && parsedValue <= 9) {
-  //     // Update the periods if the value is within the valid range (1 to 9)
-  //     setPeriods((prevPeriods) => ({
-  //       ...prevPeriods,
-  //       [dayType]: parsedValue,
-  //     }));
-  //     setErrors((prevErrors) => ({
-  //       ...prevErrors,
-  //       "mon-fri": "", // Clear any error if the value is valid
-  //     }));
-  //   }
-  // }
-
-  // // Handle Sat Periods (value cannot exceed 5)
-  // if (dayType === "sat") {
-  //   if (parsedValue === "") {
-  //     // Allow clearing the value
-  //     setPeriods((prevPeriods) => ({
-  //       ...prevPeriods,
-  //       [dayType]: parsedValue,
-  //     }));
-  //     setErrors((prevErrors) => ({
-  //       ...prevErrors,
-  //       sat: "",
-  //     }));
-  //     return;
-  //   }
-
-  //   if (parsedValue > 5) {
-  //     // Show error if the value exceeds 5
-  //     setErrors((prevErrors) => ({
-  //       ...prevErrors,
-  //       sat: "Saturday Periods cannot be greater than 5.",
-  //     }));
-  //     return; // Prevent value change if the limit is exceeded
-  //   } else if (parsedValue >= 1 && parsedValue <= 5) {
-  //     // Update the periods if the value is within the valid range (1 to 5)
-  //     setPeriods((prevPeriods) => ({
-  //       ...prevPeriods,
-  //       [dayType]: parsedValue,
-  //     }));
-  //     setErrors((prevErrors) => ({
-  //       ...prevErrors,
-  //       sat: "", // Clear any error if the value is valid
-  //     }));
-  //   }
-  // }
-  // };
   const handlePeriodChange = (dayType, value) => {
     let parsedValue = parseInt(value, 10);
 
@@ -431,6 +313,10 @@ const ClassWisePeriodAllotment = () => {
 
   console.log("row", timetable);
 
+  const handlePageClick = (data) => {
+    setCurrentPage(data.selected);
+  };
+
   const filteredSections = timetable.filter((student) => {
     const searchLower = searchTerm.trim().toLowerCase(); // Trim spaces from input for cleaner search
 
@@ -447,11 +333,15 @@ const ClassWisePeriodAllotment = () => {
     );
   });
 
-  const displayedSections = filteredSections.slice(currentPage * pageSize);
+  // const displayedSections = filteredSections.slice(currentPage * pageSize);
+  const displayedSections = filteredSections.slice(
+    currentPage * pageSize,
+    (currentPage + 1) * pageSize
+  );
 
   return (
     <>
-      <div className="w-full md:w-[80%] mx-auto p-4 ">
+      <div className="w-full md:w-[60%] mx-auto p-4 ">
         <ToastContainer />
         {/* {timetable.length > 0 && (
           <>
@@ -577,7 +467,7 @@ const ClassWisePeriodAllotment = () => {
         )} */}
         {
           <>
-            <div className="w-full">
+            <div className="w-[full%]">
               <div className="card mx-auto lg:w-full shadow-lg">
                 <div className="p-2 px-3 bg-gray-100 border-none flex justify-between items-center">
                   <div className="w-full flex flex-row justify-between mr-0 md:mr-4">
@@ -613,20 +503,20 @@ const ClassWisePeriodAllotment = () => {
 
                 <div className="card-body w-full">
                   <div
-                    className="h-96 lg:h-96 overflow-y-scroll overflow-x-scroll"
+                    className="h-96 lg:h-96 overflow-y-scroll"
                     style={{
                       scrollbarWidth: "thin",
                       scrollbarColor: "#C03178 transparent",
                     }}
                   >
                     <table className="min-w-full leading-normal table-auto">
-                      <thead>
+                      {/* <thead>
                         <tr className="bg-gray-100">
                           {[
                             "Sr No.",
                             "Class",
-                            "Monday-Friday",
-                            "Saturday",
+                            "Mon-Fri Periods",
+                            "Sat Periods",
                             "Edit",
                             "Delete",
                           ].map((header, index) => (
@@ -637,6 +527,28 @@ const ClassWisePeriodAllotment = () => {
                               {header}
                             </th>
                           ))}
+                        </tr>
+                      </thead> */}
+                      <thead>
+                        <tr className="bg-gray-100">
+                          <th className="w-16 text-center px-2 py-2 border border-gray-950 text-sm font-semibold text-gray-900 tracking-wider">
+                            Sr No.
+                          </th>
+                          <th className="w-32 text-center px-2 py-2 border border-gray-950 text-sm font-semibold text-gray-900 tracking-wider">
+                            Class
+                          </th>
+                          <th className="w-36 text-center px-2 py-2 border border-gray-950 text-sm font-semibold text-gray-900 tracking-wider">
+                            Mon-Fri Periods
+                          </th>
+                          <th className="w-32 text-center px-2 py-2 border border-gray-950 text-sm font-semibold text-gray-900 tracking-wider">
+                            Sat Periods
+                          </th>
+                          <th className="w-24 text-center px-2 py-2 border border-gray-950 text-sm font-semibold text-gray-900 tracking-wider">
+                            Edit
+                          </th>
+                          <th className="w-24 text-center px-2 py-2 border border-gray-950 text-sm font-semibold text-gray-900 tracking-wider">
+                            Delete
+                          </th>
                         </tr>
                       </thead>
 
@@ -657,7 +569,8 @@ const ClassWisePeriodAllotment = () => {
                               className="border border-gray-300"
                             >
                               <td className="px-2 py-2 text-center border border-gray-300">
-                                {index + 1}
+                                {/* {index + 1} */}
+                                {currentPage * pageSize + index + 1}
                               </td>
                               <td className="px-2 py-2 text-center border border-gray-300">
                                 {student?.classname}
@@ -669,17 +582,17 @@ const ClassWisePeriodAllotment = () => {
                                 {student?.sat}
                               </td>
                               <td className="px-2 py-2 text-center border border-gray-300">
-                                {String(student?.exists_in_timetable) ===
-                                "false" ? (
-                                  <button
-                                    className="text-blue-600 hover:text-blue-800 hover:bg-transparent "
-                                    onClick={() => handleEdit(student)}
-                                  >
-                                    <FontAwesomeIcon icon={faEdit} />
-                                  </button>
-                                ) : (
+                                {/* {String(student?.exists_in_timetable) ===
+                                "false" ? ( */}
+                                <button
+                                  className="text-blue-600 hover:text-blue-800 hover:bg-transparent "
+                                  onClick={() => handleEdit(student)}
+                                >
+                                  <FontAwesomeIcon icon={faEdit} />
+                                </button>
+                                {/* ) : (
                                   " "
-                                )}
+                                )} */}
                               </td>
                               <td className="px-2 py-2 text-nowrap text-center border border-gray-300">
                                 {String(student?.exists_in_timetable) ===
@@ -712,6 +625,28 @@ const ClassWisePeriodAllotment = () => {
                     </table>
                   </div>
                 </div>
+                {filteredSections.length > pageSize && (
+                  <ReactPaginate
+                    previousLabel={"Previous"}
+                    nextLabel={"Next"}
+                    breakLabel={"..."}
+                    pageCount={pageCount}
+                    marginPagesDisplayed={1}
+                    pageRangeDisplayed={1}
+                    onPageChange={handlePageClick}
+                    // onPageChange={handleAddperiod}
+                    containerClassName={"pagination justify-content-center"}
+                    pageClassName={"page-item"}
+                    pageLinkClassName={"page-link"}
+                    previousClassName={"page-item"}
+                    previousLinkClassName={"page-link"}
+                    nextClassName={"page-item"}
+                    nextLinkClassName={"page-link"}
+                    breakClassName={"page-item"}
+                    breakLinkClassName={"page-link"}
+                    activeClassName={"active"}
+                  />
+                )}
               </div>
             </div>
           </>
@@ -810,10 +745,8 @@ const ClassWisePeriodAllotment = () => {
               </div>
 
               <div className=" flex justify-end p-3">
-                {/* <button type="button" className="btn btn-secondary" onClick={handleCloseModal}>Cancel</button> */}
                 <button
                   type="button"
-                  // className="btn btn-primary"
                   className="btn btn-primary px-3 mb-2 "
                   style={{}}
                   onClick={handleSubmitEdit}
@@ -849,7 +782,7 @@ const ClassWisePeriodAllotment = () => {
                 ></div>
                 <div className="modal-body">
                   <p>
-                    Are you sure you want to delete? {currentClassPeriodName}{" "}
+                    Are you sure you want to delete {currentClassPeriodName}{" "}
                     Class Period
                   </p>
                   {console.log(

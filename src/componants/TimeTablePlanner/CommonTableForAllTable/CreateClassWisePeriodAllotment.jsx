@@ -214,6 +214,84 @@ const CreateClassWisePeriodAllotment = () => {
   const groupedData = Object.values(groupedClasses);
   console.log("grouped data", groupedData);
 
+  // const handleSubmit = async () => {
+  //   setLoadingForSearch(true);
+
+  //    const newErrors = {};
+  //    if (!periods["mon-fri"]) {
+  //      newErrors["mon-fri"] = "Mon-Fri Periods are required.";
+  //    }
+  //    if (!periods["sat"]) {
+  //      newErrors["sat"] = "Sat Periods are required.";
+  //    }
+
+  //    // If there are validation errors, show them and return early
+  //    if (Object.keys(newErrors).length > 0) {
+  //      setErrors(newErrors);
+  //      setLoadingForSearch(false);
+  //      return;
+  //    }
+
+  //   try {
+  //     const token = localStorage.getItem("authToken");
+
+  //     // Collect selected teachers with their class_id, section_id, and selected periods for mon-fri and sat
+  //     const selectedTeachers = displayedSections
+  //       .filter((teacher) => selectedCheckboxes[teacher.class_id])
+  //       .map((teacher) => ({
+  //         class_id: teacher.class_id,
+  //         section_id: teacher.section_id,
+  //         "mon-fri": periods["mon-fri"], // Pass the selected value for mon-fri
+  //         sat: periods["sat"], // Pass the selected value for sat
+  //       }));
+
+  //     if (
+  //       !Object.values(selectedCheckboxes).some((isChecked) => isChecked) &&
+  //       !displayedSections.some(
+  //         (teacher) => selectedCheckboxes[teacher.section_id]
+  //       )
+  //     ) {
+  //       toast.error(
+  //         "Please select at least one class or section before submitting."
+  //       );
+  //       setLoadingForSearch(false);
+  //       return;
+  //     }
+
+  //     console.log("Sending Data:", JSON.stringify(selectedTeachers, null, 2));
+
+  //     const response = await axios.post(
+  //       `${API_URL}/api/save_classwiseperiod`,
+  //       selectedTeachers, // Corrected payload structure
+  //       {
+  //         headers: {
+  //           Authorization: `Bearer ${token}`,
+  //         },
+  //       }
+  //     );
+
+  //     console.log("Selected teachers after response:", selectedTeachers);
+  //     console.log("Response:", response);
+  //     console.log("API Response:", response.data);
+
+  //     if (response.data.success) {
+  //       toast.success("Classwise Period Allocation Created Successfully.");
+  //       setSelectedCheckboxes({});
+  //       setSelectAll(false);
+  //     } else {
+  //       toast.error("Classwise Period Allocation not created.");
+  //     }
+  //   } catch (error) {
+  //     console.error("Error Submitting Classwise Period Allocation:", error);
+  //     toast.error(
+  //       "Error Submitting Classwise Period Allocation. Please try again."
+  //     );
+  //   } finally {
+  //     setIsSubmitting(false);
+  //     setLoadingForSearch(false);
+  //   }
+  // };
+
   const handleSubmit = async () => {
     setLoadingForSearch(true);
 
@@ -222,7 +300,7 @@ const CreateClassWisePeriodAllotment = () => {
       newErrors["mon-fri"] = "Mon-Fri Periods are required.";
     }
     if (!periods["sat"]) {
-      newErrors["sat"] = "Sat Periods are required.";
+      newErrors["sat"] = "Saturday Periods are required.";
     }
 
     if (Object.keys(newErrors).length > 0) {
@@ -279,6 +357,9 @@ const CreateClassWisePeriodAllotment = () => {
         setSelectedCheckboxes({});
         setSelectAll(false);
         setPeriods(false);
+        setTimeout(() => {
+          navigate("/classwisePeriodAllotment");
+        }, 1000);
       } else {
         toast.error("Classwise Period Allocation not created.");
       }
@@ -290,6 +371,19 @@ const CreateClassWisePeriodAllotment = () => {
       setLoadingForSearch(false);
     }
   };
+
+  // const handlePeriodChange = (dayType, value) => {
+  //   setPeriods((prevPeriods) => ({
+  //     ...prevPeriods,
+  //     [dayType]: value,
+  //   }));
+
+  //   // Reset the error for the corresponding day type
+  //   setErrors((prevErrors) => ({
+  //     ...prevErrors,
+  //     [dayType]: "",
+  //   }));
+  // };
 
   const handlePeriodChange = (dayType, value) => {
     // Parse the value to ensure it's a number
@@ -315,11 +409,11 @@ const CreateClassWisePeriodAllotment = () => {
         return;
       }
 
-      if (parsedValue > 9) {
+      if (parsedValue > 9 || parsedValue < 1) {
         // Show error if the value exceeds 9
         setErrors((prevErrors) => ({
           ...prevErrors,
-          "mon-fri": "Mon-Fri Periods cannot be greater than 9.",
+          "mon-fri": "Mon-Fri Periods between 1 and 9.",
         }));
         return; // Prevent value change if the limit is exceeded
       } else if (parsedValue >= 1 && parsedValue <= 9) {
@@ -350,11 +444,11 @@ const CreateClassWisePeriodAllotment = () => {
         return;
       }
 
-      if (parsedValue > 5) {
+      if (parsedValue > 5 || parsedValue < 1) {
         // Show error if the value exceeds 5
         setErrors((prevErrors) => ({
           ...prevErrors,
-          sat: "Saturday Periods cannot be greater than 5.",
+          sat: "Saturday Periods between 1 and 5.",
         }));
         return; // Prevent value change if the limit is exceeded
       } else if (parsedValue >= 1 && parsedValue <= 5) {
@@ -377,279 +471,359 @@ const CreateClassWisePeriodAllotment = () => {
     return className.includes(searchLower);
   });
 
+  //   const filteredSections = Object.values(timetable) // Extract arrays
+  //     .flat() // Flatten into a single array
+  //     .filter((section) => {
+  //       const searchLower = searchTerm.toLowerCase().trim();
+  //       const studentName =
+  //         section?.classname_section?.toLowerCase().trim() || "";
+  //       return studentName.includes(searchLower);
+  //     });
+
   const displayedSections = filteredSections.slice(currentPage * pageSize);
 
   return (
     <>
-      <div className="w-full md:w-[70%] mx-auto p-4 ">
+      <div className="w-full md:w-[65%] mx-auto p-4 ">
         <ToastContainer />
         <div className="">
-          <>
-            <div className="w-full  mt-2">
-              <div className="card mx-auto lg:w-full shadow-lg">
-                <div className="p-2 px-3 bg-gray-100 border-none flex justify-between items-center">
-                  <div className="w-full flex flex-row justify-between mr-0 md:mr-4 ">
-                    <h3 className="text-gray-700 mt-1 text-[1.2em] lg:text-xl text-nowrap">
-                      Classwise Period Allocation
-                    </h3>
-                    <RxCross1
-                      className="mt-2 relative  text-xl text-red-600 hover:cursor-pointer hover:bg-red-100"
-                      onClick={() => {
-                        navigate("/classWisePAllot");
-                      }}
-                    />
-                  </div>
-                </div>
-                <div
-                  className=" relative w-[97%]   mb-3 h-1  mx-auto bg-red-700"
-                  style={{
-                    backgroundColor: "#C03078",
-                  }}
-                ></div>
-
-                <div className="card-body w-full">
-                  <div
-                    className="h-96 lg:h-96 overflow-y-scroll overflow-x-scroll"
-                    style={{
-                      scrollbarWidth: "thin", // Makes scrollbar thin in Firefox
-                      scrollbarColor: "#C03178 transparent", // Sets track and thumb color in Firefox
+          <div className="w-full  mt-2">
+            <div className="card mx-auto lg:w-full shadow-lg">
+              <div className="p-2 px-3 bg-gray-100 border-none flex justify-between items-center">
+                <div className="w-full flex flex-row justify-between mr-0 md:mr-4 ">
+                  <h3 className="text-gray-700 mt-1 text-[1.2em] lg:text-xl text-nowrap">
+                    Classwise Period Allocation
+                  </h3>
+                  <RxCross1
+                    className="mt-2 relative  text-xl text-red-600 hover:cursor-pointer hover:bg-red-100"
+                    onClick={() => {
+                      navigate("/classWisePAllot");
                     }}
-                  >
-                    {timetable.length > 0 ? (
-                      <>
-                        <table className="min-w-full leading-normal table-auto">
-                          <thead>
-                            <tr className="bg-gray-100">
-                              {["Sr No.", "Select All", "Class"].map(
-                                (header, index) => (
-                                  <th
-                                    key={index}
-                                    className="px-2 text-center lg:px-3 py-2 border border-gray-950 text-sm font-semibold text-gray-900 tracking-wider"
-                                  >
-                                    {header === "Select All" ? (
-                                      <div className="flex flex-col items-center justify-center gap-1">
-                                        <span>{header}</span>
-                                        <input
-                                          type="checkbox"
-                                          className="form-checkbox h-3 w-3 text-blue-600"
-                                          checked={selectAll}
-                                          onChange={handleSelectAll}
-                                        />
-                                      </div>
-                                    ) : (
-                                      header
-                                    )}
-                                  </th>
-                                )
-                              )}
-                            </tr>
-                          </thead>{" "}
-                          <tbody>
-                            {Object.values(
-                              timetable.reduce((acc, student) => {
-                                const {
-                                  class_id,
-                                  classname_section,
-                                  section_id,
-                                } = student;
+                  />
+                  {/* <div className="w-1/2 md:w-[18%] mr-1 ">
+                        <input
+                          type="text"
+                          className="form-control"
+                          placeholder="Search "
+                          onChange={(e) => setSearchTerm(e.target.value)}
+                        />
+                      </div> */}
+                </div>
+              </div>
+              <div
+                className=" relative w-[97%]   mb-3 h-1  mx-auto bg-red-700"
+                style={{
+                  backgroundColor: "#C03078",
+                }}
+              ></div>
 
-                                if (!acc[class_id]) {
-                                  acc[class_id] = {
-                                    class_id: class_id,
-                                    sections: [],
-                                  };
-                                }
-
-                                // Push section name with its ID
-                                acc[class_id].sections.push({
-                                  section_id,
-                                  classname_section,
-                                });
-                                return acc;
-                              }, {})
-                            ).map((group, index) => (
+              <div className="card-body w-full h-full">
+                <div
+                  className="h-[500px] lg:h-[500px] overflow-y-scroll overflow-x-scroll"
+                  style={{
+                    scrollbarWidth: "thin", // Makes scrollbar thin in Firefox
+                    scrollbarColor: "#C03178 transparent", // Sets track and thumb color in Firefox
+                  }}
+                >
+                  {timetable.length > 0 ? (
+                    <>
+                      <table className="min-w-full leading-normal table-auto">
+                        <thead>
+                          <tr className="bg-gray-100">
+                            {["Sr No.", "Select All", "Class"].map(
+                              (header, index) => (
+                                <th
+                                  key={index}
+                                  className="px-2 text-center lg:px-3 py-2 border border-gray-950 text-sm font-semibold text-gray-900 tracking-wider"
+                                >
+                                  {header === "Select All" ? (
+                                    <div className="flex flex-col items-center justify-center gap-1">
+                                      <span>{header}</span>
+                                      <input
+                                        type="checkbox"
+                                        className="form-checkbox h-3 w-3 text-blue-600"
+                                        checked={selectAll}
+                                        onChange={handleSelectAll}
+                                      />
+                                    </div>
+                                  ) : (
+                                    header
+                                  )}
+                                </th>
+                              )
+                            )}
+                          </tr>
+                        </thead>
+                        {/* <tbody>
+                          {displayedSections.length ? (
+                            displayedSections?.map((student, index) => (
                               <tr
-                                key={group.class_id}
+                                key={student.class_id}
                                 className="border border-gray-300"
                               >
-                                {/* Sr No */}
                                 <td className="px-2 py-2 text-center border border-gray-300">
                                   {index + 1}
                                 </td>
-
                                 <td className="px-2 py-2 text-center border border-gray-300">
                                   <input
                                     type="checkbox"
                                     className="form-checkbox h-3 w-3 text-blue-600"
                                     checked={
-                                      !!selectedCheckboxes[group.class_id]
+                                      !!selectedCheckboxes[student.class_id]
                                     }
                                     onChange={() =>
-                                      handleCheckboxChange(
-                                        group,
-                                        group.class_id
-                                      )
+                                      handleCheckboxChange(student.class_id)
                                     }
                                   />
                                 </td>
 
                                 <td className="px-2 py-2 text-center border border-gray-300">
-                                  <div className="grid grid-cols-4 gap-4">
-                                    {group.sections.map((section) => (
-                                      <label
-                                        key={section.section_id}
-                                        className="flex items-center gap-2"
-                                      >
-                                        <input
-                                          type="checkbox"
-                                          className="form-checkbox h-3 w-3 text-green-600"
-                                          checked={
-                                            !!selectedCheckboxes[
-                                              section.section_id
-                                            ]
-                                          }
-                                          onChange={() =>
-                                            handleCheckboxChange(
-                                              group,
-                                              group.class_id,
-                                              section.section_id
-                                            )
-                                          }
-                                        />
-                                        <span>{section.classname_section}</span>
-                                      </label>
-                                    ))}
-                                  </div>
+                                  {student?.class_id}
                                 </td>
                               </tr>
-                            ))}
-                          </tbody>
-                        </table>
-                        <div className=" w-full md:w-[full]   flex justify-center flex-col md:flex-row gap-x-1     ml-0    p-2">
-                          <div className="w-full md:w-[full] flex md:flex-row justify-between items-center mt-0 md:mt-4">
-                            <div className="w-full md:w-[full] gap-x-0 md:gap-x-12  flex flex-col gap-y-2 md:gap-y-0 md:flex-row">
-                              <div className="w-full md:w-[70%] gap-x-2 justify-around my-1 md:my-4 flex md:flex-row">
-                                <label
-                                  className="md:w-[60%] text-md pl-0 md:pl-5 mt-1.5"
-                                  htmlFor="monfriSelect"
-                                >
-                                  Mon-Fri Periods{" "}
-                                  <span className="text-sm text-red-500">
-                                    *
-                                  </span>
-                                </label>
-                                <div className="w-full md:w-[65%]">
-                                  <input
-                                    type="number"
-                                    placeholder="Enter Period"
-                                    value={periods["mon-fri"] || ""}
-                                    onChange={(e) =>
-                                      handlePeriodChange(
-                                        "mon-fri",
-                                        e.target.value
-                                      )
-                                    }
-                                    max={9}
-                                    min={1}
-                                    className="text-sm w-full border border-gray-300 rounded-md px-3 py-2 focus:outline-none focus:ring-2 focus:ring-blue-500"
-                                    disabled={loadingExams}
-                                  />
-                                  {errors["mon-fri"] && (
-                                    <span className="text-xs text-red-500">
-                                      {errors["mon-fri"]}
-                                    </span>
-                                  )}
-                                </div>
+                            ))
+                          ) : (
+                            <div className=" absolute left-[1%] w-[100%]  text-center flex justify-center items-center mt-14">
+                              <div className=" text-center text-xl text-red-700">
+                                Oops! No data found..
                               </div>
+                            </div>
+                          )}
+                        </tbody> */}
+                        <tbody>
+                          {Object.values(
+                            timetable.reduce((acc, student) => {
+                              const {
+                                class_id,
+                                classname_section,
+                                section_id,
+                              } = student;
 
-                              <div className="w-full md:w-[60%] gap-x-2 justify-around my-1 md:my-4 flex md:flex-row">
-                                <label
-                                  className="md:w-[50%] text-md pl-0 md:pl-5 mt-1.5"
-                                  htmlFor="satSelect"
-                                >
-                                  Sat Periods{" "}
-                                  <span className="text-sm text-red-500">
-                                    *
-                                  </span>
-                                </label>
-                                <div className="w-full md:w-[65%]">
-                                  <input
-                                    type="number"
-                                    placeholder="Enter Period"
-                                    value={periods["sat"] || ""}
-                                    onChange={(e) =>
-                                      handlePeriodChange("sat", e.target.value)
-                                    }
-                                    min={1}
-                                    max={5}
-                                    className="text-sm w-full border border-gray-300 rounded-md px-3 py-2 focus:outline-none focus:ring-2 focus:ring-blue-500"
-                                    disabled={loadingExams}
-                                  />
-                                  {errors["sat"] && (
-                                    <span className="text-xs text-red-500">
-                                      {errors["sat"]}
-                                    </span>
-                                  )}
-                                </div>
-                              </div>
+                              if (!acc[class_id]) {
+                                acc[class_id] = {
+                                  class_id: class_id,
+                                  sections: [],
+                                };
+                              }
 
-                              <div className="mt-1">
-                                <button
-                                  type="submit"
-                                  onClick={handleSubmit}
-                                  style={{ backgroundColor: "#2196F3" }}
-                                  className={` btn h-10 w-18 md:w-auto btn-primary text-white font-bold py-1 border-1 border-blue-500 px-4 rounded ${
-                                    loadingForSearch
-                                      ? "opacity-50 cursor-not-allowed"
-                                      : ""
-                                  }`}
-                                  disabled={loadingForSearch}
-                                >
-                                  {loadingForSearch ? (
-                                    <span className="flex items-center">
-                                      <svg
-                                        className="animate-spin h-4 w-4 mr-2 text-white"
-                                        xmlns="http://www.w3.org/2000/svg"
-                                        fill="none"
-                                        viewBox="0 0 24 24"
-                                      >
-                                        <circle
-                                          className="opacity-25"
-                                          cx="12"
-                                          cy="12"
-                                          r="10"
-                                          stroke="currentColor"
-                                          strokeWidth="4"
-                                        ></circle>
-                                        <path
-                                          className="opacity-75"
-                                          fill="currentColor"
-                                          d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4z"
-                                        ></path>
-                                      </svg>
-                                      Saving...
-                                    </span>
-                                  ) : (
-                                    "Save"
-                                  )}
-                                </button>
+                              // Push section name with its ID
+                              acc[class_id].sections.push({
+                                section_id,
+                                classname_section,
+                              });
+                              return acc;
+                            }, {})
+                          ).map((group, index) => (
+                            <tr
+                              key={group.class_id}
+                              className="border border-gray-300"
+                            >
+                              {/* Sr No */}
+                              <td className="px-2 py-2 text-center border border-gray-300">
+                                {index + 1}
+                              </td>
+
+                              {/* Class-Level Checkbox */}
+                              {/* <td className="px-2 py-2 text-center border border-gray-300">
+                                <input
+                                  type="checkbox"
+                                  className="form-checkbox h-3 w-3 text-blue-600"
+                                  checked={!!selectedCheckboxes[group.class_id]}
+                                  onChange={() =>
+                                    handleCheckboxChange(group.class_id)
+                                  }
+                                />
+                              </td> */}
+                              <td className="px-2 py-2 text-center border border-gray-300">
+                                <input
+                                  type="checkbox"
+                                  className="form-checkbox h-3 w-3 text-blue-600"
+                                  checked={!!selectedCheckboxes[group.class_id]}
+                                  onChange={() =>
+                                    handleCheckboxChange(group, group.class_id)
+                                  }
+                                />
+                              </td>
+
+                              {/* Sections (Each Section with Individual Checkbox) */}
+                              {/* <td className="px-2 py-2 text-center border border-gray-300">
+                                <div className="grid grid-cols-4 gap-4">
+                                  {group.sections.map((section) => (
+                                    <label
+                                      key={section.section_id}
+                                      className="flex items-center gap-2"
+                                    >
+                                      <input
+                                        type="checkbox"
+                                        className="form-checkbox h-3 w-3 text-green-600"
+                                        checked={
+                                          !!selectedCheckboxes[
+                                            section.section_id
+                                          ]
+                                        }
+                                        onChange={() =>
+                                          handleSectionCheckboxChange(
+                                            section.section_id
+                                          )
+                                        }
+                                      />
+                                      <span>{section.classname_section}</span>
+                                    </label>
+                                  ))}
+                                </div>
+                              </td> */}
+                              <td className="px-2 py-2 text-center border border-gray-300">
+                                <div className="grid grid-cols-4 gap-4">
+                                  {group.sections.map((section) => (
+                                    <label
+                                      key={section.section_id}
+                                      className="flex items-center gap-2"
+                                    >
+                                      <input
+                                        type="checkbox"
+                                        className="form-checkbox h-3 w-3 text-green-600"
+                                        checked={
+                                          !!selectedCheckboxes[
+                                            section.section_id
+                                          ]
+                                        }
+                                        onChange={() =>
+                                          handleCheckboxChange(
+                                            group,
+                                            group.class_id,
+                                            section.section_id
+                                          )
+                                        }
+                                      />
+                                      <span>{section.classname_section}</span>
+                                    </label>
+                                  ))}
+                                </div>
+                              </td>
+                            </tr>
+                          ))}
+                        </tbody>
+                      </table>
+                      <div className=" w-full md:w-[full] flex justify-center flex-col md:flex-row gap-x-1     ml-0    p-2">
+                        <div className="w-full md:w-[full] flex md:flex-row justify-between items-center mt-0 md:mt-4">
+                          <div className="w-full md:w-[full] gap-x-0 md:gap-x-12  flex flex-col gap-y-2 md:gap-y-0 md:flex-row">
+                            <div className="w-full md:w-[70%] gap-x-2 justify-around my-1 md:my-4 flex md:flex-row">
+                              <label
+                                className="md:w-[60%] text-md pl-0 md:pl-5 mt-1.5"
+                                htmlFor="monfriSelect"
+                              >
+                                Mon-Fri Periods{" "}
+                                <span className="text-sm text-red-500">*</span>
+                              </label>
+                              <div className="w-full md:w-[65%]">
+                                <input
+                                  type="number"
+                                  placeholder="Enter Period"
+                                  value={periods["mon-fri"] || ""}
+                                  onChange={(e) =>
+                                    handlePeriodChange(
+                                      "mon-fri",
+                                      e.target.value
+                                    )
+                                  }
+                                  max={9}
+                                  min={1}
+                                  className="text-sm w-full border border-gray-300 rounded-md px-3 py-2 focus:outline-none focus:ring-2 focus:ring-blue-500"
+                                  disabled={loadingExams}
+                                />
+                                {errors["mon-fri"] && (
+                                  <span className="text-xs text-red-500">
+                                    {errors["mon-fri"]}
+                                  </span>
+                                )}
                               </div>
-                            </div>{" "}
-                          </div>
+                            </div>
+
+                            <div className="w-full md:w-[60%] gap-x-2 justify-around my-1 md:my-4 flex md:flex-row">
+                              <label
+                                className="md:w-[50%] text-md pl-0 md:pl-5 mt-1.5"
+                                htmlFor="satSelect"
+                              >
+                                Sat Periods{" "}
+                                <span className="text-sm text-red-500">*</span>
+                              </label>
+                              <div className="w-full md:w-[65%]">
+                                <input
+                                  type="number"
+                                  placeholder="Enter Period"
+                                  value={periods["sat"] || ""}
+                                  onChange={(e) =>
+                                    handlePeriodChange("sat", e.target.value)
+                                  }
+                                  min={1}
+                                  max={5}
+                                  className="text-sm w-full border border-gray-300 rounded-md px-3 py-2 focus:outline-none focus:ring-2 focus:ring-blue-500"
+                                  disabled={loadingExams}
+                                />
+                                {errors["sat"] && (
+                                  <span className="text-xs text-red-500">
+                                    {errors["sat"]}
+                                  </span>
+                                )}
+                              </div>
+                            </div>
+
+                            <div className="mt-1">
+                              <button
+                                type="submit"
+                                onClick={handleSubmit}
+                                style={{ backgroundColor: "#2196F3" }}
+                                className={` btn h-10 w-18 md:w-auto btn-primary text-white font-bold py-1 border-1 border-blue-500 px-4 rounded ${
+                                  loadingForSearch
+                                    ? "opacity-50 cursor-not-allowed"
+                                    : ""
+                                }`}
+                                disabled={loadingForSearch}
+                              >
+                                {loadingForSearch ? (
+                                  <span className="flex items-center">
+                                    <svg
+                                      className="animate-spin h-4 w-4 mr-2 text-white"
+                                      xmlns="http://www.w3.org/2000/svg"
+                                      fill="none"
+                                      viewBox="0 0 24 24"
+                                    >
+                                      <circle
+                                        className="opacity-25"
+                                        cx="12"
+                                        cy="12"
+                                        r="10"
+                                        stroke="currentColor"
+                                        strokeWidth="4"
+                                      ></circle>
+                                      <path
+                                        className="opacity-75"
+                                        fill="currentColor"
+                                        d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4z"
+                                      ></path>
+                                    </svg>
+                                    Saving...
+                                  </span>
+                                ) : (
+                                  "Save"
+                                )}
+                              </button>
+                            </div>
+                          </div>{" "}
                         </div>
-                      </>
-                    ) : (
-                      <div className="flex justify-center items-center h-64">
-                        {/* <div className="spinner-border text-primary" role="status"> */}
-                        <LoaderStyle />
-                        {/* </div> */}
                       </div>
-                    )}
-                  </div>
+                    </>
+                  ) : (
+                    <div className="flex justify-center items-center h-64">
+                      {/* <div className="spinner-border text-primary" role="status"> */}
+                      <LoaderStyle />
+                      {/* </div> */}
+                    </div>
+                  )}
                 </div>
               </div>
             </div>
-          </>
+          </div>
         </div>
       </div>
     </>
