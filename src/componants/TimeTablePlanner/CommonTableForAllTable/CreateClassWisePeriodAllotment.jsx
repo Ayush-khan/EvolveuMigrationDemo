@@ -214,84 +214,6 @@ const CreateClassWisePeriodAllotment = () => {
   const groupedData = Object.values(groupedClasses);
   console.log("grouped data", groupedData);
 
-  // const handleSubmit = async () => {
-  //   setLoadingForSearch(true);
-
-  //    const newErrors = {};
-  //    if (!periods["mon-fri"]) {
-  //      newErrors["mon-fri"] = "Mon-Fri Periods are required.";
-  //    }
-  //    if (!periods["sat"]) {
-  //      newErrors["sat"] = "Sat Periods are required.";
-  //    }
-
-  //    // If there are validation errors, show them and return early
-  //    if (Object.keys(newErrors).length > 0) {
-  //      setErrors(newErrors);
-  //      setLoadingForSearch(false);
-  //      return;
-  //    }
-
-  //   try {
-  //     const token = localStorage.getItem("authToken");
-
-  //     // Collect selected teachers with their class_id, section_id, and selected periods for mon-fri and sat
-  //     const selectedTeachers = displayedSections
-  //       .filter((teacher) => selectedCheckboxes[teacher.class_id])
-  //       .map((teacher) => ({
-  //         class_id: teacher.class_id,
-  //         section_id: teacher.section_id,
-  //         "mon-fri": periods["mon-fri"], // Pass the selected value for mon-fri
-  //         sat: periods["sat"], // Pass the selected value for sat
-  //       }));
-
-  //     if (
-  //       !Object.values(selectedCheckboxes).some((isChecked) => isChecked) &&
-  //       !displayedSections.some(
-  //         (teacher) => selectedCheckboxes[teacher.section_id]
-  //       )
-  //     ) {
-  //       toast.error(
-  //         "Please select at least one class or section before submitting."
-  //       );
-  //       setLoadingForSearch(false);
-  //       return;
-  //     }
-
-  //     console.log("Sending Data:", JSON.stringify(selectedTeachers, null, 2));
-
-  //     const response = await axios.post(
-  //       `${API_URL}/api/save_classwiseperiod`,
-  //       selectedTeachers, // Corrected payload structure
-  //       {
-  //         headers: {
-  //           Authorization: `Bearer ${token}`,
-  //         },
-  //       }
-  //     );
-
-  //     console.log("Selected teachers after response:", selectedTeachers);
-  //     console.log("Response:", response);
-  //     console.log("API Response:", response.data);
-
-  //     if (response.data.success) {
-  //       toast.success("Classwise Period Allocation Created Successfully.");
-  //       setSelectedCheckboxes({});
-  //       setSelectAll(false);
-  //     } else {
-  //       toast.error("Classwise Period Allocation not created.");
-  //     }
-  //   } catch (error) {
-  //     console.error("Error Submitting Classwise Period Allocation:", error);
-  //     toast.error(
-  //       "Error Submitting Classwise Period Allocation. Please try again."
-  //     );
-  //   } finally {
-  //     setIsSubmitting(false);
-  //     setLoadingForSearch(false);
-  //   }
-  // };
-
   const handleSubmit = async () => {
     setLoadingForSearch(true);
 
@@ -358,7 +280,7 @@ const CreateClassWisePeriodAllotment = () => {
         setSelectAll(false);
         setPeriods(false);
         setTimeout(() => {
-          navigate("/classwisePeriodAllotment");
+          navigate("/classWisePAllot");
         }, 1000);
       } else {
         toast.error("Classwise Period Allocation not created.");
@@ -371,19 +293,6 @@ const CreateClassWisePeriodAllotment = () => {
       setLoadingForSearch(false);
     }
   };
-
-  // const handlePeriodChange = (dayType, value) => {
-  //   setPeriods((prevPeriods) => ({
-  //     ...prevPeriods,
-  //     [dayType]: value,
-  //   }));
-
-  //   // Reset the error for the corresponding day type
-  //   setErrors((prevErrors) => ({
-  //     ...prevErrors,
-  //     [dayType]: "",
-  //   }));
-  // };
 
   const handlePeriodChange = (dayType, value) => {
     // Parse the value to ensure it's a number
@@ -471,15 +380,6 @@ const CreateClassWisePeriodAllotment = () => {
     return className.includes(searchLower);
   });
 
-  //   const filteredSections = Object.values(timetable) // Extract arrays
-  //     .flat() // Flatten into a single array
-  //     .filter((section) => {
-  //       const searchLower = searchTerm.toLowerCase().trim();
-  //       const studentName =
-  //         section?.classname_section?.toLowerCase().trim() || "";
-  //       return studentName.includes(searchLower);
-  //     });
-
   const displayedSections = filteredSections.slice(currentPage * pageSize);
 
   return (
@@ -500,14 +400,6 @@ const CreateClassWisePeriodAllotment = () => {
                       navigate("/classWisePAllot");
                     }}
                   />
-                  {/* <div className="w-1/2 md:w-[18%] mr-1 ">
-                        <input
-                          type="text"
-                          className="form-control"
-                          placeholder="Search "
-                          onChange={(e) => setSearchTerm(e.target.value)}
-                        />
-                      </div> */}
                 </div>
               </div>
               <div

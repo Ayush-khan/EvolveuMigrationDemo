@@ -209,10 +209,13 @@ import SubstituteTeacherMonthlyReport from "../componants/Reports/SubstituteTeac
 import SubstitutionWeeklyHoursReport from "../componants/Reports/SubstitutionWeeklyHoursReport.jsx";
 import LeavingCertificateReport from "../componants/Reports/LeavingCertificateReport.jsx";
 import PendingStudentIdCardReport from "../componants/Reports/PendingStudentIdCardReport.jsx";
-import TimetablePlanner from "../componants/TimeTablePlanner/TimetablePlanner.jsx";
+// import TimetablePlanner from "../componants/TimeTablePlanner/CreateExamTimeTablePlanner/TimetablePlanner.jsx";
 import TeacherPeriodAllocation from "../componants/TimeTablePlanner/CommonTableForAllTable/TeacherPeriodAllocation.jsx";
 import CreateClassWisePeriodAllotment from "../componants/TimeTablePlanner/CommonTableForAllTable/CreateClassWisePeriodAllotment.jsx";
 import ClassWisePeriodAllotment from "../componants/TimeTablePlanner/CommonTableForAllTable/ClassWisePeriodAllotment.jsx";
+import EditTimetablePlanner from "../componants/TimeTablePlanner/EditTimeTablePlanner/EditTimetablePlanner.jsx";
+import CreateTimetablePlanner from "../componants/TimeTablePlanner/CreateExamTimeTablePlanner/CreateTimetablePlanner.jsx";
+import TimetablePlanner from "../componants/TimeTablePlanner/TimeTablePlanner.jsx";
 
 // import Menus from "../c";
 function Index() {
@@ -566,11 +569,20 @@ function Index() {
           path="/updateStudentID"
           element={<PrivateRoute element={<UpdateStudentID />} />}
         />
-        {/* TimetablePlanner module */}
+        {/* Time Table Planner */}
+        <Route
+          path="/timetablePlanner"
+          element={<PrivateRoute element={<TimetablePlanner />} />}
+        />
+        {/* EditTimetablePlanner module */}
+        <Route
+          path="/timetablePlanner/edit/:id"
+          element={<PrivateRoute element={<EditTimetablePlanner />} />}
+        />
         {/* Create TimeTable Module */}
         <Route
-          path="/TimetablePlanner"
-          element={<PrivateRoute element={<TimetablePlanner />} />}
+          path="/createTimetablePlanner"
+          element={<PrivateRoute element={<CreateTimetablePlanner />} />}
         />
         {/* TimeTable Module */}
         <Route

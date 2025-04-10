@@ -534,10 +534,10 @@ const ClassWisePeriodAllotment = () => {
                           <th className="w-16 text-center px-2 py-2 border border-gray-950 text-sm font-semibold text-gray-900 tracking-wider">
                             Sr No.
                           </th>
-                          <th className="w-32 text-center px-2 py-2 border border-gray-950 text-sm font-semibold text-gray-900 tracking-wider">
-                            Class
+                          <th className="w-34 text-center px-2 py-2 border border-gray-950 text-sm font-semibold text-gray-900 tracking-wider">
+                            Class - Division
                           </th>
-                          <th className="w-36 text-center px-2 py-2 border border-gray-950 text-sm font-semibold text-gray-900 tracking-wider">
+                          <th className="w-34 text-center px-2 py-2 border border-gray-950 text-sm font-semibold text-gray-900 tracking-wider">
                             Mon-Fri Periods
                           </th>
                           <th className="w-32 text-center px-2 py-2 border border-gray-950 text-sm font-semibold text-gray-900 tracking-wider">

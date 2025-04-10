@@ -13,6 +13,8 @@ const TeacherPeriodAllocation = () => {
   const [selectedDepartment, setSelectedDepartment] = useState(null);
   const inputRefs = useRef({});
   const [errors, setErrors] = useState({});
+  const [periodError, setPeriodError] = useState({});
+  // const [periodValue, setPeriodValue] = useState({});
 
   const [currentPage, setCurrentPage] = useState(0);
   const [departmentNameId, setDepartmentNameId] = useState([]);
@@ -33,7 +35,7 @@ const TeacherPeriodAllocation = () => {
 
   const [selectAll, setSelectAll] = useState(false);
   const [selectedCheckboxes, setSelectedCheckboxes] = useState({});
-  const [periodValue, setPeriodValue] = useState(""); // Stores user-input period
+  const [periodValue, setPeriodValue] = useState({}); // Stores user-input period ""
   const [allocatedPeriods, setAllocatedPeriods] = useState({}); // Stores periods for all rows
 
   const pageSize = 10;
@@ -125,43 +127,6 @@ const TeacherPeriodAllocation = () => {
     [departmentNameId]
   );
 
-  // Handle search and fetch parent information
-  // const handleSearch = async () => {
-  //   setLoadingForSearch(false);
-
-  //   setSearchTerm("");
-  //   try {
-  //     setLoadingForSearch(true); // Start loading
-  //     setTimetable([]);
-  //     const token = localStorage.getItem("authToken");
-  //     const params = {};
-  //     if (selectedDepartmentId) params.name = selectedDepartmentId;
-  //     if (selectedSubjectId) params.sm_id = selectedSubjectId;
-
-  //     const response = await axios.get(
-  //       `${API_URL}/api/get_teacherperiodallocation`,
-  //       {
-  //         headers: { Authorization: `Bearer ${token}` },
-  //         params,
-  //       }
-  //     );
-
-  //     if (!response?.data?.data || response?.data?.data?.length === 0) {
-  //       toast.error("Teacher Period Allocation data not found.");
-  //       setTimetable([]);
-  //     } else {
-  //       setTimetable(response?.data?.data);
-  //       setPageCount(Math.ceil(response?.data?.data?.length / pageSize)); // Set page count based on response size
-  //     }
-  //   } catch (error) {
-  //     console.error("Error fetching Teacher Period Allocation:", error);
-  //     toast.error("Error fetching Teacher Period Allocation. Please try again.");
-  //   } finally {
-  //     setIsSubmitting(false); // Re-enable the button after the operation
-  //     setLoadingForSearch(false);
-  //   }
-  // };
-
   const handleSearch = async () => {
     setSearchTerm("");
 
@@ -206,48 +171,6 @@ const TeacherPeriodAllocation = () => {
     }
   };
 
-  // console.log("row", timetable);
-
-  // const handleSubmit = async () => {
-  //   setLoadingForSearch(false);
-
-  //   try{
-  //     const token = localStorage.getItem("authToken");
-  //     const params = {} ;
-
-  //     const response = await axios.post(
-  //       `${API_URL}/api/get_teacherperiodallocation`,
-  //       {
-  //         headers: {Authorization : `Bearer ${token}`},
-  //         params,
-  //       }
-  //     );
-
-  //     const {data} = response
-
-  //     if(!data.success)
-  //     {
-  //       toast.error("Teacher Period Allocation not Created .")
-  //     }
-  //     else{
-  //       toast.error("Teacher Period Allocation Created Successfully.")
-  //     }
-  //   }
-  //   catch(error)
-  //   {
-  //     console.error("Error Submitting Teacher Period Allocation:", error);
-  //     toast.error("Error Submitting Teacher Period Allocation. Please try again.");
-
-  //   }
-  //   finally {
-  //     setIsSubmitting(false); // Re-enable the button after the operation
-  //     setLoadingForSearch(false);
-  //   }
-  // }
-
-  // const capitalize = (str) =>
-  //   str.charAt(0).toUpperCase() + str.slice(1).toLowerCase();
-
   const handleSelectAll = () => {
     const newState = !selectAll;
     setSelectAll(newState);
@@ -277,66 +200,6 @@ const TeacherPeriodAllocation = () => {
     );
   };
 
-  // const handleSubmit = async () => {
-  //   try {
-  //     const token = localStorage.getItem("authToken");
-
-  //     // Collect selected teachers with their allocated periods
-  //     const selectedTeachers = displayedSections
-  //       .filter((teacher) => selectedCheckboxes[teacher.teacher_id])
-  //       .map((teacher) => ({
-  //         teacher_id: teacher.teacher_id,
-  //         name: teacher.name,
-  //         periods_allocated:
-  //           allocatedPeriods[teacher.teacher_id] !== undefined
-  //             ? allocatedPeriods[teacher.teacher_id]
-  //             : teacher.periods_allocated,
-  //       }));
-
-  //        console.log("Selected Teachers:",selectedTeachers)
-
-  //     if (selectedTeachers.length === 0) {
-  //       toast.error("Please select at least one teacher before submitting.");
-  //       return;
-  //     }
-
-  //     console.log("Sending Data:", JSON.stringify(selectedTeachers, null, 2));
-  //     if (isSubmitting) return;
-  //     setIsSubmitting(true);
-  //     const response = await axios.post(
-  //       `${API_URL}/api/save_teacherperiodallocation`,
-  //       selectedTeachers, // Try sending the array directly instead of { teachers: selectedTeachers }
-  //       {
-  //         headers: {
-  //           Authorization: `Bearer ${token}`,
-  //         },
-  //       }
-  //     );
-  //     console.log("selected teachers after respponse", selectedTeachers);
-  //     console.log("response", response);
-  //     console.log("API Response:", response.data);
-
-  //     if (response) {
-  //       toast.success("Teacher Period Allocation Created Successfully.");
-  //       setSelectedCheckboxes({});
-  //       setSelectAll(false);
-  //       // handleSearch();
-  //     } else {
-  //       toast.error("Teacher Period Allocation not created.");
-  //     }
-  //   } catch (error) {
-  //     console.error("Error Submitting Teacher Period Allocation:", error);
-  //     toast.error(
-  //       "Error Submitting Teacher Period Allocation. Please try again."
-  //     );
-  //   } finally {
-  //     setIsSubmitting(false);
-  //     setIsSubmitting(false);
-  //   }
-  // };
-
-  // validation if selected tecaher periods_allocated 0
-
   const handleSubmit = async () => {
     try {
       const token = localStorage.getItem("authToken");
@@ -362,7 +225,11 @@ const TeacherPeriodAllocation = () => {
 
       // Find teachers with 0 allocated periods
       const invalidTeachers = selectedTeachers.filter(
-        (teacher) => teacher.periods_allocated === 0
+        (teacher) =>
+          teacher.periods_allocated === 0 ||
+          teacher.periods_allocated === "" ||
+          teacher.periods_allocated === null ||
+          teacher.periods_allocated === undefined
       );
       console.log("invalidTechahers", invalidTeachers);
 
@@ -402,6 +269,71 @@ const TeacherPeriodAllocation = () => {
       if (isSubmitting) return;
       setIsSubmitting(true);
 
+      //  for (const teacher of selectedTeachers) {
+      //    const teacherData = displayedSections.find(
+      //      (t) => String(t.teacher_id) === String(teacher.teacher_id)
+      //    );
+
+      //    if (!teacherData) {
+      //      console.error(`No data found for Teacher ID: ${teacher.teacher_id}`);
+      //      toast.error(`No data found for selected teacher.`);
+      //      return;
+      //    }
+
+      //    const teacherName = teacherData.name || `ID ${teacher.teacher_id}`;
+      //    const periodsUsed = teacherData.periods_used || 0;
+      //    const allocated = teacher.periods_allocated || 0;
+
+      //    if (allocated < periodsUsed) {
+      //      toast.error(
+      //        `Allocated periods for ${teacherName} must be at least ${periodsUsed}`
+      //      );
+      //      return;
+      //    }
+      //  }
+
+      for (const teacher of selectedTeachers) {
+        const teacherData = displayedSections.find(
+          (t) => String(t.teacher_id) === String(teacher.teacher_id)
+        );
+
+        if (!teacherData) {
+          console.error(`No data found for Teacher ID: ${teacher.teacher_id}`);
+          toast.error(`No data found for selected teacher.`);
+          return;
+        }
+
+        const teacherName = teacherData.name || `ID ${teacher.teacher_id}`;
+        const periodsUsed = teacherData.periods_used || 0;
+        const allocated = teacher.periods_allocated || 0;
+
+        if (allocated < periodsUsed) {
+          toast.error(
+            `Allocated periods for ${teacherName} must be at least ${periodsUsed}`
+          );
+
+          // Scroll into view for that teacher
+          if (inputRefs.current[teacher.teacher_id]) {
+            inputRefs.current[teacher.teacher_id].scrollIntoView({
+              behavior: "smooth",
+              block: "center",
+            });
+
+            // Flash effect for visibility
+            inputRefs.current[teacher.teacher_id].classList.add(
+              "animate-pulse"
+            );
+            setTimeout(() => {
+              inputRefs.current[teacher.teacher_id]?.classList.remove(
+                "animate-pulse"
+              );
+            }, 1000);
+          }
+
+          return;
+        }
+      }
+
       const response = await axios.post(
         `${API_URL}/api/save_teacherperiodallocation`,
         selectedTeachers,
@@ -435,81 +367,6 @@ const TeacherPeriodAllocation = () => {
     }
   };
 
-  // const handleSubmit = async () => {
-  //   try {
-  //     const token = localStorage.getItem("authToken");
-
-  //     // Collect selected teachers with their allocated periods
-  //     const selectedTeachers = displayedSections
-  //       .filter((teacher) => selectedCheckboxes[teacher.teacher_id])
-  //       .map((teacher) => ({
-  //         teacher_id: teacher.teacher_id,
-  //         name: teacher.name,
-  //         periods_allocated: allocatedPeriods[teacher.teacher_id] ?? 0, // Default to 0
-  //       }));
-
-  //     if (selectedTeachers.length === 0) {
-  //       toast.error("Please select at least one teacher before submitting.");
-  //       return;
-  //     }
-
-  //     // Check if any selected teacher has periods_allocated as 0
-  //     const invalidTeachers = selectedTeachers.filter(
-  //       (teacher) => teacher.periods_allocated === 0
-  //     );
-
-  //     if (invalidTeachers.length > 0) {
-  //       const teacherNames = invalidTeachers.map((t) => t.name).join(", ");
-  //       toast.error(`Please allocate periods for: ${teacherNames}`);
-  //       // return;
-
-  //       const firstInvalidTeacher = invalidTeachers[0]?.teacher_id;
-  //       if(inputRefs.current[firstInvalidTeacher])
-  //       {
-  //         inputRefs.current[firstInvalidTeacher].scrollIntoView({
-  //           behavior: "smooth",
-  //           block:"center",
-  //         })
-  //       }
-  //       return;
-  //     }
-
-  //     console.log("Sending Data:", JSON.stringify(selectedTeachers, null, 2));
-  //     if (isSubmitting) return;
-  //     setIsSubmitting(true);
-
-  //     const response = await axios.post(
-  //       `${API_URL}/api/save_teacherperiodallocation`,
-  //       selectedTeachers, // Try sending the array directly instead of { teachers: selectedTeachers }
-  //       {
-  //         headers: {
-  //           Authorization: `Bearer ${token}`,
-  //         },
-  //       }
-  //     );
-
-  //     console.log("selected teachers after response", selectedTeachers);
-  //     console.log("response", response);
-  //     console.log("API Response:", response.data);
-
-  //     if (response) {
-  //       toast.success("Teacher Period Allocation Created Successfully.");
-  //       setSelectedCheckboxes({});
-  //       setSelectAll(false);
-  //       // handleSearch();
-  //     } else {
-  //       toast.error("Teacher Period Allocation not created.");
-  //     }
-  //   } catch (error) {
-  //     console.error("Error Submitting Teacher Period Allocation:", error);
-  //     toast.error(
-  //       "Error Submitting Teacher Period Allocation. Please try again."
-  //     );
-  //   } finally {
-  //     setIsSubmitting(false);
-  //   }
-  // };
-
   const filteredSections = timetable.filter((section) => {
     const searchLower = searchTerm.trim().toLowerCase();
 
@@ -523,32 +380,6 @@ const TeacherPeriodAllocation = () => {
   });
 
   const displayedSections = filteredSections.slice(currentPage * pageSize);
-
-  // const applyPeriodToAll = () => {
-  //   if (!periodValue || periodValue.trim() === "") {
-  //     toast.error("Please enter a period value before applying.");
-  //     return;
-  //   }
-
-  //   // Ensure at least one teacher is selected
-  //   const selectedTeacherIds = Object.keys(selectedCheckboxes).filter(
-  //     (teacher_id) => selectedCheckboxes[teacher_id] // Check if checkbox is selected
-  //   );
-
-  //   if (selectedTeacherIds.length === 0) {
-  //     toast.error("Please select at least one teacher before applying.");
-  //     return;
-  //   }
-
-  //   const updatedPeriods = { ...allocatedPeriods };
-
-  //   // Update period only for selected teachers
-  //   selectedTeacherIds.forEach((teacher_id) => {
-  //     updatedPeriods[teacher_id] = periodValue.trim();
-  //   });
-
-  //   setAllocatedPeriods(updatedPeriods);
-  // };
 
   const applyPeriodToAll = () => {
     if (!periodValue || periodValue.trim() === "") {
@@ -620,123 +451,6 @@ const TeacherPeriodAllocation = () => {
     toast.warning("Period applied successfully to the selected teachers!");
   };
 
-  // const applyPeriodToAll = () => {
-  //   if (!periodValue || periodValue.trim() === "") {
-  //     toast.error("Please enter a period value before applying.");
-  //     return;
-  //   }
-
-  //   // Ensure at least one teacher is selected
-  //   const selectedTeacherIds = Object.keys(selectedCheckboxes).filter(
-  //     (teacher_id) => selectedCheckboxes[teacher_id] // Check if checkbox is selected
-  //   );
-
-  //   if (selectedTeacherIds.length === 0) {
-  //     toast.error("Please select at least one teacher before applying.");
-  //     return;
-  //   }
-
-  //   // Ensure `displayedSections` is available and valid
-  //   if (!Array.isArray(displayedSections) || displayedSections.length === 0) {
-  //     toast.error(
-  //       "Teacher data is not available. Please refresh and try again."
-  //     );
-  //     return;
-  //   }
-
-  //   // Convert periodValue to a number
-  //   const periodValueNum = Number(periodValue.trim());
-
-  //   // Validate each selected teacher
-  //   for (const teacher_id of selectedTeacherIds) {
-  //     const teacherData = displayedSections.find(
-  //       (teacher) => String(teacher.teacher_id) === String(teacher_id) // Ensure type match
-  //     );
-
-  //     if (!teacherData) {
-  //       console.error(`No data found for Teacher ID: ${teacher_id}`);
-  //       toast.error(`No data found for selected teacher.`);
-  //       return;
-  //     }
-
-  //     const teacherName = teacherData.name || `ID ${teacher_id}`; // Fallback to ID if name is missing
-  //     const periodsUsed = teacherData.periods_used || 0;
-
-  //     console.log(
-  //       `Checking Teacher: ${teacherName}, periodsUsed: ${periodsUsed}, periodValueNum: ${periodValueNum}`
-  //     );
-
-  //     if (periodValueNum < periodsUsed) {
-  //       toast.error(
-  //         `Allocated periods for ${teacherName} must be at least ${periodsUsed}`
-  //       );
-  //       return;
-  //     }
-  //   }
-
-  //   // If all validations pass, apply periods
-  //   const updatedPeriods = { ...allocatedPeriods };
-  //   selectedTeacherIds.forEach((teacher_id) => {
-  //     updatedPeriods[teacher_id] = periodValueNum;
-  //   });
-
-  //   setAllocatedPeriods(updatedPeriods);
-  //   toast.warning("Period applied successfully to the selected teachers!");
-  // };
-
-  // const handlePeriodChange = (teacher_id, value) => {
-  //   const periodValue = value.trim() === "" ? "" : Number(value); // Convert to number
-  //   const periodsUsed =
-  //     displayedSections.find((teacher) => teacher.teacher_id === teacher_id)
-  //       ?.periods_used || 0;
-
-  //   if (periodValue < periodsUsed) {
-  //     toast.error(`Allocated periods must be at least ${periodsUsed}`);
-  //     return;
-  //   }
-
-  //   setAllocatedPeriods((prev) => ({
-  //     ...prev,
-  //     [teacher_id]: periodValue, // Set only valid values
-  //   }));
-  // };
-
-  // const handlePeriodChange = (teacher_id, value) => {
-  //   if (value.trim() === "") {
-  //     // Allow clearing the input field
-  //     setAllocatedPeriods((prev) => ({
-  //       ...prev,
-  //       [teacher_id]: "", // Set empty value so user can re-enter
-  //     }));
-  //     return;
-  //   }
-
-  //   // Convert value to number and ensure it's a valid number
-  //   const periodValue = Number(value);
-  //   if (isNaN(periodValue)) return;
-
-  //   // Ensure the value does not exceed 2 digits
-  //   if (value.length > 2) {
-  //     toast.error("Allocated periods cannot exceed 2 digits.");
-  //     return;
-  //   }
-
-  //   const teacherData = displayedSections.find(
-  //     (teacher) => teacher.teacher_id === teacher_id
-  //   );
-  //   const periodsUsed = teacherData?.periods_used || 0;
-
-  //   if (periodValue < periodsUsed) {
-  //     toast.error(`Allocated periods must be at least ${periodsUsed}`);
-  //     return;
-  //   }
-
-  //   setAllocatedPeriods((prev) => ({
-  //     ...prev,
-  //     [teacher_id]: periodValue, // Set only valid values
-  //   }));
-  // };
-
   const handlePeriodChange = (teacher_id, value) => {
     if (value.trim() === "") {
       // Allow clearing the input field
@@ -757,17 +471,18 @@ const TeacherPeriodAllocation = () => {
       return;
     }
 
-    const teacherData = displayedSections.find(
-      (teacher) => teacher.teacher_id === teacher_id
-    );
-    const periodsUsed = teacherData?.periods_used || 0;
+    // const teacherData = displayedSections.find(
+    //   (teacher) => teacher.teacher_id === teacher_id
+    // );
+    // const periodsUsed = teacherData?.periods_used || 0 ;
 
-    if (periodValue < periodsUsed) {
-      toast.error(`Allocated periods must be at least ${periodsUsed}`);
-      return;
-    }
+    // if (periodValue < periodsUsed) {
+    //   toast.error(`Allocated periods must be at least ${periodsUsed}`);
+    //   return;
+    // }
 
     // ✅ Update periods
+
     setAllocatedPeriods((prev) => ({
       ...prev,
       [teacher_id]: periodValue,
@@ -782,93 +497,6 @@ const TeacherPeriodAllocation = () => {
       return updatedErrors;
     });
   };
-
-  // const handlePeriodChange = (teacher_id, value) => {
-  //   // Allow clearing the input field
-  //   if (value.trim() === "") {
-  //     setAllocatedPeriods((prev) => ({
-  //       ...prev,
-  //       [teacher_id]: "",
-  //     }));
-
-  //     setErrors((prev) => ({
-  //       ...prev,
-  //       [teacher_id]: true, // Highlight the input when empty
-  //     }));
-
-  //     return;
-  //   }
-
-  //   // Prevent more than 2 digits
-  //   if (value.length > 2) {
-  //     toast.error("Allocated periods cannot exceed 2 digits.");
-  //     return;
-  //   }
-
-  //   // Convert to number
-  //   const periodValue = Number(value);
-  //   if (isNaN(periodValue) || periodValue === 0) {
-  //     setErrors((prev) => ({
-  //       ...prev,
-  //       [teacher_id]: true, // Highlight the input if invalid
-  //     }));
-  //     return;
-  //   }
-
-  //   const teacherData = displayedSections.find(
-  //     (teacher) => teacher.teacher_id === teacher_id
-  //   );
-  //   const periodsUsed = teacherData?.periods_used || 0;
-
-  //   if (periodValue < periodsUsed) {
-  //     toast.error(`Allocated periods must be at least ${periodsUsed}`);
-
-  //     setErrors((prev) => ({
-  //       ...prev,
-  //       [teacher_id]: true, // Highlight the input if below minimum required
-  //     }));
-
-  //     return;
-  //   }
-
-  //   // Remove the error if the value is valid
-  //   setErrors((prev) => ({
-  //     ...prev,
-  //     [teacher_id]: false,
-  //   }));
-
-  //   setAllocatedPeriods((prev) => ({
-  //     ...prev,
-  //     [teacher_id]: periodValue,
-  //   }));
-  // };
-
-  // const handlePeriodChange = (teacher_id, value) => {
-  //   if (value.trim() === "") {
-  //     // Allow clearing the input field
-  //     setAllocatedPeriods((prev) => ({
-  //       ...prev,
-  //       [teacher_id]: "", // Set empty value so user can re-enter
-  //     }));
-  //     return;
-  //   }
-
-  //   const periodValue = Number(value); // Convert to number
-  //   const teacherData = displayedSections.find(
-  //     (teacher) => teacher.teacher_id === teacher_id
-  //   );
-  //   const periodsUsed = teacherData?.periods_used || 0;
-
-  //   if (periodValue < periodsUsed) {
-  //     toast.error(`Allocated periods must be at least ${periodsUsed}`);
-  //     return;
-  //   }
-
-  //   setAllocatedPeriods((prev) => ({
-  //     ...prev,
-  //     [teacher_id]: periodValue, // Set only valid values
-  //   }));
-  // };
 
   return (
     <>

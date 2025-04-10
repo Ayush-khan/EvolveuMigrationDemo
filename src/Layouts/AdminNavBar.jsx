@@ -751,8 +751,8 @@ const AdminNavBar = () => {
             <NavDropdown.Item as={Link} to="/classWisePAllot">
               Class Wise Period Allocation
             </NavDropdown.Item>
-            <NavDropdown.Item as={Link} to="#">
-              {/* Create Class Wise Period Allocation */}
+            <NavDropdown.Item as={Link} to="/timetablePlanner">
+              Time Table Planner
             </NavDropdown.Item>
             {/* <NavDropdown.Item as={Link} to="#">
               
