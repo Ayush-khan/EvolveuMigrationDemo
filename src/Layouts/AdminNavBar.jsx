@@ -974,6 +974,13 @@ const AdminNavBar = () => {
             </NavDropdown.Item>
             <NavDropdown.Item
               as={Link}
+              to="/monthlyAttendenceRepo"
+              className="text-sm font-bold hover:text-black"
+            >
+              Monthly Attendance Report
+            </NavDropdown.Item>
+            <NavDropdown.Item
+              as={Link}
               to="/feePaymentRepo"
               className="text-sm font-bold hover:text-black"
             >

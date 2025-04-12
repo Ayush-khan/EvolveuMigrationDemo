@@ -68,6 +68,19 @@ const PendingStudentIdCardReport = () => {
     [studentNameWithClassId]
   );
 
+  const houses = [
+    { value: "D", label: "Diamond" },
+    { value: "R", label: "Ruby" },
+    { value: "S", label: "Sapphire" },
+    { value: "E", label: "Emerald" },
+  ];
+
+  // Get the label for the student's house value
+  const getHouses = (houseValue) => {
+    const house = houses.find((h) => h.value === houseValue);
+    return house ? house.label : "";
+  };
+
   // Handle search and fetch parent information
 
   const handleSearch = async () => {
@@ -146,7 +159,7 @@ const PendingStudentIdCardReport = () => {
                   index + 1
                 }</td>
                 <td class="px-2 text-center py-2 border border-black">${
-                  subject?.roll_no || " "
+                  subject?.roll_no
                 }</td>
                 <td class="px-2 text-center py-2 border border-black">
                 ${subject?.first_name || " "}${subject?.mid_name || " "} ${
@@ -168,9 +181,8 @@ const PendingStudentIdCardReport = () => {
                   <td class="px-2 text-center py-2 border border-black">${
                     subject?.blood_group || " "
                   }</td>
-                   <td class="px-2 text-center py-2 border border-black">${
-                     subject?.house || " "
-                   }</td>
+                   <td class="px-2 text-center py-2 border border-black">
+                   ${getHouses(subject?.house || " ")} </td>
                     <td class="px-2 text-center py-2 border border-black">${
                       subject?.father_name || " "
                     }</td>
@@ -188,81 +200,87 @@ const PendingStudentIdCardReport = () => {
     </div>
   </div>`;
 
-    const printWindow = window.open("", "", "height=800,width=1000");
+    const printWindow = window.open("", "_blank", "width=1000,height=800");
+
     printWindow.document.write(`
-  <html>
-  <head>
-    <title>${printTitle}</title>
-    <style>
-      @page { margin: 0; padding:0; box-sizing:border-box;   ;
-}
-      body { margin: 0; padding: 0; box-sizing:border-box; font-family: Arial, sans-serif; }
-      #tableHeading {
-  width: 100%;
-  margin: auto; /* Centers the div horizontally */
-  display: flex;
-  justify-content: center;
-}
+    <html>
+      <head>
+        <title>${printTitle}</title>
+        <style>
+              @page { margin: 0; padding:0; box-sizing:border-box;   ;
+    }
+          body { margin: 0; padding: 0; box-sizing:border-box; font-family: Arial, sans-serif; }
+          #tableHeading {
+      width: 100%;
+      margin: auto; /* Centers the div horizontally */
+      display: flex;
+      justify-content: center;
+    }
 
-#tableHeading table {
-  width: 100%; /* Ensures the table fills its container */
-  margin:auto;
-  padding:0 10em 0 10em;
+    #tableHeading table {
+      width: 100%; /* Ensures the table fills its container */
+      margin:auto;
+      padding:0 10em 0 10em;
 
-  
+    }
 
+    #tableContainer {
+      display: flex;
+      justify-content: center; /* Centers the table horizontally */
+      width: 80%;
 
-}
+    }
 
-#tableContainer {
-  display: flex;
-  justify-content: center; /* Centers the table horizontally */
-  width: 80%;
-  
-}
+    h5 {
+      width: 100%;
+      text-align: center;
+      margin: 0;  /* Remove any default margins */
+      padding: 5px 0;  /* Adjust padding if needed */
+    }
 
- 
-h5 {  
-  width: 100%;  
-  text-align: center;  
-  margin: 0;  /* Remove any default margins */
-  padding: 5px 0;  /* Adjust padding if needed */
-}
+    #tableMain {
+    width:100%;
+    margin:auto;
+    box-sizing:border-box;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: flex-start; /* Prevent unnecessary space */
+    padding:0 10em 0 10em;
+    }
 
-#tableMain {
-width:100%;
-margin:auto;
-box-sizing:border-box;
-  display: flex;
-  flex-direction: column;
-  align-items: center;
-  justify-content: flex-start; /* Prevent unnecessary space */
-padding:0 10em 0 10em;
-}
+    h5 + * { /* Targets the element after h5 */
+      margin-top: 0; /* Ensures no extra space after h5 */
+    }
 
-h5 + * { /* Targets the element after h5 */
-  margin-top: 0; /* Ensures no extra space after h5 */
-}
+          table { border-spacing: 0; width: 70%; margin: auto;   }
+          th { font-size: 0.8em; background-color: #f9f9f9; }
+          td { font-size: 12px; }
+          th, td { border: 1px solid gray; padding: 8px; text-align: center; }
+          .student-photo {
+            width: 30px !important;
+            height: 30px !important;
+            object-fit: cover;
+            border-radius: 50%;
+          }
+        </style>
+      </head>
+         <body>
+        <div id="printContainer">
+            ${printContent}
+        </div>
+    </body>
+    </html>
+  `);
 
-
-      table { border-spacing: 0; width: 70%; margin: auto;   }
-      th { font-size: 0.8em; background-color: #f9f9f9; }
-      td { font-size: 12px; }
-      th, td { border: 1px solid gray; padding: 8px; text-align: center; }
-      .student-photo {
-        width: 30px !important; 
-        height: 30px !important;
-        object-fit: cover;
-        border-radius: 50%;
-      }
-    </style>
-  </head>
-  <body>
-    ${printContent}
-  </body>
-  </html>`);
     printWindow.document.close();
-    printWindow.print();
+
+    // Ensure content is fully loaded before printing
+    printWindow.onload = function () {
+      printWindow.focus();
+      printWindow.print();
+      printWindow.close(); // Optional: close after printing
+    };
   };
 
   const handleDownloadEXL = () => {
@@ -289,7 +307,7 @@ h5 + * { /* Targets the element after h5 */
     // Convert displayedSections data to array format for Excel
     const data = displayedSections.map((student, index) => [
       index + 1,
-      student?.roll_no || " ",
+      student?.roll_no,
       `${student?.first_name || ""} ${student?.mid_name || ""} ${
         student?.last_name || ""
       }`,
@@ -299,7 +317,7 @@ h5 + * { /* Targets the element after h5 */
       }`,
       student?.permant_add || " ",
       student?.blood_group || " ",
-      student?.house || " ",
+      getHouses(student?.house) || " ",
       student?.father_name || " ",
       student?.f_mobile || " ",
       student?.m_mobile || " ",
@@ -560,7 +578,7 @@ h5 + * { /* Targets the element after h5 */
                                   </td>
                                   {console.log("sroll no", student)}
                                   <td className="px-2 py-2 text-center border border-gray-300">
-                                    {student.roll_no || " "}
+                                    {student.roll_no}
                                   </td>
                                   <td className="px-2 py-2 text-center border border-gray-300">
                                     {student.first_name || " "}{" "}
@@ -578,7 +596,6 @@ h5 + * { /* Targets the element after h5 */
                                         ).toLocaleDateString("en-GB")
                                       : " "}
                                   </td>
-
                                   <td className="px-2 py-2 text-center border border-gray-300">
                                     {student.permant_add || " "}
                                   </td>
@@ -586,16 +603,15 @@ h5 + * { /* Targets the element after h5 */
                                     {student.blood_group || " "}
                                   </td>
                                   <td className="px-2 py-2 text-center border border-gray-300">
-                                    {student.house || " "}
+                                    {/* {student.house || " "} */}
+                                    {getHouses(student.house) || " "}
                                   </td>
                                   <td className="px-2 py-2 text-center border border-gray-300">
                                     {student.father_name || " "}
                                   </td>
-
                                   <td className="px-2 py-2 text-center border border-gray-300">
                                     {student.f_mobile || " "}
                                   </td>
-
                                   <td className="px-2 py-2 text-center border border-gray-300">
                                     {student.m_mobile || " "}
                                   </td>

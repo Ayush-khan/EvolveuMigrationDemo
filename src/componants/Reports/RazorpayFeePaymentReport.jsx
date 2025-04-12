@@ -58,7 +58,7 @@ const RazorpayFeePaymentReport = () => {
       const token = localStorage.getItem("authToken");
 
       const response = await axios.get(
-        `${API_URL}/api/getStudentListBySectionData`,
+        `${API_URL}/api/get_allstudentwithclass`,
         {
           headers: { Authorization: `Bearer ${token}` },
         }
@@ -67,8 +67,8 @@ const RazorpayFeePaymentReport = () => {
       console.log("API Response:", response.data);
 
       // Ensure response is an array before setting state
-      if (Array.isArray(response.data.data)) {
-        setStudentNameWithClassId(response.data.data);
+      if (Array.isArray(response.data)) {
+        setStudentNameWithClassId(response.data);
       } else {
         setStudentNameWithClassId([]); // Default to empty array
         console.error("Unexpected API response format:", response.data);
@@ -91,9 +91,7 @@ const RazorpayFeePaymentReport = () => {
     if (!Array.isArray(studentNameWithClassId)) return []; // Prevent crash
     return studentNameWithClassId.map((cls) => ({
       value: cls?.student_id,
-      label: `${cls?.first_name || ""} ${cls?.mid_name || ""} ${
-        cls?.last_name || ""
-      }`.trim(),
+      label: cls?.label,
     }));
   }, [studentNameWithClassId]);
 
@@ -113,16 +111,6 @@ const RazorpayFeePaymentReport = () => {
     []
   );
 
-  //   const handleAccountSelect = (selectedOption) => {
-  //     setSelectedAccount(selectedOption);
-  //     setSelectedAccountId(selectedOption ? selectedOption.value : null);
-
-  //     // Clear error if a valid option is selected
-  //     if (selectedOption) {
-  //       setAccountError("");
-  //     }
-  //   };
-
   const handleAccountSelect = (selectedOption) => {
     setSelectedAccount(selectedOption);
 
@@ -136,15 +124,6 @@ const RazorpayFeePaymentReport = () => {
       setAccountError("");
     }
   };
-
-  // const handleAccountSelect = (selectedOption) => {
-  //   setSelectedAccount(selectedOption);
-
-  //   // Clear error if a valid option is selected
-  //   if (selectedOption) {
-  //     setAccountError("");
-  //   }
-  // };
 
   const handleChangeDate = (event, field) => {
     const { value } = event.target;
@@ -175,14 +154,16 @@ const RazorpayFeePaymentReport = () => {
       return;
     }
 
-    if (!fromDate) {
-      setFormDateError("Please select From Date");
-      return;
-    }
+    if (!orderId && !selectedStudentId) {
+      if (!fromDate) {
+        setFormDateError("Please select From Date");
+        return;
+      }
 
-    if (!toDate) {
-      setToDateError("Please select To Date");
-      return;
+      if (!toDate) {
+        setToDateError("Please select To Date");
+        return;
+      }
     }
 
     // Clear previous errors
@@ -196,14 +177,23 @@ const RazorpayFeePaymentReport = () => {
       setTimetable([]);
       const token = localStorage.getItem("authToken");
 
-      const params = {
-        accounttype: selectedAccount.value === "" ? "" : selectedAccount.label, // ✅ API expects name, not ID
-        fromdate: fromDate,
-        todate: toDate,
+      let params = {
+        accounttype: selectedAccount.value === "" ? "" : selectedAccount.label,
       };
-      if (selectedStudentId) params.student_id = selectedStudentId;
-      if (orderId) params.order_id = orderId;
 
+      if (orderId) {
+        params.order_id = orderId; // ✅ match this key exactly as backend expects
+      }
+
+      if (selectedStudentId) {
+        params.student_id = selectedStudentId; // ✅ again, use exact API key
+      }
+
+      // Add from_date and to_date if both orderId and studentId are missing
+      if (!orderId && !selectedStudentId) {
+        params.fromdate = fromDate;
+        params.todate = toDate;
+      }
       console.log("API Params:", params); // Debugging API request
 
       const response = await axios.get(
@@ -303,75 +293,94 @@ const RazorpayFeePaymentReport = () => {
     </div>
   </div>`;
 
-    const printWindow = window.open("", "", "height=800,width=1000");
+    const printWindow = window.open("", "_blank", "width=2000,height=1000");
+
     printWindow.document.write(`
     <html>
-    <head>
-    <title>${printTitle}</title>
-    <style>
-      @page { margin: 0; padding:0; box-sizing:border-box;   ;
-    }
-      body { margin: 0; padding: 0; box-sizing:border-box; font-family: Arial, sans-serif; }
-      #tableHeading {
-      width: 100%;
-      margin: auto; /* Centers the div horizontally */
-      display: flex;
-      justify-content: center;
-    }
+      <head>
+        <title>${printTitle}</title>
+        <style>
+                   @page {
+                size: A4 landscape; /* Wider format for better fit */
+                margin: 10px;
+            }
 
-    #tableHeading table {
-      width: 100%; /* Ensures the table fills its container */
-      margin:auto;
-      padding:0 10em 0 10em;
-    }
+                      body {
+                font-family: Arial, sans-serif;
+                margin: 0;
+                padding: 0;
+                box-sizing: border-box;
+            }
 
-    #tableContainer {
-      display: flex;
-      justify-content: center; /* Centers the table horizontally */
-      width: 80%;
-    }
+                       /* Scrollable container */
+            #printContainer {
+                width: 100%;
+                overflow-x: auto;  /* Enables horizontal scrolling */
+                white-space: nowrap; /* Prevents text wrapping */
+            }
 
-   h5 {  
-     width: 100%;  
-     text-align: center;  
-     margin: 0;  /* Remove any default margins */
-     padding: 5px 0;  /* Adjust padding if needed */
-    }
+                      #tableMain {
+                width: 100%;
+                display: flex;
+                flex-direction: column;
+                align-items: center;
+                justify-content: flex-start;
+                padding: 0 10px;
+            }
 
-    #tableMain {
-      width:100%;
-      margin:auto;
-      box-sizing:border-box;
-      display: flex;
-      flex-direction: column;
-      align-items: center;
-      justify-content: flex-start; /* Prevent unnecessary space */
-      padding:0 10em 0 10em;
-    }
+                       table {
+                border-spacing: 0;
+                width: 100%;
+                min-width: 1200px; /* Ensures table doesn't shrink */
+                margin: auto;
+                table-layout: fixed; /* Ensures even column spacing */
+            }
 
-    h5 + * { /* Targets the element after h5 */
-      margin-top: 0; /* Ensures no extra space after h5 */
-    }
+                      th, td {
+                border: 1px solid gray;
+                padding: 8px;
+                text-align: center;
+                font-size: 12px;
+                word-wrap: break-word; /* Ensures text breaks properly */
+            }
+
+            th {
+                font-size: 0.8em;
+                background-color: #f9f9f9;
+            }
 
 
-    table { border-spacing: 0; width: 70%; margin: auto;   }
-    th { font-size: 0.8em; background-color: #f9f9f9; }
-    td { font-size: 12px; }
-    th, td { border: 1px solid gray; padding: 8px; text-align: center; }
-    .student-photo {
-        width: 30px !important; 
-        height: 30px !important;
-        object-fit: cover;
-        border-radius: 50%;
-    }
-    </style>
-    </head>
-    <body>
-      ${printContent}
+           /* Ensure scrolling is available in print mode */
+            @media print {
+                #printContainer {
+                    overflow-x: auto;
+                    display: block;
+                    width: 100%;
+                    height: auto;
+                }
+             table {
+                    min-width: 100%;
+                }
+}
+
+        </style>
+      </head>
+         <body>
+        <div id="printContainer">
+            ${printContent}
+        </div>
     </body>
-    </html>`);
+    </html>
+  `);
+
     printWindow.document.close();
-    printWindow.print();
+
+    // ✅ Ensure content is fully loaded before printing
+    printWindow.onload = function () {
+      printWindow.focus();
+      printWindow.print();
+      printWindow.close(); // Optional: close after printing
+    };
   };
 
   const handleDownloadEXL = () => {
@@ -429,34 +438,76 @@ const RazorpayFeePaymentReport = () => {
 
   console.log("row", timetable);
 
+  // const filteredSections = timetable.filter((student) => {
+  //   const searchLower = searchTerm.toLowerCase();
+  //   const formatDate = (dateString) => {
+  //     if (!dateString) return "";
+
+  //     // Ensure we remove the time part if present
+  //     const cleanDate = dateString.split(" ")[0]; // Extract only YYYY-MM-DD
+
+  //     const [year, month, day] = cleanDate.split("-");
+  //     return `${day}/${month}/${year} || ${day}-${month}-${year}`;
+  //   };
+
+  //   // Extract relevant fields and convert them to lowercase for case-insensitive search
+  //   const studentName = student?.student_name?.toLowerCase() || "";
+  //   const orderId = student?.OrderId?.toLowerCase() || "";
+  //   const className = student?.class_name?.toLowerCase() || "";
+  //   const dateofTrnx = formatDate(student?.Trnx_date).toLowerCase();
+  //   const installmentNo =
+  //     student?.installment_no
+  //       ?.toString()
+  //       ?.toLowerCase()
+  //       .replace(/\s+/g, " ")
+  //       .trim() || "";
+  //   const paymentId =
+  //     student?.razorpay_payment_id?.toString().toLowerCase() || "";
+  //   const status = student?.Status_code?.toLowerCase() || "";
+  //   const amount = student?.Amount?.toLowerCase() || "";
+  //   const receiptNo = student?.receipt_no?.toLowerCase() || "";
+
+  //   // Check if the search term is present in any of the specified fields
+  //   return (
+  //     studentName.includes(searchLower) ||
+  //     orderId.includes(searchLower) ||
+  //     className.includes(searchLower) ||
+  //     dateofTrnx.includes(searchLower) ||
+  //     installmentNo.includes(searchLower) ||
+  //     paymentId.includes(searchLower) ||
+  //     status.includes(searchLower) ||
+  //     amount.includes(searchLower) ||
+  //     receiptNo.includes(searchLower)
+  //   );
+  // });
+
   const filteredSections = timetable.filter((student) => {
-    const searchLower = searchTerm.toLowerCase();
+    // Normalize search term: Trim and replace multiple spaces with a single space
+    const searchLower = searchTerm.trim().replace(/\s+/g, " ").toLowerCase();
+
     const formatDate = (dateString) => {
       if (!dateString) return "";
 
       // Ensure we remove the time part if present
       const cleanDate = dateString.split(" ")[0]; // Extract only YYYY-MM-DD
-
       const [year, month, day] = cleanDate.split("-");
       return `${day}/${month}/${year} || ${day}-${month}-${year}`;
     };
 
-    // Extract relevant fields and convert them to lowercase for case-insensitive search
-    const studentName = student?.student_name?.toLowerCase() || "";
-    const orderId = student?.OrderId?.toLowerCase() || "";
-    const className = student?.class_name?.toLowerCase() || "";
-    const dateofTrnx = formatDate(student?.Trnx_date).toLowerCase();
-    const installmentNo =
-      student?.installment_no
-        ?.toString()
-        ?.toLowerCase()
-        .replace(/\s+/g, " ")
-        .trim() || "";
-    const paymentId =
-      student?.razorpay_payment_id?.toString().toLowerCase() || "";
-    const status = student?.Status_code?.toLowerCase() || "";
-    const amount = student?.Amount?.toLowerCase() || "";
-    const receiptNo = student?.receipt_no?.toLowerCase() || "";
+    // Function to normalize text: trim spaces, replace multiple spaces with one, and convert to lowercase
+    const normalize = (value) =>
+      value?.toString().trim().replace(/\s+/g, " ").toLowerCase() || "";
+
+    // Normalize all relevant fields for search
+    const studentName = normalize(student?.student_name);
+    const orderId = normalize(student?.OrderId);
+    const className = normalize(student?.class_name);
+    const dateofTrnx = normalize(formatDate(student?.Trnx_date));
+    const installmentNo = normalize(student?.installment_no);
+    const paymentId = normalize(student?.razorpay_payment_id);
+    const status = normalize(student?.Status_code);
+    const amount = normalize(student?.Amount);
+    const receiptNo = normalize(student?.receipt_no);
 
     // Check if the search term is present in any of the specified fields
     return (
@@ -475,7 +526,7 @@ const RazorpayFeePaymentReport = () => {
   const displayedSections = filteredSections.slice(currentPage * pageSize);
   return (
     <>
-      <div className="w-full md:w-[95%] mx-auto p-4 ">
+      <div className="w-full md:w-[98%] mx-auto p-4 ">
         <ToastContainer />
         <div className="card p-4 rounded-md ">
           <div className=" card-header mb-4 flex justify-between items-center ">
@@ -498,160 +549,138 @@ const RazorpayFeePaymentReport = () => {
 
           <>
             <div className="container mx-auto px-4">
-              <div className="w-full flex flex-col gap-y-4 md:gap-y-4 md:flex-row md:flex-wrap justify-between p-2">
-                {/* First Row: Order ID, Student Name, Account Type */}
-                <div className="w-full flex flex-col md:flex-row gap-4">
-                  {/* Order ID */}
-                  <div className="w-full md:w-1/3 flex items-center gap-2">
-                    <label className="w-1/3 text-md" htmlFor="orderId">
-                      Order ID
-                    </label>
-                    <input
-                      type="text"
-                      id="orderId"
-                      className="w-3/3 border border-gray-300 rounded-md px-3 py-2 focus:outline-none focus:ring-2 focus:ring-blue-500"
-                      value={orderId}
-                      onChange={(e) => setOrderId(e.target.value)}
-                      placeholder=""
-                    />
-                  </div>
+              <div className="w-full md:w-[109%] flex flex-wrap items-start gap-6 p-2">
+                {/* Order ID */}
+                <div className="flex flex-col h-[80px]">
+                  <label className="text-md mb-1" htmlFor="orderId">
+                    Order ID
+                  </label>
+                  <input
+                    type="text"
+                    id="orderId"
+                    className="border border-gray-300 rounded-md px-3 py-2 focus:outline-none focus:ring-2 focus:ring-blue-500 w-[180px]"
+                    value={orderId}
+                    onChange={(e) => setOrderId(e.target.value)}
+                  />
+                </div>
 
-                  {/* Student Name */}
-                  <div className="w-full md:w-1/3 flex items-center gap-2">
-                    <label className="w-1/3 text-md" htmlFor="studentSelect">
-                      Student Name
-                    </label>
-                    <Select
-                      menuPortalTarget={document.body}
-                      menuPosition="fixed"
-                      id="studentSelect"
-                      value={selectedStudent}
-                      onChange={handleStudentSelect}
-                      options={studentOptions}
-                      placeholder={loadingExams ? "Loading..." : "Select"}
-                      isSearchable
-                      isClearable
-                      isDisabled={loadingExams}
-                      className="w-2/3 text-sm"
-                    />
-                  </div>
+                {/* Student Name */}
+                <div className="flex flex-col h-[80px]">
+                  <label className="text-md mb-1" htmlFor="studentSelect">
+                    Student Name
+                  </label>
+                  <Select
+                    menuPortalTarget={document.body}
+                    menuPosition="fixed"
+                    id="studentSelect"
+                    value={selectedStudent}
+                    onChange={handleStudentSelect}
+                    options={studentOptions}
+                    placeholder={loadingExams ? "Loading..." : "Select"}
+                    isSearchable
+                    isClearable
+                    isDisabled={loadingExams}
+                    className="text-sm w-[220px]"
+                  />
+                </div>
 
-                  {/* Account Type */}
-                  <div className="w-full md:w-1/3">
-                    <div className="flex items-center gap-2">
-                      <label className="w-1/3 text-md" htmlFor="accountType">
-                        Account Type{" "}
-                        <span className="text-sm text-red-500">*</span>
-                      </label>
-                      <Select
-                        menuPortalTarget={document.body}
-                        menuPosition="fixed"
-                        id="accountType"
-                        value={selectedAccount}
-                        onChange={handleAccountSelect}
-                        options={accountOptions}
-                        placeholder="Select"
-                        isSearchable
-                        isClearable
-                        className="w-2/3 text-sm"
-                      />
-                    </div>
-                    {accountError && (
-                      <div className="text-red-500 text-xs mt-1 ml-[35%]">
-                        {accountError}
-                      </div>
-                    )}
+                {/* From Date */}
+                <div className="flex flex-col h-[80px]">
+                  <label className="text-md mb-1" htmlFor="fromDate">
+                    From Date <span className="text-sm text-red-500">*</span>
+                  </label>
+                  <input
+                    type="date"
+                    id="fromDate"
+                    value={fromDate}
+                    onChange={(e) => handleChangeDate(e, "fromDate")}
+                    className="text-sm border border-gray-300 rounded px-2 py-2 w-[180px]"
+                  />
+                  <div className="h-[16px] text-red-500 text-xs mt-1">
+                    {formDateError && <span>{formDateError}</span>}
                   </div>
                 </div>
 
-                {/* Second Row: From Date, To Date, Browse Button */}
-                <div className="w-full flex flex-col md:flex-row gap-4">
-                  {/* From Date */}
-                  <div className="w-full md:w-1/3">
-                    <div className="flex items-center gap-2">
-                      <label className="w-1/3 text-md" htmlFor="fromDate">
-                        From Date{" "}
-                        <span className="text-sm text-red-500">*</span>
-                      </label>
-                      <input
-                        type="date"
-                        id="fromDate"
-                        value={fromDate}
-                        onChange={(e) => handleChangeDate(e, "fromDate")}
-                        className="w-2/3 text-sm border border-gray-300 rounded px-2 py-2"
-                        // max={new Date().toISOString().split("T")[0]}
-                      />
-                    </div>
-                    {formDateError && (
-                      <div className="text-red-500 text-xs mt-1 ml-[35%]">
-                        {formDateError}
-                      </div>
-                    )}
+                {/* To Date */}
+                <div className="flex flex-col h-[80px]">
+                  <label className="text-md mb-1" htmlFor="toDate">
+                    To Date <span className="text-sm text-red-500">*</span>
+                  </label>
+                  <input
+                    type="date"
+                    id="toDate"
+                    value={toDate}
+                    onChange={(e) => handleChangeDate(e, "toDate")}
+                    className="text-sm border border-gray-300 rounded px-2 py-2 w-[180px]"
+                    min={fromDate}
+                    max={new Date().toISOString().split("T")[0]}
+                  />
+                  <div className="h-[16px] text-red-500 text-xs mt-1">
+                    {toDateError && <span>{toDateError}</span>}
                   </div>
+                </div>
 
-                  {/* To Date */}
-                  <div className="w-full md:w-1/3">
-                    <div className="flex items-center gap-2">
-                      <label className="w-1/3 text-md" htmlFor="toDate">
-                        To Date <span className="text-sm text-red-500">*</span>
-                      </label>
-                      <input
-                        type="date"
-                        id="toDate"
-                        value={toDate}
-                        onChange={(e) => handleChangeDate(e, "toDate")}
-                        className="w-2/3 text-sm border border-gray-300 rounded px-2 py-2"
-                        min={fromDate}
-                        max={new Date().toISOString().split("T")[0]}
-                      />
-                    </div>
-                    {toDateError && (
-                      <div className="text-red-500 text-xs mt-1 ml-[35%]">
-                        {toDateError}
-                      </div>
-                    )}
+                {/* Account Type */}
+                <div className="flex flex-col h-[80px]">
+                  <label className="text-md mb-1" htmlFor="accountType">
+                    Account Type <span className="text-sm text-red-500">*</span>
+                  </label>
+                  <Select
+                    menuPortalTarget={document.body}
+                    menuPosition="fixed"
+                    id="accountType"
+                    value={selectedAccount}
+                    onChange={handleAccountSelect}
+                    options={accountOptions}
+                    placeholder="Select"
+                    isSearchable
+                    isClearable={false}
+                    className="text-sm w-[180px]"
+                  />
+                  <div className="h-[16px] text-red-500 text-xs mt-1">
+                    {accountError && <span>{accountError}</span>}
                   </div>
+                </div>
 
-                  {/* Browse Button */}
-                  <div className="w-full md:w-1/3 flex items-center justify-end">
-                    <button
-                      type="search"
-                      onClick={handleSearch}
-                      style={{ backgroundColor: "#2196F3" }}
-                      className={`btn h-10 btn-primary text-white font-bold py-2 px-4 rounded ${
-                        loadingForSearch ? "opacity-50 cursor-not-allowed" : ""
-                      }`}
-                      disabled={loadingForSearch}
-                    >
-                      {loadingForSearch ? (
-                        <span className="flex items-center">
-                          <svg
-                            className="animate-spin h-4 w-4 mr-2 text-white"
-                            xmlns="http://www.w3.org/2000/svg"
-                            fill="none"
-                            viewBox="0 0 24 24"
-                          >
-                            <circle
-                              className="opacity-25"
-                              cx="12"
-                              cy="12"
-                              r="10"
-                              stroke="currentColor"
-                              strokeWidth="4"
-                            ></circle>
-                            <path
-                              className="opacity-75"
-                              fill="currentColor"
-                              d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4z"
-                            ></path>
-                          </svg>
-                          Searching...
-                        </span>
-                      ) : (
-                        "Search"
-                      )}
-                    </button>
-                  </div>
+                {/* Search Button */}
+                <div className="flex items-end mt-4">
+                  <button
+                    type="search"
+                    onClick={handleSearch}
+                    style={{ backgroundColor: "#2196F3" }}
+                    className={`btn h-10 btn-primary text-white font-bold py-1 px-6 rounded ${
+                      loadingForSearch ? "opacity-50 cursor-not-allowed" : ""
+                    }`}
+                    disabled={loadingForSearch}
+                  >
+                    {loadingForSearch ? (
+                      <span className="flex items-center">
+                        <svg
+                          className="animate-spin h-4 w-4 mr-2 text-white"
+                          xmlns="http://www.w3.org/2000/svg"
+                          fill="none"
+                          viewBox="0 0 24 24"
+                        >
+                          <circle
+                            className="opacity-25"
+                            cx="12"
+                            cy="12"
+                            r="10"
+                            stroke="currentColor"
+                            strokeWidth="4"
+                          ></circle>
+                          <path
+                            className="opacity-75"
+                            fill="currentColor"
+                            d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4z"
+                          ></path>
+                        </svg>
+                        Searching...
+                      </span>
+                    ) : (
+                      "Search"
+                    )}
+                  </button>
                 </div>
               </div>
             </div>

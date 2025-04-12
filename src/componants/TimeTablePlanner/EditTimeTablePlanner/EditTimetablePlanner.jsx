@@ -380,7 +380,7 @@ const EditTimetablePlanner = () => {
       });
 
       // Include teacher_id in the data to be submitted
-      const teacherId = selectedStudentId; // Assuming selectedStudentId is the teacher's ID
+      const teacherId = staff?.teacher_id; // Assuming selectedStudentId is the teacher's ID
 
       const dataToSubmit = {
         teacher_id: teacherId, // Add teacher_id to the data being sent
@@ -416,6 +416,7 @@ const EditTimetablePlanner = () => {
           setCheckUsedPeriods(""); // Reset used periods check
           setOccupiedPeriods(0); // Reset occupied periods
           setTimetable([]);
+          navigate("/timetablePlanner");
         }, 1000); // Delay for 2 seconds (2000ms)
       } else {
         toast.error("Failed to submit timetable.");
@@ -431,7 +432,7 @@ const EditTimetablePlanner = () => {
   return (
     <>
       <div className="w-full md:w-[99%] mx-auto p-4 ">
-        <ToastContainer />
+        {/* <ToastContainer /> */}
         <div className="card p-4 rounded-md ">
           <div className=" card-header mb-4 flex justify-between items-center ">
             <h5 className="text-gray-700 mt-1 text-md lg:text-lg">

@@ -77,13 +77,13 @@ function TimetablePlanner() {
   const handleSubmitEdit = (staffItem) => {
     console.log("this is the )))))))))", staffItem);
     // navigate(`/editStaff/${staffItem.user_id}`
-    // navigate(
-    //   `/timetablePlanner/edit/${staffItem.teacher_id}`,
+    navigate(
+      `/timetablePlanner/edit/${staffItem.teacher_id}`,
 
-    //   {
-    //     state: { staff: staffItem },
-    //   }
-    // );
+      {
+        state: { staff: staffItem },
+      }
+    );
   };
 
   const handleDelete = (staffCurrent) => {

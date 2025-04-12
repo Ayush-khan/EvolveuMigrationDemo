@@ -122,8 +122,8 @@ const LeftStudentsRepo = () => {
             <th class="px-2 text-center py-2 border border-black text-sm font-semibold">Class</th>
             <th class="px-2 text-center py-2 border border-black text-sm font-semibold">Division</th>
             <th class="px-2 text-center py-2 border border-black text-sm font-semibold">Last Date</th>
-            <th class="px-2 text-center py-2 border border-black text-sm font-semibold">SLC No.</th>
-            <th class="px-2 text-center py-2 border border-black text-sm font-semibold">SLC Issued Date</th>
+            <th class="px-2 text-center py-2 border border-black text-sm font-semibold">LC No.</th>
+            <th class="px-2 text-center py-2 border border-black text-sm font-semibold">LC Issued Date</th>
             <th class="px-2 text-center py-2 border border-black text-sm font-semibold">Leaving Remark</th> 
           </tr>
         </thead>
@@ -136,7 +136,7 @@ const LeftStudentsRepo = () => {
                   index + 1
                 }</td>
                 <td class="px-2 text-center py-2 border border-black">${
-                  subject?.roll_no || " "
+                  subject?.roll_no == null ? " " : subject?.roll_no
                 }</td>
                 <td class="px-2 text-center py-2 border border-black">${
                   subject?.reg_no || " "
@@ -153,15 +153,26 @@ const LeftStudentsRepo = () => {
                  <td class="px-2 text-center py-2 border border-black">${
                    subject?.sec_name || " "
                  }</td>
-                  <td class="px-2 text-center py-2 border border-black">${
-                    subject?.last_date || " "
-                  }</td>
-                <td class="px-2 text-center py-2 border border-black">${
-                  subject?.slc_no || " "
-                }</td>
-                <td class="px-2 text-center py-2 border border-black">${
-                  subject?.slc_issue_date || " "
-                }</td>
+                  <td class="px-2 text-center py-2 border border-black">
+                 ${
+                   subject?.last_date &&
+                   !isNaN(new Date(subject.last_date).getTime())
+                     ? new Date(subject.last_date).toLocaleDateString("en-GB")
+                     : ""
+                 }
+                    </td>
+                <td class="px-2 text-center py-2 border border-black">
+                ${subject?.slc_no || " "}</td>
+                <td class="px-2 text-center py-2 border border-black">
+                ${
+                  subject?.slc_issue_date &&
+                  !isNaN(new Date(subject.slc_issue_date).getTime())
+                    ? new Date(subject.slc_issue_date).toLocaleDateString(
+                        "en-GB"
+                      )
+                    : ""
+                }
+                </td>
                 <td class="px-2 text-center py-2 border border-black">${
                   subject?.leaving_remark || " "
                 }</td>
@@ -173,81 +184,156 @@ const LeftStudentsRepo = () => {
     </div>
   </div>`;
 
-    const printWindow = window.open("", "", "height=800,width=1000");
+    // const printWindow = window.open("", "", "height=800,width=1000");
+    // printWindow.document.write(`
+    //   <html>
+    //   <head>
+    //     <title>${printTitle}</title>
+    //     <style>
+    //       @page { margin: 0; padding:0; box-sizing:border-box;   ;
+    // }
+    //       body { margin: 0; padding: 0; box-sizing:border-box; font-family: Arial, sans-serif; }
+    //       #tableHeading {
+    //   width: 100%;
+    //   margin: auto; /* Centers the div horizontally */
+    //   display: flex;
+    //   justify-content: center;
+    // }
+
+    // #tableHeading table {
+    //   width: 100%; /* Ensures the table fills its container */
+    //   margin:auto;
+    //   padding:0 10em 0 10em;
+    // }
+
+    // #tableContainer {
+    //   display: flex;
+    //   justify-content: center; /* Centers the table horizontally */
+    //   width: 80%;
+
+    // }
+
+    // h5 {
+    //   width: 100%;
+    //   text-align: center;
+    //   margin: 0;  /* Remove any default margins */
+    //   padding: 5px 0;  /* Adjust padding if needed */
+    // }
+
+    // #tableMain {
+    // width:100%;
+    // margin:auto;
+    // box-sizing:border-box;
+    //   display: flex;
+    //   flex-direction: column;
+    //   align-items: center;
+    //   justify-content: flex-start; /* Prevent unnecessary space */
+    // padding:0 10em 0 10em;
+    // }
+
+    // h5 + * { /* Targets the element after h5 */
+    //   margin-top: 0; /* Ensures no extra space after h5 */
+    // }
+
+    //       table { border-spacing: 0; width: 70%; margin: auto;   }
+    //       th { font-size: 0.8em; background-color: #f9f9f9; }
+    //       td { font-size: 12px; }
+    //       th, td { border: 1px solid gray; padding: 8px; text-align: center; }
+    //       .student-photo {
+    //         width: 30px !important;
+    //         height: 30px !important;
+    //         object-fit: cover;
+    //         border-radius: 50%;
+    //       }
+    //     </style>
+    //   </head>
+    //   <body>
+    //     ${printContent}
+    //   </body>
+    //   </html>`);
+    // printWindow.document.close();
+    // printWindow.print();
+
+    const printWindow = window.open("", "_blank", "width=1000,height=800");
+
     printWindow.document.write(`
-  <html>
-  <head>
-    <title>${printTitle}</title>
-    <style>
-      @page { margin: 0; padding:0; box-sizing:border-box;   ;
-}
-      body { margin: 0; padding: 0; box-sizing:border-box; font-family: Arial, sans-serif; }
-      #tableHeading {
-  width: 100%;
-  margin: auto; /* Centers the div horizontally */
-  display: flex;
-  justify-content: center;
-}
+      <html>
+        <head>
+          <title>${printTitle}</title>
+          <style>
+          @page { margin: 0; padding:0; box-sizing:border-box;   ;
+    }
+          body { margin: 0; padding: 0; box-sizing:border-box; font-family: Arial, sans-serif; }
+          #tableHeading {
+      width: 100%;
+      margin: auto; /* Centers the div horizontally */
+      display: flex;
+      justify-content: center;
+    }
 
-#tableHeading table {
-  width: 100%; /* Ensures the table fills its container */
-  margin:auto;
-  padding:0 10em 0 10em;
+    #tableHeading table {
+      width: 100%; /* Ensures the table fills its container */
+      margin:auto;
+      padding:0 10em 0 10em;
+    }
 
-  
+    #tableContainer {
+      display: flex;
+      justify-content: center; /* Centers the table horizontally */
+      width: 80%;
 
+    }
 
-}
+    h5 {
+      width: 100%;
+      text-align: center;
+      margin: 0;  /* Remove any default margins */
+      padding: 5px 0;  /* Adjust padding if needed */
+    }
 
-#tableContainer {
-  display: flex;
-  justify-content: center; /* Centers the table horizontally */
-  width: 80%;
-  
-}
+    #tableMain {
+    width:100%;
+    margin:auto;
+    box-sizing:border-box;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: flex-start; /* Prevent unnecessary space */
+    padding:0 10em 0 10em;
+    }
 
- 
-h5 {  
-  width: 100%;  
-  text-align: center;  
-  margin: 0;  /* Remove any default margins */
-  padding: 5px 0;  /* Adjust padding if needed */
-}
+    h5 + * { /* Targets the element after h5 */
+      margin-top: 0; /* Ensures no extra space after h5 */
+    }
 
-#tableMain {
-width:100%;
-margin:auto;
-box-sizing:border-box;
-  display: flex;
-  flex-direction: column;
-  align-items: center;
-  justify-content: flex-start; /* Prevent unnecessary space */
-padding:0 10em 0 10em;
-}
+          table { border-spacing: 0; width: 70%; margin: auto;   }
+          th { font-size: 0.8em; background-color: #f9f9f9; }
+          td { font-size: 12px; }
+          th, td { border: 1px solid gray; padding: 8px; text-align: center; }
+          .student-photo {
+            width: 30px !important;
+            height: 30px !important;
+            object-fit: cover;
+            border-radius: 50%;
+          }
+          </style>
+        </head>
+           <body>
+          <div id="printContainer">
+              ${printContent}
+          </div>
+      </body>
+      </html>
+    `);
 
-h5 + * { /* Targets the element after h5 */
-  margin-top: 0; /* Ensures no extra space after h5 */
-}
-
-
-      table { border-spacing: 0; width: 70%; margin: auto;   }
-      th { font-size: 0.8em; background-color: #f9f9f9; }
-      td { font-size: 12px; }
-      th, td { border: 1px solid gray; padding: 8px; text-align: center; }
-      .student-photo {
-        width: 30px !important; 
-        height: 30px !important;
-        object-fit: cover;
-        border-radius: 50%;
-      }
-    </style>
-  </head>
-  <body>
-    ${printContent}
-  </body>
-  </html>`);
     printWindow.document.close();
-    printWindow.print();
+
+    // ✅ Ensure content is fully loaded before printing
+    printWindow.onload = function () {
+      printWindow.focus();
+      printWindow.print();
+      printWindow.close(); // Optional: close after printing
+    };
   };
 
   const handleDownloadEXL = () => {
@@ -265,23 +351,32 @@ h5 + * { /* Targets the element after h5 */
       "Class",
       "Division",
       "Last Date",
-      "SLC No.",
-      "SLC Issued Date",
+      "LC No.",
+      "LC Issued Date",
       "Leaving Remark",
     ];
     // Convert displayedSections data to array format for Excel
     const data = displayedSections.map((student, index) => [
       index + 1,
-      student?.roll_no || " ",
+      student?.roll_no,
       student?.reg_no || " ",
       `${capitalize(student?.first_name || " ")} ${capitalize(
         student?.mid_name || " "
       )} ${capitalize(student?.last_name || " ")}`,
       student?.class_name || " ",
       student?.sec_name || " ",
-      student?.last_date || " ",
+      ` ${
+        student?.last_date && !isNaN(new Date(student.last_date).getTime())
+          ? new Date(student.last_date).toLocaleDateString("en-GB")
+          : ""
+      }`,
       student?.slc_no || " ",
-      student?.slc_issue_date || " ",
+      ` ${
+        student?.slc_issue_date &&
+        !isNaN(new Date(student.slc_issue_date).getTime())
+          ? new Date(student.slc_issue_date).toLocaleDateString("en-GB")
+          : ""
+      }`,
       student?.leaving_remark || " ",
     ]);
 
@@ -528,8 +623,8 @@ h5 + * { /* Targets the element after h5 */
                                 "Class",
                                 "Division",
                                 "Last Date",
-                                "SLC No.",
-                                "SLC Issued Date",
+                                "LC No.",
+                                "LC Issued Date",
                                 "Leaving Remark",
                               ].map((header, index) => (
                                 <th
@@ -553,11 +648,15 @@ h5 + * { /* Targets the element after h5 */
                                     {index + 1}
                                   </td>
                                   <td className="px-2 py-2 text-center border border-gray-300">
-                                    {student?.roll_no || " "}
+                                    {student?.roll_no == null
+                                      ? " "
+                                      : student?.roll_no}
                                   </td>
 
                                   <td className="px-2 py-2 text-center border border-gray-300">
-                                    {student?.reg_no || " "}
+                                    {student?.reg_no == null
+                                      ? " "
+                                      : student?.reg_no}
                                   </td>
                                   <td className="px-2 py-2 text-nowrap text-center border border-gray-300">
                                     {[
@@ -582,23 +681,30 @@ h5 + * { /* Targets the element after h5 */
                                   </td>
 
                                   <td className="px-2 py-2 text-center border border-gray-300">
-                                    {student?.last_date
+                                    {student?.last_date &&
+                                    !isNaN(
+                                      new Date(student.last_date).getTime()
+                                    )
                                       ? new Date(
                                           student.last_date
                                         ).toLocaleDateString("en-GB")
-                                      : " "}
+                                      : ""}
                                   </td>
 
                                   <td className="px-2 py-2 text-center border border-gray-300">
                                     {student?.slc_no || " "}
                                   </td>
                                   <td className="px-2 py-2 text-center border border-gray-300">
-                                    {student?.slc_issue_date
+                                    {student?.slc_issue_date &&
+                                    !isNaN(
+                                      new Date(student.slc_issue_date).getTime()
+                                    )
                                       ? new Date(
                                           student.slc_issue_date
                                         ).toLocaleDateString("en-GB")
-                                      : " "}
+                                      : ""}
                                   </td>
+
                                   <td className="px-2 py-2 text-center border border-gray-300">
                                     {student?.leaving_remark || " "}
                                   </td>

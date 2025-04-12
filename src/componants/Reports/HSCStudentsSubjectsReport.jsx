@@ -319,7 +319,7 @@ const HSCStudentsSubjectsReport = () => {
                 (subject, index) => `
                 <tr>
                   <td>${index + 1}</td>
-                  <td>${subject?.roll_no || " "}</td>
+                  <td>${subject?.roll_no}</td>
                   <td>
                    ${subject?.first_name ? capitalize(subject.first_name) : " "}
                    ${
@@ -347,13 +347,71 @@ const HSCStudentsSubjectsReport = () => {
       </div>
     </div>`;
 
-    const printWindow = window.open("", "", "height=900,width=1500");
+    // const printWindow = window.open("", "", "height=900,width=1500");
+    // printWindow.document.write(`
+    // <html>
+    // <head>
+    //   <title>${printTitle}</title>
+    //   <style>
+    //     @page { margin: 0; }
+    //     body { margin: 0; padding: 20px; font-family: Arial, sans-serif; }
+
+    //     /* Increase width */
+    //     #tableMain {
+    //       width: 100%;
+    //       display: flex;
+    //       flex-direction: column;
+    //       align-items: center;
+    //     }
+
+    //     h5 {
+    //       width: 100%;
+    //       text-align: center;
+    //       font-size: 1.5em;
+    //       font-weight: bold;
+    //       margin-bottom: 10px;
+    //     }
+
+    //     #tableContainer {
+    //       width: 100%;
+    //       display: flex;
+    //       justify-content: center;
+    //     }
+
+    //     table {
+    //       width: 80%; /* Increase table width */
+    //       border-spacing: 0;
+    //        margin: auto;
+    //     }
+
+    //     th, td {
+    //       border: 1px solid gray;
+    //       padding: 12px;
+    //       text-align: center;
+    //       font-size: 16px; /* Increase font size */
+    //     }
+
+    //     th {
+    //       background-color: #f9f9f9;
+    //       font-size: 1.1em;
+    //     }
+    //   </style>
+    // </head>
+    // <body>
+    //   ${printContent}
+    // </body>
+    // </html>`);
+    // printWindow.document.close();
+    // printWindow.print();
+
+    const printWindow = window.open("", "_blank", "width=1000,height=800");
+
     printWindow.document.write(`
     <html>
-    <head>
-      <title>${printTitle}</title>
-      <style>
-        @page { margin: 0; }
+      <head>
+        <title>${printTitle}</title>
+        <style>
+                @page { margin: 0; }
         body { margin: 0; padding: 20px; font-family: Arial, sans-serif; }
   
         /* Increase width */
@@ -395,14 +453,24 @@ const HSCStudentsSubjectsReport = () => {
           background-color: #f9f9f9;
           font-size: 1.1em;
         }
-      </style>
-    </head>
-    <body>
-      ${printContent}
+        </style>
+      </head>
+         <body>
+        <div id="printContainer">
+            ${printContent}
+        </div>
     </body>
-    </html>`);
+    </html>
+  `);
+
     printWindow.document.close();
-    printWindow.print();
+
+    // ✅ Ensure content is fully loaded before printing
+    printWindow.onload = function () {
+      printWindow.focus();
+      printWindow.print();
+      printWindow.close(); // Optional: close after printing
+    };
   };
 
   const handleDownloadEXL = () => {
@@ -422,7 +490,7 @@ const HSCStudentsSubjectsReport = () => {
     // Convert displayedSections data to array format for Excel
     const data = displayedSections.map((student, index) => [
       index + 1,
-      student?.roll_no || " ",
+      student?.roll_no,
       `${capitalize(student?.first_name || " ")} ${capitalize(
         student?.mid_name || " "
       )} ${capitalize(student?.last_name || " ")}`,
@@ -728,7 +796,7 @@ const HSCStudentsSubjectsReport = () => {
                                     {index + 1}
                                   </td>
                                   <td className="px-2 py-2 text-center border border-gray-300">
-                                    {student?.roll_no || " "}
+                                    {student?.roll_no}
                                   </td>
                                   <td className="px-2 py-2 text-nowrap text-center border border-gray-300">
                                     {[

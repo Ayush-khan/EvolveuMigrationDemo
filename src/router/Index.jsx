@@ -215,8 +215,9 @@ import CreateClassWisePeriodAllotment from "../componants/TimeTablePlanner/Commo
 import ClassWisePeriodAllotment from "../componants/TimeTablePlanner/CommonTableForAllTable/ClassWisePeriodAllotment.jsx";
 import EditTimetablePlanner from "../componants/TimeTablePlanner/EditTimeTablePlanner/EditTimetablePlanner.jsx";
 import CreateTimetablePlanner from "../componants/TimeTablePlanner/CreateExamTimeTablePlanner/CreateTimetablePlanner.jsx";
+// import TimetablePlanner from "../componants/TimeTablePlanner/TimetablePlanner.jsx";
 import TimetablePlanner from "../componants/TimeTablePlanner/TimetablePlanner.jsx";
-// import TimetablePlanner from "../componants/TimeTablePlanner/TimeTablePlanner.jsx";
+import MonthlyAttendenceReport from "../componants/Reports/MonthlyAttendanceReport.jsx";
 
 // import Menus from "../c";
 function Index() {
@@ -726,6 +727,11 @@ function Index() {
         <Route
           path="/staffReport"
           element={<PrivateRoute element={<StaffReport />} />}
+        />
+        {/* monthlyAttendenceReport module */}
+        <Route
+          path="/monthlyAttendenceRepo"
+          element={<PrivateRoute element={<MonthlyAttendenceReport />} />}
         />
         {/* Student Gender Wise  Report Module */}
         <Route
