@@ -222,7 +222,7 @@ function TimetablePlanner() {
                     ) : displayedStaffs.length ? (
                       displayedStaffs.map((staffItem, index) => (
                         <tr
-                          key={staffItem.user_id}
+                          key={staffItem.teacher_id}
                           className={`${
                             index % 2 === 0 ? "bg-white" : "bg-gray-100"
                           } hover:bg-gray-50`}

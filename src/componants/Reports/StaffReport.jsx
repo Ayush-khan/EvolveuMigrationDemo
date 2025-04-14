@@ -4,7 +4,7 @@ import Select from "react-select";
 import { toast, ToastContainer } from "react-toastify";
 import "react-toastify/dist/ReactToastify.css";
 import { useNavigate } from "react-router-dom";
-import { RxCross1 } from "react-icons/rx";
+import { RxCross1, RxPadding } from "react-icons/rx";
 import Loader from "../common/LoaderFinal/LoaderStyle";
 import { FiPrinter } from "react-icons/fi";
 import { FaFileExcel } from "react-icons/fa";
@@ -61,186 +61,6 @@ const StaffReport = () => {
 
   const capitalize = (str) =>
     str.charAt(0).toUpperCase() + str.slice(1).toLowerCase();
-
-  // const handlePrint = () => {
-  //   const printTitle = `Staff Report `;
-  //   const printContent = `
-  //   <div id="tableMain" class="flex items-center justify-center min-h-screen bg-white">
-  //        <h5 id="tableHeading5"  class="text-lg font-semibold border-1 border-black">${printTitle}</h5>
-  //   <div id="tableHeading" class="text-center w-3/4">
-  //     <table class="min-w-full leading-normal table-auto border border-black mx-auto mt-2">
-  //       <thead>
-  //         <tr class="bg-gray-100">
-  //           <th class="px-2 text-center py-2 border border-black text-sm font-semibold">Sr.No</th>
-  //           <th class="px-2 text-center py-2 border border-black text-sm font-semibold">Staff Name</th>
-  //           <th class="px-2 text-center py-2 border border-black text-sm font-semibold">Date of Birth</th>
-  //           <th class="px-2 text-center py-2 border border-black text-sm font-semibold">Date of Joining</th>
-  //           <th class="px-2 text-center py-2 border border-black text-sm font-semibold">Gender</th>
-  //           <th class="px-2 text-center py-2 border border-black text-sm font-semibold">Blood Group</th>
-  //           <th class="px-2 text-center py-2 border border-black text-sm font-semibold">Designation</th>
-  //           <th class="px-2 text-center py-2 border border-black text-sm font-semibold">Phone No.</th>
-  //           <th class="px-2 text-center py-2 border border-black text-sm font-semibold">Email</th>
-  //           <th class="px-2 text-center py-2 border border-black text-sm font-semibold">Address</th>
-  //           <th class="px-2 text-center py-2 border border-black text-sm font-semibold">Aadhaar No.</th>
-  //           <th class="px-2 text-center py-2 border border-black text-sm font-semibold">Academic Qualification</th>
-  //           <th class="px-2 text-center py-2 border border-black text-sm font-semibold">Professional Qualification</th>
-  //           <th class="px-2 text-center py-2 border border-black text-sm font-semibold">Training Status</th>
-  //           <th class="px-2 text-center py-2 border border-black text-sm font-semibold">Experience</th>
-  //         </tr>
-  //       </thead>
-  //       <tbody>
-  //         ${displayedSections
-  //           .map(
-  //             (subject, index) => `
-  //             <tr class="text-sm">
-  //               <td class="px-2 text-center py-2 border border-black">${
-  //                 index + 1
-  //               }</td>
-  //               <td class="px-2 text-center py-2 border border-black">
-  //               ${capitalize(subject?.name || " ")}
-  //               </td>
-  //               <td class="px-2 text-center py-2 border border-black">${
-  //                 subject?.birthday
-  //                   ? new Date(subject.birthday).toLocaleDateString("en-GB")
-  //                   : ""
-  //               }</td>
-  //              <td className="px-2 text-center py-2 border border-black">
-  //               ${
-  //                 subject?.date_of_joining
-  //                   ? new Date(subject.date_of_joining).toLocaleDateString(
-  //                       "en-GB"
-  //                     )
-  //                   : ""
-  //               }
-  //              </td>
-  //               <td class="px-2 text-center py-2 border border-black">${
-  //                 subject?.sex || " "
-  //               }</td>
-  //                <td class="px-2 text-center py-2 border border-black">${
-  //                  subject?.blood_group || " "
-  //                }</td>
-  //                 <td class="px-2 text-center py-2 border border-black">${
-  //                   subject?.designation || " "
-  //                 }</td>
-  //               <td class="px-2 text-center py-2 border border-black">${
-  //                 subject?.phone || " "
-  //               }</td>
-  //               <td class="px-2 text-center py-2 border border-black">${
-  //                 subject?.email || " "
-  //               }</td>
-  //               <td class="px-2 text-center py-2 border border-black">${
-  //                 subject?.address || " "
-  //               }</td>
-  //               <td class="px-2 text-center py-2 border border-black">${
-  //                 subject?.aadhar_card_no || " "
-  //               }</td>
-  //               <td class="px-2 text-center py-2 border border-black">${
-  //                 subject?.academic_qual || " "
-  //               }</td>
-  //               <td class="px-2 text-center py-2 border border-black">${
-  //                 subject?.professional_qual || " "
-  //               }</td>
-  //               <td class="px-2 text-center py-2 border border-black">${
-  //                 subject?.trained || " "
-  //               }</td>
-  //               <td class="px-2 text-center py-2 border border-black">${
-  //                 subject?.experience || " "
-  //               }</td>
-  //             </tr>`
-  //           )
-  //           .join("")}
-  //       </tbody>
-  //     </table>
-  //   </div>
-  //   </div>`;
-
-  //   const printWindow = window.open("", "", "height=800,width=2000");
-  //   printWindow.document.write(`
-  //   <html>
-  //   <head>
-  //       <title>${printTitle}</title>
-  //       <style>
-  //           @page {
-  //               size: A4 landscape; /* Wider format for better fit */
-  //               margin: 10px;
-  //           }
-
-  //           body {
-  //               font-family: Arial, sans-serif;
-  //               margin: 0;
-  //               padding: 0;
-  //               box-sizing: border-box;
-  //           }
-
-  //           /* Scrollable container */
-  //           #printContainer {
-  //               width: 100%;
-  //               overflow-x: auto;  /* Enables horizontal scrolling */
-  //               white-space: nowrap; /* Prevents text wrapping */
-  //           }
-
-  //           #tableMain {
-  //               width: 100%;
-  //               display: flex;
-  //               flex-direction: column;
-  //               align-items: center;
-  //               justify-content: flex-start;
-  //               padding: 0 10px;
-  //           }
-
-  //           table {
-  //               border-spacing: 0;
-  //               width: 100%;
-  //               min-width: 1200px; /* Ensures table doesn't shrink */
-  //               margin: auto;
-  //               table-layout: fixed; /* Ensures even column spacing */
-  //           }
-
-  //           th, td {
-  //               border: 1px solid gray;
-  //               padding: 8px;
-  //               text-align: center;
-  //               font-size: 12px;
-  //               word-wrap: break-word; /* Ensures text breaks properly */
-  //           }
-
-  //           th {
-  //               font-size: 0.8em;
-  //               background-color: #f9f9f9;
-  //           }
-
-  //           .student-photo {
-  //               width: 30px !important;
-  //               height: 30px !important;
-  //               object-fit: cover;
-  //               border-radius: 50%;
-  //           }
-
-  //           /* Ensure scrolling is available in print mode */
-  //           @media print {
-  //               #printContainer {
-  //                   overflow-x: auto;
-  //                   display: block;
-  //                   width: 100%;
-  //                   height: auto;
-  //               }
-  //               table {
-  //                   min-width: 100%;
-  //               }
-  //           }
-  //       </style>
-  //   </head>
-  //   <body>
-  //       <div id="printContainer">
-  //           ${printContent}
-  //       </div>
-  //   </body>
-  //   </html>
-  //   `);
-
-  //   printWindow.document.close();
-  //   printWindow.print();
-  // };
 
   const handlePrint = () => {
     const printTitle = `Staff Report`;
@@ -524,7 +344,7 @@ const StaffReport = () => {
   const displayedSections = filteredSections.slice(currentPage * pageSize);
   return (
     <>
-      <div className="w-full md:w-[100%] mt-4 mx-auto p-4 ">
+      <div className="w-full md:w-[100%] mx-auto p-4 mt-4 ">
         <ToastContainer />
         <div className="card rounded-md ">
           {/* <div className=" card-header mb-4 flex justify-between items-center ">
@@ -608,33 +428,54 @@ const StaffReport = () => {
                           scrollbarColor: "#C03178 transparent", // Sets track and thumb color in Firefox
                         }}
                       >
-                        <table className="min-w-full leading-normal table-auto">
+                        <table className="min-w-full w-[2300px] leading-normal table-auto">
                           <thead>
                             <tr className="bg-gray-100">
-                              {[
-                                "Sr No.",
-                                "Staff Name",
-                                "Date of Birth",
-                                "Date of Joining",
-                                "Gender",
-                                "Blood Group",
-                                "Designation",
-                                "Phone No.",
-                                "Email",
-                                "Address",
-                                "Aadhaar Card No.",
-                                "Academic Qualification",
-                                "Professional Qualification",
-                                "Training Status",
-                                "Experience (in years)",
-                              ].map((header, index) => (
-                                <th
-                                  key={index}
-                                  className="px-2 text-center lg:px-3 py-2 border border-gray-950 text-sm font-semibold text-gray-900 tracking-wider"
-                                >
-                                  {header}
-                                </th>
-                              ))}
+                              <th className="w-12 px-2 py-2 text-center border border-gray-950 text-sm font-semibold text-gray-900 tracking-wider">
+                                Sr No.
+                              </th>
+                              <th className="w-44 px-3 py-2 text-center border border-gray-950 text-sm font-semibold text-gray-900 tracking-wider">
+                                Staff Name
+                              </th>
+                              <th className="w-28 px-3 py-2 text-center border border-gray-950 text-sm font-semibold text-gray-900 tracking-wider">
+                                Date of Birth
+                              </th>
+                              <th className="w-28 px-3 py-2 text-center border border-gray-950 text-sm font-semibold text-gray-900 tracking-wider">
+                                Date of Joining
+                              </th>
+                              <th className="w-20 px-2 py-2 text-center border border-gray-950 text-sm font-semibold text-gray-900 tracking-wider">
+                                Gender
+                              </th>
+                              <th className="w-24 px-2 py-2 text-center border border-gray-950 text-sm font-semibold text-gray-900 tracking-wider">
+                                Blood Group
+                              </th>
+                              <th className="w-36 px-3 py-2 text-center border border-gray-950 text-sm font-semibold text-gray-900 tracking-wider">
+                                Designation
+                              </th>
+                              <th className="w-32 px-3 py-2 text-center border border-gray-950 text-sm font-semibold text-gray-900 tracking-wider">
+                                Phone No.
+                              </th>
+                              <th className="w-28 px-3 py-2 text-center border border-gray-950 text-sm font-semibold text-gray-900 tracking-wider">
+                                Email
+                              </th>
+                              <th className="w-64 px-4 py-2 text-center border border-gray-950 text-sm font-semibold text-gray-900 tracking-wider">
+                                Address
+                              </th>
+                              <th className="w-36 px-3 py-2 text-center border border-gray-950 text-sm font-semibold text-gray-900 tracking-wider">
+                                Aadhaar Card No.
+                              </th>
+                              <th className="w-32 px-4 py-2 text-center border border-gray-950 text-sm font-semibold text-gray-900 tracking-wider">
+                                Academic Qualification
+                              </th>
+                              <th className="w-40 px-4 py-2 text-center border border-gray-950 text-sm font-semibold text-gray-900 tracking-wider">
+                                Professional Qualification
+                              </th>
+                              <th className="w-32 px-3 py-2 text-center border border-gray-950 text-sm font-semibold text-gray-900 tracking-wider">
+                                Training Status
+                              </th>
+                              <th className="w-28 px-3 py-2 text-center border border-gray-950 text-sm font-semibold text-gray-900 tracking-wider">
+                                Experience (in years)
+                              </th>
                             </tr>
                           </thead>
 

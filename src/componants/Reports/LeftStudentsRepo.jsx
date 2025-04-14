@@ -184,76 +184,6 @@ const LeftStudentsRepo = () => {
     </div>
   </div>`;
 
-    // const printWindow = window.open("", "", "height=800,width=1000");
-    // printWindow.document.write(`
-    //   <html>
-    //   <head>
-    //     <title>${printTitle}</title>
-    //     <style>
-    //       @page { margin: 0; padding:0; box-sizing:border-box;   ;
-    // }
-    //       body { margin: 0; padding: 0; box-sizing:border-box; font-family: Arial, sans-serif; }
-    //       #tableHeading {
-    //   width: 100%;
-    //   margin: auto; /* Centers the div horizontally */
-    //   display: flex;
-    //   justify-content: center;
-    // }
-
-    // #tableHeading table {
-    //   width: 100%; /* Ensures the table fills its container */
-    //   margin:auto;
-    //   padding:0 10em 0 10em;
-    // }
-
-    // #tableContainer {
-    //   display: flex;
-    //   justify-content: center; /* Centers the table horizontally */
-    //   width: 80%;
-
-    // }
-
-    // h5 {
-    //   width: 100%;
-    //   text-align: center;
-    //   margin: 0;  /* Remove any default margins */
-    //   padding: 5px 0;  /* Adjust padding if needed */
-    // }
-
-    // #tableMain {
-    // width:100%;
-    // margin:auto;
-    // box-sizing:border-box;
-    //   display: flex;
-    //   flex-direction: column;
-    //   align-items: center;
-    //   justify-content: flex-start; /* Prevent unnecessary space */
-    // padding:0 10em 0 10em;
-    // }
-
-    // h5 + * { /* Targets the element after h5 */
-    //   margin-top: 0; /* Ensures no extra space after h5 */
-    // }
-
-    //       table { border-spacing: 0; width: 70%; margin: auto;   }
-    //       th { font-size: 0.8em; background-color: #f9f9f9; }
-    //       td { font-size: 12px; }
-    //       th, td { border: 1px solid gray; padding: 8px; text-align: center; }
-    //       .student-photo {
-    //         width: 30px !important;
-    //         height: 30px !important;
-    //         object-fit: cover;
-    //         border-radius: 50%;
-    //       }
-    //     </style>
-    //   </head>
-    //   <body>
-    //     ${printContent}
-    //   </body>
-    //   </html>`);
-    // printWindow.document.close();
-    // printWindow.print();
-
     const printWindow = window.open("", "_blank", "width=1000,height=800");
 
     printWindow.document.write(`
@@ -604,7 +534,7 @@ const LeftStudentsRepo = () => {
                       }}
                     ></div>
 
-                    <div className="card-body w-full">
+                    <div className="card-body w-full ">
                       <div
                         className="h-96 lg:h-96 overflow-y-scroll overflow-x-scroll"
                         style={{
@@ -612,7 +542,7 @@ const LeftStudentsRepo = () => {
                           scrollbarColor: "#C03178 transparent", // Sets track and thumb color in Firefox
                         }}
                       >
-                        <table className="min-w-full leading-normal table-auto">
+                        <table className="min-w-full w-[1000px] leading-normal table-auto">
                           <thead>
                             <tr className="bg-gray-100">
                               {[
@@ -626,14 +556,34 @@ const LeftStudentsRepo = () => {
                                 "LC No.",
                                 "LC Issued Date",
                                 "Leaving Remark",
-                              ].map((header, index) => (
-                                <th
-                                  key={index}
-                                  className="px-2 text-center lg:px-3 py-2 border border-gray-950 text-sm font-semibold text-gray-900 tracking-wider"
-                                >
-                                  {header}
-                                </th>
-                              ))}
+                              ].map((header, index) => {
+                                return (
+                                  <th
+                                    key={index}
+                                    className="px-2 text-center lg:px-3 py-2 border border-gray-950 text-sm font-semibold text-gray-900 tracking-wider"
+                                  >
+                                    {header === "Last Date" ? (
+                                      <>
+                                        Last Date
+                                        <br />
+                                        <span className="px-2 text-center lg:px-3 py-2  text-sm font-semibold text-gray-900 tracking-wider">
+                                          (mm/dd/yyyy)
+                                        </span>
+                                      </>
+                                    ) : header === "LC Issued Date" ? (
+                                      <>
+                                        LC Issued Date
+                                        <br />
+                                        <span className="px-2 text-center lg:px-3 py-2  text-sm font-semibold text-gray-900 tracking-wider">
+                                          (mm/dd/yyyy)
+                                        </span>
+                                      </>
+                                    ) : (
+                                      header
+                                    )}
+                                  </th>
+                                );
+                              })}
                             </tr>
                           </thead>
 

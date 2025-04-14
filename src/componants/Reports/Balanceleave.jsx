@@ -106,6 +106,7 @@ const Balanceleave = () => {
       setLoadingForSearch(false);
     }
   };
+
   //   const handleDownloadEXL = () => {
   //     if (!displayedSections || displayedSections.length === 0) {
   //       toast.error(
@@ -163,6 +164,7 @@ const Balanceleave = () => {
   //       `Student idCard list of ${selectedStudent.label}.xlsx`
   //     );
   //   };
+
   const handleDownloadEXL = () => {
     if (!displayedSections || displayedSections.length === 0) {
       toast.error("No data available to download the Excel sheet.");
@@ -209,9 +211,9 @@ const Balanceleave = () => {
         : ": Complete List of All Staff "
     }`;
     const printContent = `
-  <div id="tableMain" class="flex items-center justify-center min-h-screen bg-white">
+    <div id="tableMain" class="flex items-center justify-center min-h-screen bg-white">
          <h5 id="tableHeading5"  class="text-lg font-semibold border-1 border-black">${printTitle}</h5>
- <div id="tableHeading" class="text-center w-3/4">
+    <div id="tableHeading" class="text-center w-3/4">
       <table class="min-w-full leading-normal table-auto border border-black mx-auto mt-2">
         <thead>
           <tr class="bg-gray-100">
@@ -247,81 +249,157 @@ const Balanceleave = () => {
     </div>
   </div>`;
 
-    const printWindow = window.open("", "", "height=800,width=1000");
+    //     const printWindow = window.open("", "", "height=800,width=1000");
+    //     printWindow.document.write(`
+    //   <html>
+    //   <head>
+    //     <title>${printTitle}</title>
+    //     <style>
+    //       @page { margin: 0; padding:0; box-sizing:border-box;   ;
+    // }
+    //       body { margin: 0; padding: 0; box-sizing:border-box; font-family: Arial, sans-serif; }
+    //       #tableHeading {
+    //   width: 100%;
+    //   margin: auto; /* Centers the div horizontally */
+    //   display: flex;
+    //   justify-content: center;
+    // }
+
+    // #tableHeading table {
+    //   width: 100%; /* Ensures the table fills its container */
+    //   margin:auto;
+    //   padding:0 10em 0 10em;
+
+    // }
+
+    // #tableContainer {
+    //   display: flex;
+    //   justify-content: center; /* Centers the table horizontally */
+    //   width: 80%;
+
+    // }
+
+    // h5 {
+    //   width: 100%;
+    //   text-align: center;
+    //   margin: 0;  /* Remove any default margins */
+    //   padding: 5px 0;  /* Adjust padding if needed */
+    // }
+
+    // #tableMain {
+    // width:100%;
+    // margin:auto;
+    // box-sizing:border-box;
+    //   display: flex;
+    //   flex-direction: column;
+    //   align-items: center;
+    //   justify-content: flex-start; /* Prevent unnecessary space */
+    // padding:0 10em 0 10em;
+    // }
+
+    // h5 + * { /* Targets the element after h5 */
+    //   margin-top: 0; /* Ensures no extra space after h5 */
+    // }
+
+    //       table { border-spacing: 0; width: 70%; margin: auto;   }
+    //       th { font-size: 0.8em; background-color: #f9f9f9; }
+    //       td { font-size: 12px; }
+    //       th, td { border: 1px solid gray; padding: 8px; text-align: center; }
+    //       .student-photo {
+    //         width: 30px !important;
+    //         height: 30px !important;
+    //         object-fit: cover;
+    //         border-radius: 50%;
+    //       }
+    //     </style>
+    //   </head>
+    //   <body>
+    //     ${printContent}
+    //   </body>
+    //   </html>`);
+    //     printWindow.document.close();
+    //     printWindow.print();
+
+    const printWindow = window.open("", "_blank", "width=1000,height=800");
+
     printWindow.document.write(`
-  <html>
-  <head>
-    <title>${printTitle}</title>
-    <style>
-      @page { margin: 0; padding:0; box-sizing:border-box;   ;
-}
-      body { margin: 0; padding: 0; box-sizing:border-box; font-family: Arial, sans-serif; }
-      #tableHeading {
-  width: 100%;
-  margin: auto; /* Centers the div horizontally */
-  display: flex;
-  justify-content: center;
-}
+      <html>
+        <head>
+          <title>${printTitle}</title>
+          <style>
+          @page { margin: 0; padding:0; box-sizing:border-box;   ;
+    }
+          body { margin: 0; padding: 0; box-sizing:border-box; font-family: Arial, sans-serif; }
+          #tableHeading {
+      width: 100%;
+      margin: auto; /* Centers the div horizontally */
+      display: flex;
+      justify-content: center;
+    }
 
-#tableHeading table {
-  width: 100%; /* Ensures the table fills its container */
-  margin:auto;
-  padding:0 10em 0 10em;
+    #tableHeading table {
+      width: 100%; /* Ensures the table fills its container */
+      margin:auto;
+      padding:0 10em 0 10em;
+    }
 
-  
+    #tableContainer {
+      display: flex;
+      justify-content: center; /* Centers the table horizontally */
+      width: 80%;
 
+    }
 
-}
+    h5 {
+      width: 100%;
+      text-align: center;
+      margin: 0;  /* Remove any default margins */
+      padding: 5px 0;  /* Adjust padding if needed */
+    }
 
-#tableContainer {
-  display: flex;
-  justify-content: center; /* Centers the table horizontally */
-  width: 80%;
-  
-}
+    #tableMain {
+    width:100%;
+    margin:auto;
+    box-sizing:border-box;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: flex-start; /* Prevent unnecessary space */
+    padding:0 10em 0 10em;
+    }
 
- 
-h5 {  
-  width: 100%;  
-  text-align: center;  
-  margin: 0;  /* Remove any default margins */
-  padding: 5px 0;  /* Adjust padding if needed */
-}
+    h5 + * { /* Targets the element after h5 */
+      margin-top: 0; /* Ensures no extra space after h5 */
+    }
 
-#tableMain {
-width:100%;
-margin:auto;
-box-sizing:border-box;
-  display: flex;
-  flex-direction: column;
-  align-items: center;
-  justify-content: flex-start; /* Prevent unnecessary space */
-padding:0 10em 0 10em;
-}
+          table { border-spacing: 0; width: 70%; margin: auto;   }
+          th { font-size: 0.8em; background-color: #f9f9f9; }
+          td { font-size: 12px; }
+          th, td { border: 1px solid gray; padding: 8px; text-align: center; }
+          .student-photo {
+            width: 30px !important;
+            height: 30px !important;
+            object-fit: cover;
+            border-radius: 50%;
+          }
+          </style>
+        </head>
+           <body>
+          <div id="printContainer">
+              ${printContent}
+          </div>
+      </body>
+      </html>
+    `);
 
-h5 + * { /* Targets the element after h5 */
-  margin-top: 0; /* Ensures no extra space after h5 */
-}
-
-
-      table { border-spacing: 0; width: 70%; margin: auto;   }
-      th { font-size: 0.8em; background-color: #f9f9f9; }
-      td { font-size: 12px; }
-      th, td { border: 1px solid gray; padding: 8px; text-align: center; }
-      .student-photo {
-        width: 30px !important; 
-        height: 30px !important;
-        object-fit: cover;
-        border-radius: 50%;
-      }
-    </style>
-  </head>
-  <body>
-    ${printContent}
-  </body>
-  </html>`);
     printWindow.document.close();
-    printWindow.print();
+
+    // ✅ Ensure content is fully loaded before printing
+    printWindow.onload = function () {
+      printWindow.focus();
+      printWindow.print();
+      printWindow.close(); // Optional: close after printing
+    };
   };
 
   const filteredSections = timetable.filter((section) => {
@@ -343,7 +421,7 @@ h5 + * { /* Targets the element after h5 */
   const displayedSections = filteredSections.slice(currentPage * pageSize);
   return (
     <>
-      <div className="w-full md:w-[90%] mx-auto p-4 ">
+      <div className="w-full md:w-[70%] mx-auto p-4 ">
         <ToastContainer />
         <div className="card p-4 rounded-md ">
           <div className=" card-header mb-4 flex justify-between items-center ">
@@ -365,15 +443,16 @@ h5 + * { /* Targets the element after h5 */
           ></div>
 
           <>
-            <div className=" w-full md:w-[85%]   flex justify-center flex-col md:flex-row gap-x-1     ml-0    p-2">
+            <div className=" w-full md:w-[90%]   flex justify-center flex-col md:flex-row gap-x-1     ml-0    p-2">
               <div className="w-full md:w-[99%] flex md:flex-row justify-between items-center mt-0 md:mt-4">
-                <div className="w-full md:w-[75%] gap-x-0 md:gap-x-12  flex flex-col gap-y-2 md:gap-y-0 md:flex-row">
-                  <div className="w-full md:w-[50%] gap-x-2   justify-around  my-1 md:my-4 flex md:flex-row ">
+                <div className="w-full md:w-[70%] gap-x-0 md:gap-x-12  flex flex-col gap-y-2 md:gap-y-0 md:flex-row">
+                  <div className="w-full md:w-[70%] gap-x-2   justify-around  my-1 md:my-4 flex md:flex-row ">
                     <label
-                      className="md:w-[35%] text-md pl-0 md:pl-5 mt-1.5"
+                      className="md:w-[40%] text-md pl-0 md:pl-5 mt-1.5"
                       htmlFor="studentSelect"
                     >
-                      Staff Name <span className="text-red-500">*</span>
+                      {/* Staff Name <span className="text-red-500">*</span> */}
+                      Staff Name
                     </label>
                     <div className=" w-full md:w-[65%]">
                       <Select
@@ -512,7 +591,7 @@ h5 + * { /* Targets the element after h5 */
                           scrollbarColor: "#C03178 transparent", // Sets track and thumb color in Firefox
                         }}
                       >
-                        <table className="min-w-full leading-normal table-auto">
+                        {/* <table className="min-w-full leading-normal table-auto">
                           <thead>
                             <tr className="bg-gray-100">
                               {[
@@ -560,7 +639,69 @@ h5 + * { /* Targets the element after h5 */
                               </div>
                             )}
                           </tbody>
-                        </table>
+                        </table> */}
+                        <div className="w-full flex justify-center">
+                          <table className="min-w-[80%] leading-normal table-auto border border-gray-300">
+                            <thead>
+                              <tr className="bg-gray-100">
+                                {[
+                                  "Sr No.",
+                                  "Staff Name",
+                                  "Leave Type",
+                                  "Balance Leave",
+                                ].map((header, index) => {
+                                  let columnWidth = "min-w-[120px] px-2"; // default width
+
+                                  if (header === "Sr No.")
+                                    columnWidth = "min-w-[50px]";
+                                  else if (header === "Balance Leave")
+                                    columnWidth = "min-w-[50px]";
+
+                                  return (
+                                    <th
+                                      key={index}
+                                      className={`text-center lg:px-3 py-2 border border-gray-950 text-sm font-semibold text-gray-900 tracking-wider ${columnWidth}`}
+                                    >
+                                      {header}
+                                    </th>
+                                  );
+                                })}
+                              </tr>
+                            </thead>
+
+                            <tbody>
+                              {displayedSections.length ? (
+                                displayedSections?.map((student, index) => (
+                                  <tr
+                                    key={student.adm_form_pk}
+                                    className="border border-gray-300"
+                                  >
+                                    <td className="px-2 py-2 text-center border border-gray-300">
+                                      {index + 1}
+                                    </td>
+                                    <td className="px-2 py-2 text-center border border-gray-300">
+                                      {student?.staffname || " "}
+                                    </td>
+                                    <td className="px-2 py-2 text-center border border-gray-300">
+                                      {student?.name || " "}
+                                    </td>
+                                    <td className="px-2 py-2 text-center border border-gray-300">
+                                      {student?.balance_leave || " "}
+                                    </td>
+                                  </tr>
+                                ))
+                              ) : (
+                                <tr>
+                                  <td colSpan={4}>
+                                    <div className="w-full text-center text-xl text-red-700 py-6">
+                                      Oops! No data found..
+                                    </div>
+                                  </td>
+                                </tr>
+                              )}
+                            </tbody>
+                          </table>
+                        </div>
                       </div>
                     </div>
                   </div>

@@ -133,12 +133,12 @@ const HSCStudentsSubjectsReport = () => {
   const handleSearch = async () => {
     setLoadingForSearch(false);
     if (!selectedClassId) {
-      setClassError("Please select Class.");
+      setClassError("Please select class.");
       setLoadingForSearch(false);
       return;
     }
     if (!selectedDivisionId) {
-      setDivisionError("Please select Division.");
+      setDivisionError("Please select division.");
       setLoadingForSearch(false);
       return;
     }

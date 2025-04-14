@@ -647,56 +647,118 @@ export default function EditCommonTimeTable({
   const sectionId = activeTabData?.section_id;
   console.log("activeTabData", activeTabData);
   const key = `${classId}-${sectionId}`;
+  // useEffect(() => {
+  //   if (!periods || !Array.isArray(periods)) return;
+
+  //   const transformedSubjects = {};
+
+  //   const days = [
+  //     "Monday",
+  //     "Tuesday",
+  //     "Wednesday",
+  //     "Thursday",
+  //     "Friday",
+  //     "Saturday",
+  //   ];
+  //   days.forEach((day) => {
+  //     const dayPeriods = periods.filter((period) => period.day === day);
+  //     if (!transformedSubjects[day]) transformedSubjects[day] = {};
+
+  //     dayPeriods.forEach((period) => {
+  //       transformedSubjects[day][period.period_no] = {
+  //         id: period.subject_id || "",
+  //         name: period.subject || "", // fallback to subject name from API
+  //       };
+  //     });
+  //   });
+
+  //   setLocalSelectedSubjects(transformedSubjects);
+  //   setGlobalSubjectSelection((prev) => ({
+  //     ...prev,
+  //     [key]: transformedSubjects,
+  //   }));
+  // }, [periods]);
+
+  // // Sync local selected subjects with global selected subjects when the active tab or selected subjects change
+  // useEffect(() => {
+  //   if (selectedSubjects[key]) {
+  //     setLocalSelectedSubjects(selectedSubjects[key]);
+  //   } else {
+  //     setLocalSelectedSubjects({});
+  //   }
+  // }, [selectedSubjects, key]);
+
+  // // Update global subject selection when local selections change
+  // useEffect(() => {
+  //   if (Object.keys(localSelectedSubjects).length) {
+  //     setGlobalSubjectSelection((prevState) => ({
+  //       ...prevState,
+  //       [key]: localSelectedSubjects,
+  //     }));
+  //   }
+  // }, [localSelectedSubjects, key]);
   useEffect(() => {
     if (!periods || !Array.isArray(periods)) return;
 
-    const transformedSubjects = {};
+    setLocalSelectedSubjects((prev) => {
+      const updated = { ...prev };
+      const days = [
+        "Monday",
+        "Tuesday",
+        "Wednesday",
+        "Thursday",
+        "Friday",
+        "Saturday",
+      ];
 
-    const days = [
-      "Monday",
-      "Tuesday",
-      "Wednesday",
-      "Thursday",
-      "Friday",
-      "Saturday",
-    ];
-    days.forEach((day) => {
-      const dayPeriods = periods.filter((period) => period.day === day);
-      if (!transformedSubjects[day]) transformedSubjects[day] = {};
+      days.forEach((day) => {
+        const dayPeriods = periods.filter((period) => period.day === day);
+        if (!updated[day]) updated[day] = {};
 
-      dayPeriods.forEach((period) => {
-        transformedSubjects[day][period.period_no] = {
-          id: period.subject_id || "",
-          name: period.subject || "", // fallback to subject name from API
-        };
+        dayPeriods.forEach((period) => {
+          const period_no = period.period_no;
+          if (!updated[day][period_no]) {
+            updated[day][period_no] = {
+              id: period.subject_id || "",
+              name: period.subject || "",
+            };
+          }
+        });
       });
+
+      return updated;
     });
 
-    setLocalSelectedSubjects(transformedSubjects);
-    setGlobalSubjectSelection((prev) => ({
-      ...prev,
-      [key]: transformedSubjects,
-    }));
+    setGlobalSubjectSelection((prev) => {
+      const updated = { ...prev };
+      if (!updated[key]) updated[key] = {};
+
+      const days = [
+        "Monday",
+        "Tuesday",
+        "Wednesday",
+        "Thursday",
+        "Friday",
+        "Saturday",
+      ];
+      days.forEach((day) => {
+        const dayPeriods = periods.filter((period) => period.day === day);
+        if (!updated[key][day]) updated[key][day] = {};
+
+        dayPeriods.forEach((period) => {
+          const period_no = period.period_no;
+          if (!updated[key][day][period_no]) {
+            updated[key][day][period_no] = {
+              id: period.subject_id || "",
+              name: period.subject || "",
+            };
+          }
+        });
+      });
+
+      return updated;
+    });
   }, [periods]);
-
-  // Sync local selected subjects with global selected subjects when the active tab or selected subjects change
-  useEffect(() => {
-    if (selectedSubjects[key]) {
-      setLocalSelectedSubjects(selectedSubjects[key]);
-    } else {
-      setLocalSelectedSubjects({});
-    }
-  }, [selectedSubjects, key]);
-
-  // Update global subject selection when local selections change
-  useEffect(() => {
-    if (Object.keys(localSelectedSubjects).length) {
-      setGlobalSubjectSelection((prevState) => ({
-        ...prevState,
-        [key]: localSelectedSubjects,
-      }));
-    }
-  }, [localSelectedSubjects, key]);
 
   // Check if a subject is already selected in another section for the same period and day
   // Check if a subject is already selected in another section for the same period and day
@@ -717,18 +779,31 @@ export default function EditCommonTimeTable({
   const handleSubjectChange = (day, period_no, selectedSubject) => {
     if (!classId || !sectionId) return;
 
-    // Check if the subject is selected in another section for this day and period
+    const currentSelectedSubject = localSelectedSubjects?.[day]?.[period_no];
+
+    // ✅ Check if same subject is already selected in another section (same day & period)
+    const isSubjectSelectedInAnotherSection = (subjectId, day, period_no) => {
+      for (const sectionKey in globalSubjectSelection) {
+        if (sectionKey === key) continue; // skip current section
+        const sectionData = globalSubjectSelection[sectionKey];
+        const selectedSubjectInOther = sectionData[day]?.[period_no];
+        if (selectedSubjectInOther?.id === subjectId) {
+          return true;
+        }
+      }
+      return false;
+    };
+
     if (
       selectedSubject.id &&
-      isAnySubjectAlreadySelectedInOtherSection(day, period_no)
+      isSubjectSelectedInAnotherSection(selectedSubject.id, day, period_no)
     ) {
       let conflictingClassSection = "";
       for (const sectionKey in globalSubjectSelection) {
-        if (sectionKey === key) continue; // Skip current section
+        if (sectionKey === key) continue;
         const sectionData = globalSubjectSelection[sectionKey];
         const selectedSubjectInOtherSection = sectionData[day]?.[period_no];
-        if (selectedSubjectInOtherSection?.id) {
-          // Extract class-section info
+        if (selectedSubjectInOtherSection?.id === selectedSubject.id) {
           const [conflictingClassId, conflictingSectionId] =
             sectionKey.split("-");
           const classSectionName = classSectionMapping[conflictingSectionId];
@@ -737,7 +812,6 @@ export default function EditCommonTimeTable({
         }
       }
 
-      // Show conflict error if the subject is already selected elsewhere
       toast.error(
         <div>
           <span>
@@ -750,54 +824,34 @@ export default function EditCommonTimeTable({
           <span style={{ color: "#2980b9" }}>
             for {day}, Period {period_no}.
           </span>
-        </div>,
-        {
-          position: "top-right",
-          autoClose: 5000,
-          hideProgressBar: true,
-          closeOnClick: true,
-          pauseOnHover: true,
-          draggable: true,
-        }
+        </div>
       );
-      return; // Prevent subject selection if conflict occurs
+      return;
     }
 
-    // Create an updated subjects object, preserving previous selections
-    const updatedSubjects = {
-      ...localSelectedSubjects, // Keep all previously selected subjects intact
-      [day]: {
-        ...localSelectedSubjects[day], // Keep all periods for this day intact
-        [period_no]: selectedSubject.id
-          ? { id: selectedSubject.id, name: selectedSubject.name } // Update only the selected period
-          : null, // If no subject is selected, clear the period
-      },
-    };
-
-    // Handle the used periods count (increment or decrement)
-    const currentSelectedSubject = localSelectedSubjects?.[day]?.[period_no];
+    // ✅ Adjust used periods count
     if (selectedSubject.id) {
-      // New subject selected
       if (!currentSelectedSubject || currentSelectedSubject.id === "") {
         setUsedPeriods((prev) => (prev < allocatedPeriods ? prev + 1 : prev));
       }
     } else {
-      // Subject deselected
       if (currentSelectedSubject) {
         setUsedPeriods((prev) => (prev > 0 ? prev - 1 : 0));
       }
     }
 
-    // Update the local selected subjects and global subject selections
-    setLocalSelectedSubjects(updatedSubjects);
-    setGlobalSubjectSelection((prevState) => ({
-      ...prevState,
-      [key]: updatedSubjects, // Only update the global selection for the current class-section
+    // ✅ Update local state (preserve old data)
+    setLocalSelectedSubjects((prev) => ({
+      ...prev,
+      [day]: {
+        ...(prev[day] || {}),
+        [period_no]: selectedSubject.id
+          ? { id: selectedSubject.id, name: selectedSubject.name }
+          : null,
+      },
     }));
-    console.log(" after localSelectedSubjects", localSelectedSubjects);
-    console.log(" after setGlobalSubjectSelection", globalSubjectSelection);
 
-    // Call the callback to persist the change
+    // ✅ Trigger callback
     handleTableData(classId, sectionId, day, period_no, selectedSubject);
   };
 

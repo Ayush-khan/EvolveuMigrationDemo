@@ -145,13 +145,13 @@ const MonthlyAttendenceReport = () => {
   const handleSearch = async () => {
     setLoadingForSearch(false);
     if (!selectedClassId) {
-      setClassError("Please select Class.");
+      setClassError("Please select class.");
       setLoadingForSearch(false);
       return;
     }
 
     if (!selectedMonthId) {
-      setClassError("Please select Month.");
+      setClassError("Please select month.");
       setLoadingForSearch(false);
       return;
     }
@@ -495,7 +495,7 @@ const MonthlyAttendenceReport = () => {
     total_working_days: timetable?.total_working_days || 0,
   };
 
-  // ✅ Fix: Keep other data while paginating students
+  // Fix: Keep other data while paginating students
   const displayedSections = {
     students: filteredSections.students.slice(currentPage * pageSize),
     grand_total_working_days: filteredSections.grand_total_working_days,

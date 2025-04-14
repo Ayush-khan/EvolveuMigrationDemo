@@ -10,18 +10,29 @@ import { FiPrinter } from "react-icons/fi";
 import { FaFileExcel } from "react-icons/fa";
 import * as XLSX from "xlsx";
 
-const PendingStudentIdCardReport = () => {
+const RazorpayFeePaymentReport = () => {
   const API_URL = import.meta.env.VITE_API_URL;
   const [selectedStudent, setSelectedStudent] = useState(null);
+  const [toDate, setToDate] = useState(null);
+  const [fromDate, setFromDate] = useState(null);
   const [currentPage, setCurrentPage] = useState(0);
   const [studentNameWithClassId, setStudentNameWithClassId] = useState([]);
   const [selectedStudentId, setSelectedStudentId] = useState(null);
-  const [loading, setLoading] = useState(false);
+  //   const [loading, setLoading] = useState(false);
   const [loadingForSearch, setLoadingForSearch] = useState(false);
+  const [selectedAccount, setSelectedAccount] = useState({
+    value: "",
+    label: "All",
+  });
+  const [selectedAccountId, setSelectedAccountId] = useState(null);
+
+  const [orderId, setOrderId] = useState("");
 
   const navigate = useNavigate();
   const [loadingExams, setLoadingExams] = useState(false);
-  const [studentError, setStudentError] = useState("");
+  const [formDateError, setFormDateError] = useState("");
+  const [toDateError, setToDateError] = useState("");
+  const [accountError, setAccountError] = useState("");
   const [isSubmitting, setIsSubmitting] = useState(false);
 
   const [timetable, setTimetable] = useState([]);
@@ -31,123 +42,210 @@ const PendingStudentIdCardReport = () => {
   const [searchTerm, setSearchTerm] = useState("");
 
   useEffect(() => {
-    fetchExams();
+    fetchStudents();
     // handleSearch();
   }, []);
 
-  const fetchExams = async () => {
+  useEffect(() => {
+    if (selectedAccount) {
+      setSelectedAccountId(selectedAccount.value);
+    }
+  }, [selectedAccount]);
+
+  const fetchStudents = async () => {
     try {
       setLoadingExams(true);
       const token = localStorage.getItem("authToken");
 
-      const response = await axios.get(`${API_URL}/api/get_class_section`, {
-        headers: { Authorization: `Bearer ${token}` },
-      });
-      console.log("Class", response);
-      setStudentNameWithClassId(response?.data || []);
+      const response = await axios.get(
+        `${API_URL}/api/get_allstudentwithclass`,
+        {
+          headers: { Authorization: `Bearer ${token}` },
+        }
+      );
+
+      console.log("API Response:", response.data);
+
+      // Ensure response is an array before setting state
+      if (Array.isArray(response.data)) {
+        setStudentNameWithClassId(response.data);
+      } else {
+        setStudentNameWithClassId([]); // Default to empty array
+        console.error("Unexpected API response format:", response.data);
+      }
     } catch (error) {
-      toast.error("Error fetching Classes");
-      console.error("Error fetching Classes:", error);
+      toast.error("Error fetching Students");
+      console.error("Error fetching Students:", error);
     } finally {
       setLoadingExams(false);
     }
   };
 
   const handleStudentSelect = (selectedOption) => {
-    setStudentError(""); // Reset error if student is select.
+    // setStudentError(""); // Reset error if student is select.
     setSelectedStudent(selectedOption);
     setSelectedStudentId(selectedOption?.value);
   };
 
-  const studentOptions = useMemo(
-    () =>
-      studentNameWithClassId.map((cls) => ({
-        value: cls?.section_id,
-        label: `${cls.get_class.name} ${cls.name}`,
-      })),
-    [studentNameWithClassId]
-  );
+  const studentOptions = useMemo(() => {
+    if (!Array.isArray(studentNameWithClassId)) return []; // Prevent crash
+    return studentNameWithClassId.map((cls) => ({
+      value: cls?.student_id,
+      label: cls?.label,
+    }));
+  }, [studentNameWithClassId]);
 
-  const houses = [
-    { value: "D", label: "Diamond" },
-    { value: "R", label: "Ruby" },
-    { value: "S", label: "Sapphire" },
-    { value: "E", label: "Emerald" },
+  const accountTypeMap = [
+    { value: "", label: "All" },
+    { value: "2", label: "Nursery" },
+    { value: "3", label: "KG" },
+    { value: "4", label: "School" },
   ];
 
-  // Get the label for the student's house value
-  const getHouses = (houseValue) => {
-    const house = houses.find((h) => h.value === houseValue);
-    return house ? house.label : "";
+  const accountOptions = useMemo(
+    () =>
+      accountTypeMap.map((account) => ({
+        value: account.value,
+        label: account.label,
+      })),
+    []
+  );
+
+  const handleAccountSelect = (selectedOption) => {
+    setSelectedAccount(selectedOption);
+
+    // Store only the value separately, ensuring "All" is stored as an empty string
+    setSelectedAccountId(
+      selectedOption.value === "" ? "" : selectedOption.value
+    );
+
+    // Clear error if a valid option is selected
+    if (selectedOption) {
+      setAccountError("");
+    }
   };
 
-  // Handle search and fetch parent information
+  const handleChangeDate = (event, field) => {
+    const { value } = event.target;
+
+    if (field === "fromDate") {
+      setFromDate(value);
+      setFormDateError(""); // ✅ Remove error when user selects a date
+
+      // Ensure 'To Date' is not earlier than 'From Date'
+      //   if (toDate && value > toDate) {
+      //     setToDate(value);
+      //   }
+    } else if (field === "toDate") {
+      // Prevent selecting 'To Date' earlier than 'From Date'
+      //   if (value >= fromDate) {
+      setToDate(value);
+      setToDateError(""); // ✅ Remove error when user selects a valid date
+      //   }
+    }
+  };
 
   const handleSearch = async () => {
     setLoadingForSearch(false);
-    if (!selectedStudentId) {
-      setStudentError("Please select Class.");
-      setLoadingForSearch(false);
+
+    // Validation checks for mandatory fields
+    if (!selectedAccount) {
+      setAccountError("Please select Account type.");
       return;
     }
+
+    if (!orderId && !selectedStudentId) {
+      if (!fromDate) {
+        setFormDateError("Please select From Date");
+        return;
+      }
+
+      if (!toDate) {
+        setToDateError("Please select To Date");
+        return;
+      }
+    }
+
+    // Clear previous errors
+    setAccountError("");
+    setFormDateError("");
+    setToDateError("");
     setSearchTerm("");
+
     try {
-      setLoadingForSearch(true); // Start loading
+      setLoadingForSearch(true);
       setTimetable([]);
       const token = localStorage.getItem("authToken");
-      const params = {};
-      if (selectedStudentId) params.section_id = selectedStudentId;
+
+      let params = {
+        accounttype: selectedAccount.value === "" ? "" : selectedAccount.label,
+      };
+
+      if (orderId) {
+        params.order_id = orderId; // ✅ match this key exactly as backend expects
+      }
+
+      if (selectedStudentId) {
+        params.student_id = selectedStudentId; // ✅ again, use exact API key
+      }
+
+      // Add from_date and to_date if both orderId and studentId are missing
+      if (!orderId && !selectedStudentId) {
+        params.fromdate = fromDate;
+        params.todate = toDate;
+      }
+      console.log("API Params:", params); // Debugging API request
 
       const response = await axios.get(
-        `${API_URL}/api/getpendingstudentidcardreport`,
+        `${API_URL}/api/getrazorpayfeepaymentreport`,
         {
           headers: { Authorization: `Bearer ${token}` },
           params,
+          paramsSerializer: (params) => {
+            return new URLSearchParams(params).toString();
+          },
         }
       );
 
+      console.log("API Response:", response?.data); // Debug API response
+
       if (!response?.data?.data || response?.data?.data?.length === 0) {
-        toast.error("Pending Students Id Card Report data not found.");
         setTimetable([]);
+        toast.error("No records found for selected criteria.");
       } else {
         setTimetable(response?.data?.data);
-        setPageCount(Math.ceil(response?.data?.data?.length / pageSize)); // Set page count based on response size
+        setPageCount(Math.ceil(response?.data?.data?.length / pageSize));
       }
     } catch (error) {
-      console.error("Error fetching Pending Students Id Card Report:", error);
-      toast.error(
-        "Error fetching Pending Students Id Card Report. Please try again."
-      );
+      console.error("Error fetching report:", error);
+      toast.error("Error fetching data. Please try again.");
     } finally {
-      setIsSubmitting(false); // Re-enable the button after the operation
+      setIsSubmitting(false);
       setLoadingForSearch(false);
     }
   };
 
   const handlePrint = () => {
-    const printTitle = `Pending Student Id Report ${
-      selectedStudent?.label
-        ? `List of Class ${selectedStudent.label}`
-        : ": For All Students "
+    const printTitle = `Razorpay Fee Payment Report ${
+      selectedAccount?.label || ""
     }`;
     const printContent = `
-  <div id="tableMain" class="flex items-center justify-center min-h-screen bg-white">
+    <div id="tableMain" class="flex items-center justify-center min-h-screen bg-white">
          <h5 id="tableHeading5"  class="text-lg font-semibold border-1 border-black">${printTitle}</h5>
- <div id="tableHeading" class="text-center w-3/4">
+    <div id="tableHeading" class="text-center w-3/4">
       <table class="min-w-full leading-normal table-auto border border-black mx-auto mt-2">
         <thead>
           <tr class="bg-gray-100">
             <th class="px-2 text-center py-2 border border-black text-sm font-semibold">Sr.No</th>
-            <th class="px-2 text-center py-2 border border-black text-sm font-semibold">Roll No.</th>
-            <th class="px-2 text-center py-2 border border-black text-sm font-semibold">Student Full Name</th>
+            <th class="px-2 text-center py-2 border border-black text-sm font-semibold">Order ID</th>
+            <th class="px-2 text-center py-2 border border-black text-sm font-semibold">Student Name</th>
             <th class="px-2 text-center py-2 border border-black text-sm font-semibold">Class</th>
-            <th class="px-2 text-center py-2 border border-black text-sm font-semibold">Date of Birth</th>
-            <th class="px-2 text-center py-2 border border-black text-sm font-semibold">Address</th>
-            <th class="px-2 text-center py-2 border border-black text-sm font-semibold">Blood Group</th>
-            <th class="px-2 text-center py-2 border border-black text-sm font-semibold">House</th>
-            <th class="px-2 text-center py-2 border border-black text-sm font-semibold">Parent Name</th>
-            <th class="px-2 text-center py-2 border border-black text-sm font-semibold">Father Mobile No.</th>
-            <th class="px-2 text-center py-2 border border-black text-sm font-semibold">Mother Mobile No.</th>
+            <th class="px-2 text-center py-2 border border-black text-sm font-semibold">Date</th>
+            <th class="px-2 text-center py-2 border border-black text-sm font-semibold">Installment No.</th>
+            <th class="px-2 text-center py-2 border border-black text-sm font-semibold">Receipt No.</th>
+            <th class="px-2 text-center py-2 border border-black text-sm font-semibold">Payment ID.</th>
+            <th class="px-2 text-center py-2 border border-black text-sm font-semibold">Status</th>
+            <th class="px-2 text-center py-2 border border-black text-sm font-semibold">Amount</th>
           </tr>
         </thead>
         <tbody>
@@ -159,39 +257,34 @@ const PendingStudentIdCardReport = () => {
                   index + 1
                 }</td>
                 <td class="px-2 text-center py-2 border border-black">${
-                  subject?.roll_no
+                  subject?.OrderId || " "
                 }</td>
-                <td class="px-2 text-center py-2 border border-black">
-                ${subject?.first_name || " "}${subject?.mid_name || " "} ${
-                subject?.last_name || " "
-              } </td>
+                <td class="px-2 text-center py-2 border border-black">${
+                  subject?.student_name || " "
+                }</td>
                 <td class="px-2 text-center py-2 border border-black">${
                   subject?.class_name || " "
-                } ${subject?.sec_name || " "}</td>
-                <td class="px-2 text-center py-2 border border-black">
-                ${
-                  subject?.dob
-                    ? new Date(subject.dob).toLocaleDateString("en-GB")
+                }</td>
+                <td class="px-2 text-center py-2 border border-black">${
+                  subject?.Trnx_date
+                    ? new Date(subject.Trnx_date).toLocaleDateString("en-GB")
                     : " "
-                }
-                </td>
+                }</td>
                  <td class="px-2 text-center py-2 border border-black">${
-                   subject?.permant_add || " "
+                   subject?.installment_no || " "
                  }</td>
                   <td class="px-2 text-center py-2 border border-black">${
-                    subject?.blood_group || " "
+                    subject?.receipt_no || " "
                   }</td>
-                   <td class="px-2 text-center py-2 border border-black">
-                   ${getHouses(subject?.house || " ")} </td>
-                    <td class="px-2 text-center py-2 border border-black">${
-                      subject?.father_name || " "
-                    }</td>
-                     <td class="px-2 text-center py-2 border border-black">${
-                       subject?.f_mobile || " "
-                     }</td>
-                      <td class="px-2 text-center py-2 border border-black">${
-                        subject?.m_mobile || " "
-                      }</td>
+                <td class="px-2 text-center py-2 border border-black">${
+                  subject?.razorpay_payment_id || " "
+                }</td>
+                <td class="px-2 text-center py-2 border border-black">${
+                  subject?.Status || " "
+                }</td>
+                 <td class="px-2 text-center py-2 border border-black">${
+                   subject?.Amount || " "
+                 }</td>
               </tr>`
             )
             .join("")}
@@ -200,69 +293,76 @@ const PendingStudentIdCardReport = () => {
     </div>
   </div>`;
 
-    const printWindow = window.open("", "_blank", "width=1000,height=800");
+    const printWindow = window.open("", "_blank", "width=2000,height=1000");
 
     printWindow.document.write(`
     <html>
       <head>
         <title>${printTitle}</title>
         <style>
-              @page { margin: 0; padding:0; box-sizing:border-box;   ;
-    }
-          body { margin: 0; padding: 0; box-sizing:border-box; font-family: Arial, sans-serif; }
-          #tableHeading {
-      width: 100%;
-      margin: auto; /* Centers the div horizontally */
-      display: flex;
-      justify-content: center;
-    }
+                   @page {
+                size: A4 landscape; /* Wider format for better fit */
+                margin: 10px;
+            }
 
-    #tableHeading table {
-      width: 100%; /* Ensures the table fills its container */
-      margin:auto;
-      padding:0 10em 0 10em;
+                      body {
+                font-family: Arial, sans-serif;
+                margin: 0;
+                padding: 0;
+                box-sizing: border-box;
+            }
 
-    }
+                       /* Scrollable container */
+            #printContainer {
+                width: 100%;
+                overflow-x: auto;  /* Enables horizontal scrolling */
+                white-space: nowrap; /* Prevents text wrapping */
+            }
 
-    #tableContainer {
-      display: flex;
-      justify-content: center; /* Centers the table horizontally */
-      width: 80%;
+                      #tableMain {
+                width: 100%;
+                display: flex;
+                flex-direction: column;
+                align-items: center;
+                justify-content: flex-start;
+                padding: 0 10px;
+            }
 
-    }
+                       table {
+                border-spacing: 0;
+                width: 100%;
+                min-width: 1200px; /* Ensures table doesn't shrink */
+                margin: auto;
+                table-layout: fixed; /* Ensures even column spacing */
+            }
 
-    h5 {
-      width: 100%;
-      text-align: center;
-      margin: 0;  /* Remove any default margins */
-      padding: 5px 0;  /* Adjust padding if needed */
-    }
+                      th, td {
+                border: 1px solid gray;
+                padding: 8px;
+                text-align: center;
+                font-size: 12px;
+                word-wrap: break-word; /* Ensures text breaks properly */
+            }
 
-    #tableMain {
-    width:100%;
-    margin:auto;
-    box-sizing:border-box;
-      display: flex;
-      flex-direction: column;
-      align-items: center;
-      justify-content: flex-start; /* Prevent unnecessary space */
-    padding:0 10em 0 10em;
-    }
+            th {
+                font-size: 0.8em;
+                background-color: #f9f9f9;
+            }
 
-    h5 + * { /* Targets the element after h5 */
-      margin-top: 0; /* Ensures no extra space after h5 */
-    }
 
-          table { border-spacing: 0; width: 70%; margin: auto;   }
-          th { font-size: 0.8em; background-color: #f9f9f9; }
-          td { font-size: 12px; }
-          th, td { border: 1px solid gray; padding: 8px; text-align: center; }
-          .student-photo {
-            width: 30px !important;
-            height: 30px !important;
-            object-fit: cover;
-            border-radius: 50%;
-          }
+           /* Ensure scrolling is available in print mode */
+            @media print {
+                #printContainer {
+                    overflow-x: auto;
+                    display: block;
+                    width: 100%;
+                    height: auto;
+                }
+             table {
+                    min-width: 100%;
+                }
+}
+
         </style>
       </head>
          <body>
@@ -275,7 +375,7 @@ const PendingStudentIdCardReport = () => {
 
     printWindow.document.close();
 
-    // Ensure content is fully loaded before printing
+    // ✅ Ensure content is fully loaded before printing
     printWindow.onload = function () {
       printWindow.focus();
       printWindow.print();
@@ -292,38 +392,38 @@ const PendingStudentIdCardReport = () => {
     // Define headers matching the print table
     const headers = [
       "Sr No.",
-      "Roll No.",
-      "Student Full Name",
+      "Order ID",
+      "Student Name",
       "Class",
-      "Date Of Birth",
-      "Address",
-      "Blood Group",
-      "House",
-      "Parent Name",
-      "Father Mobile No.",
-      "Mother Mobile No.",
+      "Date",
+      "Installment No.",
+      "Receipt No.",
+      "Payment ID.",
+      "Status",
+      "Amount",
     ];
-
     // Convert displayedSections data to array format for Excel
     const data = displayedSections.map((student, index) => [
       index + 1,
-      student?.roll_no,
-      `${student?.first_name || ""} ${student?.mid_name || ""} ${
-        student?.last_name || ""
-      }`,
-      `${student?.class_name || " "} ${student?.sec_nname || ""}`,
+      student?.OrderId || " ",
+      student?.student_name || " ",
+      student?.class_name || " ",
       `${
-        student?.dob ? new Date(student.dob).toLocaleDateString("en-GB") : " "
+        student?.Trnx_date
+          ? new Date(student.Trnx_date).toLocaleDateString("en-GB")
+          : " "
       }`,
-      student?.permant_add || " ",
-      student?.blood_group || " ",
-      getHouses(student?.house) || " ",
-      student?.father_name || " ",
-      student?.f_mobile || " ",
-      student?.m_mobile || " ",
+      student?.installment_no || " ",
+      student?.receipt_no || " ",
+      student?.razorpay_payment_id || " ",
+      student?.Status || " ",
+      student?.Amount || " ",
     ]);
+
     // Create a worksheet
     const worksheet = XLSX.utils.aoa_to_sheet([headers, ...data]);
+
+    // Auto-adjust column width
     const columnWidths = headers.map(() => ({ wch: 20 })); // Approx. width of 20 characters per column
     worksheet["!cols"] = columnWidths;
 
@@ -332,67 +432,106 @@ const PendingStudentIdCardReport = () => {
     XLSX.utils.book_append_sheet(workbook, worksheet, "Admission Form Data");
 
     // Generate and download the Excel file
-    const fileName = `Pending_Student_Id_Card_Report_${
-      selectedStudent?.label || "For ALL Students"
-    }.xlsx`;
+    const fileName = ` Razorpay_Fee_Payment_Report.xlsx`;
     XLSX.writeFile(workbook, fileName);
   };
 
   console.log("row", timetable);
 
+  // const filteredSections = timetable.filter((student) => {
+  //   const searchLower = searchTerm.toLowerCase();
+  //   const formatDate = (dateString) => {
+  //     if (!dateString) return "";
+
+  //     // Ensure we remove the time part if present
+  //     const cleanDate = dateString.split(" ")[0]; // Extract only YYYY-MM-DD
+
+  //     const [year, month, day] = cleanDate.split("-");
+  //     return `${day}/${month}/${year} || ${day}-${month}-${year}`;
+  //   };
+
+  //   // Extract relevant fields and convert them to lowercase for case-insensitive search
+  //   const studentName = student?.student_name?.toLowerCase() || "";
+  //   const orderId = student?.OrderId?.toLowerCase() || "";
+  //   const className = student?.class_name?.toLowerCase() || "";
+  //   const dateofTrnx = formatDate(student?.Trnx_date).toLowerCase();
+  //   const installmentNo =
+  //     student?.installment_no
+  //       ?.toString()
+  //       ?.toLowerCase()
+  //       .replace(/\s+/g, " ")
+  //       .trim() || "";
+  //   const paymentId =
+  //     student?.razorpay_payment_id?.toString().toLowerCase() || "";
+  //   const status = student?.Status_code?.toLowerCase() || "";
+  //   const amount = student?.Amount?.toLowerCase() || "";
+  //   const receiptNo = student?.receipt_no?.toLowerCase() || "";
+
+  //   // Check if the search term is present in any of the specified fields
+  //   return (
+  //     studentName.includes(searchLower) ||
+  //     orderId.includes(searchLower) ||
+  //     className.includes(searchLower) ||
+  //     dateofTrnx.includes(searchLower) ||
+  //     installmentNo.includes(searchLower) ||
+  //     paymentId.includes(searchLower) ||
+  //     status.includes(searchLower) ||
+  //     amount.includes(searchLower) ||
+  //     receiptNo.includes(searchLower)
+  //   );
+  // });
+
   const filteredSections = timetable.filter((student) => {
-    const searchLower = searchTerm.toLowerCase();
+    // Normalize search term: Trim and replace multiple spaces with a single space
+    const searchLower = searchTerm.trim().replace(/\s+/g, " ").toLowerCase();
 
     const formatDate = (dateString) => {
       if (!dateString) return "";
 
       // Ensure we remove the time part if present
       const cleanDate = dateString.split(" ")[0]; // Extract only YYYY-MM-DD
-
       const [year, month, day] = cleanDate.split("-");
       return `${day}/${month}/${year} || ${day}-${month}-${year}`;
     };
 
-    // Extract relevant fields and convert them to lowercase for case-insensitive search
-    const rollNo = student?.roll_no ? String(student.roll_no) : "";
-    const className = student?.class_name?.toLowerCase() || "";
-    const studentName =
-      `${student?.first_name} ${student?.mid_name} ${student?.last_name}`
-        .toLowerCase()
-        .trim() || "";
+    // Function to normalize text: trim spaces, replace multiple spaces with one, and convert to lowercase
+    const normalize = (value) =>
+      value?.toString().trim().replace(/\s+/g, " ").toLowerCase() || "";
 
-    const dateofBirth = formatDate(student?.dob).toLowerCase();
-    const permanantAddress = student?.permant_add?.toLowerCase() || "";
-    const bloodGroup = student?.blood_group?.toLowerCase() || "";
-    const house = student?.house?.toLowerCase() || "";
-    const parentName = student?.father_name?.toLowerCase() || "";
-    const motherMobile = student?.m_mobile?.toLowerCase() || "";
-    const fatherMobile = student?.f_mobile?.toLowerCase() || "";
+    // Normalize all relevant fields for search
+    const studentName = normalize(student?.student_name);
+    const orderId = normalize(student?.OrderId);
+    const className = normalize(student?.class_name);
+    const dateofTrnx = normalize(formatDate(student?.Trnx_date));
+    const installmentNo = normalize(student?.installment_no);
+    const paymentId = normalize(student?.razorpay_payment_id);
+    const status = normalize(student?.Status_code);
+    const amount = normalize(student?.Amount);
+    const receiptNo = normalize(student?.receipt_no);
 
     // Check if the search term is present in any of the specified fields
     return (
-      rollNo.includes(searchLower) ||
-      className.includes(searchLower) ||
       studentName.includes(searchLower) ||
-      dateofBirth.includes(searchLower) ||
-      permanantAddress.includes(searchLower) ||
-      bloodGroup.includes(searchLower) ||
-      house.includes(searchLower) ||
-      parentName.includes(searchLower) ||
-      motherMobile.includes(searchLower) ||
-      fatherMobile.includes(searchLower)
+      orderId.includes(searchLower) ||
+      className.includes(searchLower) ||
+      dateofTrnx.includes(searchLower) ||
+      installmentNo.includes(searchLower) ||
+      paymentId.includes(searchLower) ||
+      status.includes(searchLower) ||
+      amount.includes(searchLower) ||
+      receiptNo.includes(searchLower)
     );
   });
 
   const displayedSections = filteredSections.slice(currentPage * pageSize);
   return (
     <>
-      <div className="w-full md:w-[100%] mx-auto p-4 ">
+      <div className="w-full md:w-[95%] mx-auto p-4 ">
         <ToastContainer />
         <div className="card p-4 rounded-md ">
           <div className=" card-header mb-4 flex justify-between items-center ">
             <h5 className="text-gray-700 mt-1 text-md lg:text-lg">
-              Pending Students ID Card Report
+              Razorpay Fee Payment Report
             </h5>
             <RxCross1
               className=" relative right-2 text-xl text-red-600 hover:cursor-pointer hover:bg-red-100"
@@ -409,77 +548,140 @@ const PendingStudentIdCardReport = () => {
           ></div>
 
           <>
-            <div className=" w-full md:w-[70%]  flex justify-center flex-col md:flex-row gap-x-1     ml-0    p-2">
-              <div className="w-full md:w-[99%] flex md:flex-row justify-between items-center mt-0 md:mt-4">
-                <div className="w-full md:w-[75%] gap-x-0 md:gap-x-12  flex flex-col gap-y-2 md:gap-y-0 md:flex-row">
-                  <div className="w-full md:w-[50%] gap-x-2   justify-around  my-1 md:my-4 flex md:flex-row ">
-                    <label
-                      className="md:w-[25%] text-md pl-0 md:pl-5 mt-1.5"
-                      htmlFor="studentSelect"
-                    >
-                      Class <span className="text-red-500">*</span>
-                    </label>
-                    <div className=" w-full md:w-[65%]">
-                      <Select
-                        menuPortalTarget={document.body}
-                        menuPosition="fixed"
-                        id="studentSelect"
-                        value={selectedStudent}
-                        onChange={handleStudentSelect}
-                        options={studentOptions}
-                        placeholder={loadingExams ? "Loading..." : "Select"}
-                        isSearchable
-                        isClearable
-                        className="text-sm"
-                        isDisabled={loadingExams}
-                      />
-                      {studentError && (
-                        <div className="h-8 relative ml-1 text-danger text-xs">
-                          {studentError}
-                        </div>
-                      )}
-                    </div>
+            <div className="container mx-auto px-4">
+              <div className="w-full flex flex-wrap items-start gap-6 p-2">
+                {/* Order ID */}
+                <div className="flex flex-col h-[80px]">
+                  <label className="text-md mb-1" htmlFor="orderId">
+                    Order ID
+                  </label>
+                  <input
+                    type="text"
+                    id="orderId"
+                    className="border border-gray-300 rounded-md px-3 py-2 focus:outline-none focus:ring-2 focus:ring-blue-500 w-[180px]"
+                    value={orderId}
+                    onChange={(e) => setOrderId(e.target.value)}
+                  />
+                </div>
+
+                {/* Student Name */}
+                <div className="flex flex-col h-[80px]">
+                  <label className="text-md mb-1" htmlFor="studentSelect">
+                    Student Name
+                  </label>
+                  <Select
+                    menuPortalTarget={document.body}
+                    menuPosition="fixed"
+                    id="studentSelect"
+                    value={selectedStudent}
+                    onChange={handleStudentSelect}
+                    options={studentOptions}
+                    placeholder={loadingExams ? "Loading..." : "Select"}
+                    isSearchable
+                    isClearable
+                    isDisabled={loadingExams}
+                    className="text-sm w-[220px]"
+                  />
+                </div>
+
+                {/* From Date */}
+                <div className="flex flex-col h-[80px]">
+                  <label className="text-md mb-1" htmlFor="fromDate">
+                    From Date <span className="text-sm text-red-500">*</span>
+                  </label>
+                  <input
+                    type="date"
+                    id="fromDate"
+                    value={fromDate}
+                    onChange={(e) => handleChangeDate(e, "fromDate")}
+                    className="text-sm border border-gray-300 rounded px-2 py-2 w-[180px]"
+                  />
+                  <div className="h-[16px] text-red-500 text-xs mt-1">
+                    {formDateError && <span>{formDateError}</span>}
                   </div>
-                  <div className="mt-1">
-                    <button
-                      type="search"
-                      onClick={handleSearch}
-                      style={{ backgroundColor: "#2196F3" }}
-                      className={` btn h-10 w-18 md:w-auto btn-primary text-white font-bold py-1 border-1 border-blue-500 px-4 rounded ${
-                        loadingForSearch ? "opacity-50 cursor-not-allowed" : ""
-                      }`}
-                      disabled={loadingForSearch}
-                    >
-                      {loadingForSearch ? (
-                        <span className="flex items-center">
-                          <svg
-                            className="animate-spin h-4 w-4 mr-2 text-white"
-                            xmlns="http://www.w3.org/2000/svg"
-                            fill="none"
-                            viewBox="0 0 24 24"
-                          >
-                            <circle
-                              className="opacity-25"
-                              cx="12"
-                              cy="12"
-                              r="10"
-                              stroke="currentColor"
-                              strokeWidth="4"
-                            ></circle>
-                            <path
-                              className="opacity-75"
-                              fill="currentColor"
-                              d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4z"
-                            ></path>
-                          </svg>
-                          Searching...
-                        </span>
-                      ) : (
-                        "Search"
-                      )}
-                    </button>
+                </div>
+
+                {/* To Date */}
+                <div className="flex flex-col h-[80px]">
+                  <label className="text-md mb-1" htmlFor="toDate">
+                    To Date <span className="text-sm text-red-500">*</span>
+                  </label>
+                  <input
+                    type="date"
+                    id="toDate"
+                    value={toDate}
+                    onChange={(e) => handleChangeDate(e, "toDate")}
+                    className="text-sm border border-gray-300 rounded px-2 py-2 w-[180px]"
+                    min={fromDate}
+                    max={new Date().toISOString().split("T")[0]}
+                  />
+                  <div className="h-[16px] text-red-500 text-xs mt-1">
+                    {toDateError && <span>{toDateError}</span>}
                   </div>
-                </div>{" "}
+                </div>
+
+                {/* Account Type */}
+                <div className="flex flex-col h-[80px]">
+                  <label className="text-md mb-1" htmlFor="accountType">
+                    Account Type <span className="text-sm text-red-500">*</span>
+                  </label>
+                  <Select
+                    menuPortalTarget={document.body}
+                    menuPosition="fixed"
+                    id="accountType"
+                    value={selectedAccount}
+                    onChange={handleAccountSelect}
+                    options={accountOptions}
+                    placeholder="Select"
+                    isSearchable
+                    isClearable={false}
+                    className="text-sm w-[180px]"
+                  />
+                  <div className="h-[16px] text-red-500 text-xs mt-1">
+                    {accountError && <span>{accountError}</span>}
+                  </div>
+                </div>
+
+                {/* Search Button */}
+                <div className="flex items-end mt-4">
+                  <button
+                    type="search"
+                    onClick={handleSearch}
+                    style={{ backgroundColor: "#2196F3" }}
+                    className={`btn h-10 btn-primary text-white font-bold py-1 px-6 rounded ${
+                      loadingForSearch ? "opacity-50 cursor-not-allowed" : ""
+                    }`}
+                    disabled={loadingForSearch}
+                  >
+                    {loadingForSearch ? (
+                      <span className="flex items-center">
+                        <svg
+                          className="animate-spin h-4 w-4 mr-2 text-white"
+                          xmlns="http://www.w3.org/2000/svg"
+                          fill="none"
+                          viewBox="0 0 24 24"
+                        >
+                          <circle
+                            className="opacity-25"
+                            cx="12"
+                            cy="12"
+                            r="10"
+                            stroke="currentColor"
+                            strokeWidth="4"
+                          ></circle>
+                          <path
+                            className="opacity-75"
+                            fill="currentColor"
+                            d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4z"
+                          ></path>
+                        </svg>
+                        Searching...
+                      </span>
+                    ) : (
+                      "Search"
+                    )}
+                  </button>
+                </div>
               </div>
             </div>
 
@@ -488,9 +690,9 @@ const PendingStudentIdCardReport = () => {
                 <div className="w-full  mt-4">
                   <div className="card mx-auto lg:w-full shadow-lg">
                     <div className="p-2 px-3 bg-gray-100 border-none flex justify-between items-center">
-                      <div className="w-full   flex flex-row justify-between mr-0 md:mr-4 ">
+                      <div className="w-full flex flex-row justify-between mr-0 md:mr-4 ">
                         <h3 className="text-gray-700 mt-1 text-[1.2em] lg:text-xl text-nowrap">
-                          List Of Pending Students ID Card Report
+                          List of Razorpay Fee Payment Report
                         </h3>
                         <div className="w-1/2 md:w-[18%] mr-1 ">
                           <input
@@ -545,16 +747,15 @@ const PendingStudentIdCardReport = () => {
                             <tr className="bg-gray-100">
                               {[
                                 "Sr No.",
-                                "Roll No.",
+                                "Order ID",
                                 "Student Name",
                                 "Class",
-                                "Date Of Birth",
-                                "Address",
-                                "Blood Group",
-                                "House",
-                                "Parent Name",
-                                "Father Mobile No.",
-                                "Mother Mobile No.",
+                                "Date",
+                                "Installment No.",
+                                "Receipt No.",
+                                "Payment ID",
+                                "Status",
+                                "Amount",
                               ].map((header, index) => (
                                 <th
                                   key={index}
@@ -576,44 +777,36 @@ const PendingStudentIdCardReport = () => {
                                   <td className="px-2 py-2 text-center border border-gray-300">
                                     {index + 1}
                                   </td>
-                                  {console.log("sroll no", student)}
                                   <td className="px-2 py-2 text-center border border-gray-300">
-                                    {student.roll_no}
+                                    {student?.OrderId || " "}
                                   </td>
                                   <td className="px-2 py-2 text-center border border-gray-300">
-                                    {student.first_name || " "}{" "}
-                                    {student.mid_name || " "}{" "}
-                                    {student.last_name || " "}
-                                  </td>
-                                  <td className="px-2 py-2 text-nowrap text-center border border-gray-300">
-                                    {student.class_name || " "}{" "}
-                                    {student.sec_name || " "}
+                                    {student?.student_name || " "}
                                   </td>
                                   <td className="px-2 py-2 text-center border border-gray-300">
-                                    {student.dob
+                                    {student?.class_name || " "}
+                                  </td>
+                                  <td className="px-2 py-2 text-center border border-gray-300">
+                                    {student?.Trnx_date
                                       ? new Date(
-                                          student.dob
+                                          student.Trnx_date
                                         ).toLocaleDateString("en-GB")
                                       : " "}
                                   </td>
                                   <td className="px-2 py-2 text-center border border-gray-300">
-                                    {student.permant_add || " "}
+                                    {student?.installment_no || ""}
                                   </td>
                                   <td className="px-2 py-2 text-center border border-gray-300">
-                                    {student.blood_group || " "}
+                                    {student?.receipt_no || " "}
                                   </td>
                                   <td className="px-2 py-2 text-center border border-gray-300">
-                                    {/* {student.house || " "} */}
-                                    {getHouses(student.house) || " "}
+                                    {student?.razorpay_payment_id || " "}
                                   </td>
                                   <td className="px-2 py-2 text-center border border-gray-300">
-                                    {student.father_name || " "}
+                                    {student?.Status || " "}
                                   </td>
                                   <td className="px-2 py-2 text-center border border-gray-300">
-                                    {student.f_mobile || " "}
-                                  </td>
-                                  <td className="px-2 py-2 text-center border border-gray-300">
-                                    {student.m_mobile || " "}
+                                    {student?.Amount || " "}
                                   </td>
                                 </tr>
                               ))
@@ -639,4 +832,4 @@ const PendingStudentIdCardReport = () => {
   );
 };
 
-export default PendingStudentIdCardReport;
+export default RazorpayFeePaymentReport;

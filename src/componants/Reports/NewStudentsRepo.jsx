@@ -585,15 +585,29 @@ const NewStudentsRepo = () => {
                                 "Student Name",
                                 "Class",
                                 "Division",
-                                "Date of Admission",
-                              ].map((header, index) => (
-                                <th
-                                  key={index}
-                                  className="px-2 text-center lg:px-3 py-2 border border-gray-950 text-sm font-semibold text-gray-900 tracking-wider"
-                                >
-                                  {header}
-                                </th>
-                              ))}
+                                "Date of Admission (mm/dd/yyyy)",
+                              ].map((header, index) => {
+                                const isAdmissionDate =
+                                  header === "Date of Admission (mm/dd/yyyy)";
+                                return (
+                                  <th
+                                    key={index}
+                                    className="px-2 text-center lg:px-3 py-2 border border-gray-950 text-sm font-semibold text-gray-900 tracking-wider"
+                                  >
+                                    {isAdmissionDate ? (
+                                      <>
+                                        Date of Admission
+                                        <br />
+                                        <span className="px-2 text-center lg:px-3 py-2  text-sm font-semibold text-gray-900 tracking-wider">
+                                          (mm/dd/yyyy)
+                                        </span>
+                                      </>
+                                    ) : (
+                                      header
+                                    )}
+                                  </th>
+                                );
+                              })}
                             </tr>
                           </thead>
 
