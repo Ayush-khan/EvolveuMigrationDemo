@@ -73,7 +73,7 @@ const StudentContactDetailsReport = () => {
   const handleSearch = async () => {
     setLoadingForSearch(false);
     if (!selectedStudentId) {
-      setStudentError("Please select class.");
+      setStudentError("Please select Class.");
       setLoadingForSearch(false);
       return;
     }

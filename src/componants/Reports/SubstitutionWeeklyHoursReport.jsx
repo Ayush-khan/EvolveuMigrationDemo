@@ -14,7 +14,7 @@ import "react-datepicker/dist/react-datepicker.css";
 import dayjs from "dayjs";
 import { format, startOfWeek, endOfWeek } from "date-fns";
 
-const SubstitutionWeeklyHoursReport = () => {
+const SubstituteWeeklyHoursRepo = () => {
   const API_URL = import.meta.env.VITE_API_URL;
   const [selectedStudent, setSelectedStudent] = useState(null);
   const [toDate, setToDate] = useState(null);
@@ -51,7 +51,7 @@ const SubstitutionWeeklyHoursReport = () => {
       const response = await axios.get(`${API_URL}/api/staff_list`, {
         headers: { Authorization: `Bearer ${token}` },
       });
-      console.log("Class", response);
+      console.log("Staff", response);
       setStudentNameWithClassId(response?.data || []);
     } catch (error) {
       toast.error("Error fetching Classes");
@@ -72,6 +72,7 @@ const SubstitutionWeeklyHoursReport = () => {
       setWeekRange("");
     }
   };
+
   const openDatePicker = () => {
     if (datePickerRef.current) {
       datePickerRef.current.setOpen(true);
@@ -201,82 +202,146 @@ const SubstitutionWeeklyHoursReport = () => {
     </div>
   </div>`;
 
-    const printWindow = window.open("", "", "height=800,width=1000");
+    //     const printWindow = window.open("", "", "height=800,width=1000");
+    //     printWindow.document.write(`
+    //   <html>
+    //   <head>
+    //     <title>${printTitle}</title>
+    //     <style>
+    //       @page { margin: 0; padding:0; box-sizing:border-box;   ;
+    // }
+    //       body { margin: 0; padding: 0; box-sizing:border-box; font-family: Arial, sans-serif; }
+    //       #tableHeading {
+    //   width: 100%;
+    //   margin: auto; /* Centers the div horizontally */
+    //   display: flex;
+    //   justify-content: center;
+    // }
+
+    // #tableHeading table {
+    //   width: 100%; /* Ensures the table fills its container */
+    //   margin:auto;
+    //   padding:0 10em 0 10em;
+
+    // }
+
+    // #tableContainer {
+    //   display: flex;
+    //   justify-content: center; /* Centers the table horizontally */
+    //   width: 100%;
+
+    // }
+
+    // h5 {
+    //   width: 100%;
+    //   text-align: center;
+    //   margin: 0;  /* Remove any default margins */
+    //   padding: 5px 0;  /* Adjust padding if needed */
+    // }
+
+    // #tableMain {
+    // width:100%;
+    // margin:auto;
+    // box-sizing:border-box;
+    //   display: flex;
+    //   flex-direction: column;
+    //   align-items: center;
+    //   justify-content: flex-start; /* Prevent unnecessary space */
+    // padding:0 10em 0 10em;
+    // }
+
+    // h5 + * { /* Targets the element after h5 */
+    //   margin-top: 0; /* Ensures no extra space after h5 */
+    // }
+
+    //       table { border-spacing: 0; width: 70%; margin: auto;   }
+    //       th { font-size: 0.8em; background-color: #f9f9f9; }
+    //       td { font-size: 12px; }
+    //       th, td { border: 1px solid gray; padding: 8px; text-align: center; }
+    //       .student-photo {
+    //         width: 30px !important;
+    //         height: 30px !important;
+    //         object-fit: cover;
+    //         border-radius: 50%;
+    //       }
+    //     </style>
+    //   </head>
+    //   <body>
+    //     ${printContent}
+    //   </body>
+    //   </html>`);
+    //     printWindow.document.close();
+    //     printWindow.print();
+
+    const printWindow = window.open("", "_blank", "width=1000,height=800");
+
     printWindow.document.write(`
-  <html>
-  <head>
-    <title>${printTitle}</title>
-    <style>
-      @page { margin: 0; padding:0; box-sizing:border-box;   ;
-}
-      body { margin: 0; padding: 0; box-sizing:border-box; font-family: Arial, sans-serif; }
-      #tableHeading {
-  width: 100%;
-  margin: auto; /* Centers the div horizontally */
-  display: flex;
-  justify-content: center;
-}
-
-#tableHeading table {
-  width: 100%; /* Ensures the table fills its container */
-  margin:auto;
-  padding:0 10em 0 10em;
-
+    <html>
+      <head>
+        <title>${printTitle}</title>
+        <style>
+                @page { margin: 0; }
+        body { margin: 0; padding: 20px; font-family: Arial, sans-serif; }
   
-
-
-}
-
-#tableContainer {
-  display: flex;
-  justify-content: center; /* Centers the table horizontally */
-  width: 100%;
+        /* Increase width */
+        #tableMain {
+          width: 100%;
+          display: flex;
+          flex-direction: column;
+          align-items: center;
+        }
   
-}
+        h5 {
+          width: 100%;
+          text-align: center;
+          font-size: 1.5em;
+          font-weight: bold;
+          margin-bottom: 10px;
+        }
+  
+        #tableContainer {
+          width: 100%;
+          display: flex;
+          justify-content: center;
+        }
+  
+        table {
+          width: 80%; /* Increase table width */
+          border-spacing: 0;
+           margin: auto;
+        }
+  
+        th, td {
+          border: 1px solid gray;
+          padding: 12px;
+          text-align: center;
+          font-size: 16px; /* Increase font size */
+        }
+  
+        th {
+          background-color: #f9f9f9;
+          font-size: 1.1em;
+        }
+        </style>
+      </head>
+         <body>
+        <div id="printContainer">
+            ${printContent}
+        </div>
+    </body>
+    </html>
+  `);
 
- 
-h5 {  
-  width: 100%;  
-  text-align: center;  
-  margin: 0;  /* Remove any default margins */
-  padding: 5px 0;  /* Adjust padding if needed */
-}
-
-#tableMain {
-width:100%;
-margin:auto;
-box-sizing:border-box;
-  display: flex;
-  flex-direction: column;
-  align-items: center;
-  justify-content: flex-start; /* Prevent unnecessary space */
-padding:0 10em 0 10em;
-}
-
-h5 + * { /* Targets the element after h5 */
-  margin-top: 0; /* Ensures no extra space after h5 */
-}
-
-
-      table { border-spacing: 0; width: 70%; margin: auto;   }
-      th { font-size: 0.8em; background-color: #f9f9f9; }
-      td { font-size: 12px; }
-      th, td { border: 1px solid gray; padding: 8px; text-align: center; }
-      .student-photo {
-        width: 30px !important; 
-        height: 30px !important;
-        object-fit: cover;
-        border-radius: 50%;
-      }
-    </style>
-  </head>
-  <body>
-    ${printContent}
-  </body>
-  </html>`);
     printWindow.document.close();
-    printWindow.print();
+
+    // ✅ Ensure content is fully loaded before printing
+    printWindow.onload = function () {
+      printWindow.focus();
+      printWindow.print();
+      printWindow.close(); // Optional: close after printing
+    };
   };
+
   const handleDownloadEXL = () => {
     if (!displayedSections || displayedSections.length === 0) {
       toast.error("No data available to download the Excel sheet.");
@@ -589,4 +654,4 @@ ${selectedStudent?.label || "For All Staff"}.xlsx`;
   );
 };
 
-export default SubstitutionWeeklyHoursReport;
+export default SubstituteWeeklyHoursRepo;

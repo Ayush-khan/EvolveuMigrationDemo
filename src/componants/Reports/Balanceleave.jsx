@@ -451,7 +451,6 @@ const Balanceleave = () => {
                       className="md:w-[40%] text-md pl-0 md:pl-5 mt-1.5"
                       htmlFor="studentSelect"
                     >
-                      {/* Staff Name <span className="text-red-500">*</span> */}
                       Staff Name
                     </label>
                     <div className=" w-full md:w-[65%]">

@@ -145,13 +145,13 @@ const MonthlyAttendenceReport = () => {
   const handleSearch = async () => {
     setLoadingForSearch(false);
     if (!selectedClassId) {
-      setClassError("Please select class.");
+      setClassError("Please select Class.");
       setLoadingForSearch(false);
       return;
     }
 
     if (!selectedMonthId) {
-      setClassError("Please select month.");
+      setClassError("Please select Month.");
       setLoadingForSearch(false);
       return;
     }

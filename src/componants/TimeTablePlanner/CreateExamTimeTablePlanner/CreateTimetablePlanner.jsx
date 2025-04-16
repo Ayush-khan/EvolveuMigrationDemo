@@ -1375,7 +1375,7 @@ const CreateTimetablePlanner = () => {
                           </span>
                         )}
                         <h2 className="text-xl   text-blue-500 font-bold mb-2 text-center">
-                          Class - {activeTab}
+                          Class {activeTab}
                         </h2>
                         {usedPeriods !== null && (
                           <span className="text-pink-500 text-xl font-medium">

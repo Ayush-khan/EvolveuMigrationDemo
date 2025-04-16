@@ -47,9 +47,17 @@ const EditTimetablePlanner = () => {
   console.log("TeacherData is: ", staff);
   useEffect(() => {
     fetchExams();
-    if (staff) {
+  }, []);
+  useEffect(() => {
+    const waitForStaff = async () => {
+      while (!staff?.teacher_id) {
+        console.log("Waiting for staff...");
+        await new Promise((res) => setTimeout(res, 300));
+      }
       handleSearch();
-    }
+    };
+
+    waitForStaff();
   }, []);
 
   const fetchExams = async () => {
@@ -72,26 +80,6 @@ const EditTimetablePlanner = () => {
       setLoadingExams(false);
     }
   };
-
-  const handleStudentSelect = (selectedOption) => {
-    setStudentError(""); // Reset error if student is select.
-    setSelectedStudent(selectedOption);
-    setSelectedStudentId(selectedOption?.value);
-  };
-
-  const studentOptions = useMemo(
-    () =>
-      studentNameWithClassId.map((cls) => ({
-        value: cls?.teacher_id,
-        label: `${cls.teachername}`,
-      })),
-    [studentNameWithClassId]
-  );
-  console.log("studentNameWithClassId[]--->", studentNameWithClassId);
-
-  console.log("studentOptions[]--->", studentOptions);
-
-  // Handle search and fetch parent information
 
   const handleSearch = async () => {
     setLoadingForSearch(false);
@@ -117,10 +105,21 @@ const EditTimetablePlanner = () => {
 
       setLoadingForSearch(true); // Start loading
       setTimetable([]);
-
+      if (!staff?.teacher_id) {
+        console.log(
+          "Teacher ID is missing. Please select a teacher.",
+          staff.teacher_id
+        );
+        toast.error("Teacher ID is missing. Please select a teacher.");
+        return;
+      }
+      console.log(
+        "Outside Teacher ID is missing. Please select a teacher.",
+        staff.teacher_id
+      );
       const token = localStorage.getItem("authToken");
       const periodResponse = await axios.get(
-        `${API_URL}/api/get_teacherperioddata?teacher_id=${staff?.teacher_id}`,
+        `${API_URL}/api/get_teacherperioddata?teacher_id=${staff.teacher_id}`,
         {
           headers: { Authorization: `Bearer ${token}` },
         }
@@ -232,7 +231,7 @@ const EditTimetablePlanner = () => {
       }
 
       const subjectsResponse = await axios.get(
-        `${API_URL}/api/get_teachersubjectbyclass?teacher_id=${teacher_id}&class_id=${class_id}&section_id=${section_id}`,
+        `${API_URL}/api/get_teachersubjectbyclass?teacher_id=${staff?.teacher_id}&class_id=${class_id}&section_id=${section_id}`,
         {
           headers: {
             Authorization: `Bearer ${token}`,
@@ -497,7 +496,7 @@ const EditTimetablePlanner = () => {
                           </span>
                         )}
                         <h2 className="text-xl   text-blue-500 font-bold mb-2 text-center">
-                          Class - {activeTab}
+                          Class {activeTab}
                         </h2>
                         {usedPeriods !== null && (
                           <span className="text-pink-500 text-xl font-medium">

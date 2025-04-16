@@ -91,7 +91,7 @@ function TimetablePlanner() {
     // const staffToDelete = staffs.find((staff) => staff.user_id === id);
     console.log("this is staffUersid", staffCurrent.teacher_id);
     setCurrentStaff(staffCurrent.teacher_id);
-    setCurrentStaffName(staffCurrent.name);
+    setCurrentStaffName(staffCurrent.teachername);
     setShowDeleteModal(true);
   };
 
@@ -104,20 +104,28 @@ function TimetablePlanner() {
       if (!token || !currentStaff) {
         throw new Error("Caretacker ID is missing");
       }
+      const response = await axios.delete(
+        `${API_URL}/api/delete_teacherperiodintimetable/${currentStaff}`,
+        {
+          headers: {
+            Authorization: `Bearer ${token}`,
+          },
+          withCredentials: true,
+        }
+      );
 
-      const response = await axios.delete(`${API_URL}/api//${currentStaff}`, {
-        headers: {
-          Authorization: `Bearer ${token}`,
-        },
-        withCredentials: true,
-      });
-
-      if (response.status === 200) {
-        fetchStaffs(); // Refresh staff list after successful deletion
+      if (response.status === 200 && response.data?.success) {
+        fetchStaffs(); // Refresh staff list
         handleCloseModal();
-        toast.success("Time Table Planner deleted successfully!");
+
+        // Show message returned by the API
+        toast.success(
+          response.data.message || "Time Table Planner deleted successfully!"
+        );
       } else {
-        toast.error("Failed to delete Time Table Planner");
+        toast.error(
+          response.data.message || "Failed to delete Time Table Planner"
+        );
       }
     } catch (error) {
       console.error("Error deleting Time Table Planner:", error);

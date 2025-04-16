@@ -32,7 +32,7 @@ const LeavingCertificateReport = () => {
 
   useEffect(() => {
     fetchExams();
-    handleSearch();
+    // handleSearch();
   }, []);
 
   const fetchExams = async () => {

@@ -375,7 +375,7 @@ const RazorpayFeePaymentReport = () => {
 
     printWindow.document.close();
 
-    // ✅ Ensure content is fully loaded before printing
+    //  Ensure content is fully loaded before printing
     printWindow.onload = function () {
       printWindow.focus();
       printWindow.print();
@@ -526,7 +526,7 @@ const RazorpayFeePaymentReport = () => {
   const displayedSections = filteredSections.slice(currentPage * pageSize);
   return (
     <>
-      <div className="w-full md:w-[98%] mx-auto p-4 ">
+      <div className="w-full md:w-[95%] mx-auto p-4 ">
         <ToastContainer />
         <div className="card p-4 rounded-md ">
           <div className=" card-header mb-4 flex justify-between items-center ">
@@ -549,7 +549,7 @@ const RazorpayFeePaymentReport = () => {
 
           <>
             <div className="container mx-auto px-4">
-              <div className="w-full md:w-[109%] flex flex-wrap items-start gap-6 p-2">
+              <div className="w-full flex flex-wrap items-start gap-6 p-2">
                 {/* Order ID */}
                 <div className="flex flex-col h-[80px]">
                   <label className="text-md mb-1" htmlFor="orderId">
