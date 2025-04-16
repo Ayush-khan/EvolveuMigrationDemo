@@ -15,8 +15,6 @@ import dayjs from "dayjs";
 import { format, startOfWeek, endOfWeek } from "date-fns";
 
 const SubstituteWeeklyHoursRepo = () => {
-// tgus
-const SubstitutionWeeklyHoursReport = () => {
   const API_URL = import.meta.env.VITE_API_URL;
   const [selectedStudent, setSelectedStudent] = useState(null);
   const [toDate, setToDate] = useState(null);
