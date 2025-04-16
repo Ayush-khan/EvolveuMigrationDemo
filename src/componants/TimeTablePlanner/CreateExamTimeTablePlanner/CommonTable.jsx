@@ -1117,7 +1117,13 @@ export default function CommonTable({
 
   const renderTable = () => {
     if (!periods?.length || !subjects.length || !rowCounts?.mon_fri) {
-      return <div className="p-5 text-center text-gray-600">No data found</div>;
+      return (
+        <div className=" w-[100%]  text-center flex justify-center items-center mt-14">
+          <div className="p-5 text-center font-semibold text-xl text-red-600 ">
+            Oops! No data found..
+          </div>
+        </div>
+      );
     }
     return (
       <table className="table-auto w-full border-collapse border border-gray-300">
