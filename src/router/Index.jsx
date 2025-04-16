@@ -209,6 +209,16 @@ import SubstituteTeacherMonthlyReport from "../componants/Reports/SubstituteTeac
 import SubstitutionWeeklyHoursReport from "../componants/Reports/SubstitutionWeeklyHoursReport.jsx";
 import LeavingCertificateReport from "../componants/Reports/LeavingCertificateReport.jsx";
 import PendingStudentIdCardReport from "../componants/Reports/PendingStudentIdCardReport.jsx";
+// import TimetablePlanner from "../componants/TimeTablePlanner/CreateExamTimeTablePlanner/TimetablePlanner.jsx";
+import TeacherPeriodAllocation from "../componants/TimeTablePlanner/CommonTableForAllTable/TeacherPeriodAllocation.jsx";
+import CreateClassWisePeriodAllotment from "../componants/TimeTablePlanner/CommonTableForAllTable/CreateClassWisePeriodAllotment.jsx";
+import ClassWisePeriodAllotment from "../componants/TimeTablePlanner/CommonTableForAllTable/ClassWisePeriodAllotment.jsx";
+import EditTimetablePlanner from "../componants/TimeTablePlanner/EditTimeTablePlanner/EditTimetablePlanner.jsx";
+import CreateTimetablePlanner from "../componants/TimeTablePlanner/CreateExamTimeTablePlanner/CreateTimetablePlanner.jsx";
+// import TimetablePlanner from "../componants/TimeTablePlanner/TimetablePlanner.jsx";
+import TimetablePlanner from "../componants/TimeTablePlanner/TimetablePlanner.jsx";
+import MonthlyAttendenceReport from "../componants/Reports/MonthlyAttendanceReport.jsx";
+
 // import Menus from "../c";
 function Index() {
   return (
@@ -448,6 +458,23 @@ function Index() {
           path="/CareTacker/view/:id"
           element={<PrivateRoute element={<ViewCareTacker />} />}
         />
+        {/* TimeTablePlanner module */}
+        <Route
+          path="/teacherPeriodAlloction"
+          element={<PrivateRoute element={<TeacherPeriodAllocation />} />}
+        />
+        {/* CreateClassWisePeriodAllotment module */}
+        <Route
+          path="/createClassWisePAllot"
+          element={
+            <PrivateRoute element={<CreateClassWisePeriodAllotment />} />
+          }
+        />
+        {/* ClassWisePeriodAllotment Module */}
+        <Route
+          path="/classWisePAllot"
+          element={<PrivateRoute element={<ClassWisePeriodAllotment />} />}
+        />
         {/* Set Late Time module */}
         <Route
           path="/SetLateTime"
@@ -543,6 +570,21 @@ function Index() {
         <Route
           path="/updateStudentID"
           element={<PrivateRoute element={<UpdateStudentID />} />}
+        />
+        {/* Time Table Planner */}
+        <Route
+          path="/timetablePlanner"
+          element={<PrivateRoute element={<TimetablePlanner />} />}
+        />
+        {/* EditTimetablePlanner module */}
+        <Route
+          path="/timetablePlanner/edit/:id"
+          element={<PrivateRoute element={<EditTimetablePlanner />} />}
+        />
+        {/* Create TimeTable Module */}
+        <Route
+          path="/createTimetablePlanner"
+          element={<PrivateRoute element={<CreateTimetablePlanner />} />}
         />
         {/* TimeTable Module */}
         <Route
@@ -685,6 +727,11 @@ function Index() {
         <Route
           path="/staffReport"
           element={<PrivateRoute element={<StaffReport />} />}
+        />
+        {/* monthlyAttendenceReport module */}
+        <Route
+          path="/monthlyAttendenceRepo"
+          element={<PrivateRoute element={<MonthlyAttendenceReport />} />}
         />
         {/* Student Gender Wise  Report Module */}
         <Route

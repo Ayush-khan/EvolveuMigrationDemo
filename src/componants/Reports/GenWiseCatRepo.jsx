@@ -166,77 +166,86 @@ const GenWiseCatRepo = () => {
     </div>
   </div>`;
 
-    const printWindow = window.open("", "", "height=800,width=1000");
+    const printWindow = window.open("", "_blank", "width=1000,height=800");
+
     printWindow.document.write(`
-  <html>
-  <head>
-    <title>${printTitle}</title>
-    <style>
-      @page { margin: 0; padding:0; box-sizing:border-box;   ;
-}
-      body { margin: 0; padding: 0; box-sizing:border-box; font-family: Arial, sans-serif; }
-      #tableHeading {
-  width: 100%;
-  margin: auto; /* Centers the div horizontally */
-  display: flex;
-  justify-content: center;
-}
+      <html>
+        <head>
+          <title>${printTitle}</title>
+          <style>
+          @page { margin: 0; padding:0; box-sizing:border-box;   ;
+    }
+          body { margin: 0; padding: 0; box-sizing:border-box; font-family: Arial, sans-serif; }
+          #tableHeading {
+      width: 100%;
+      margin: auto; /* Centers the div horizontally */
+      display: flex;
+      justify-content: center;
+    }
 
-#tableHeading table {
-  width: 100%; /* Ensures the table fills its container */
-  margin:auto;
-  padding:0 10em 0 10em;
-}
+    #tableHeading table {
+      width: 100%; /* Ensures the table fills its container */
+      margin:auto;
+      padding:0 10em 0 10em;
+    }
 
-#tableContainer {
-  display: flex;
-  justify-content: center; /* Centers the table horizontally */
-  width: 80%;
-  
-}
+    #tableContainer {
+      display: flex;
+      justify-content: center; /* Centers the table horizontally */
+      width: 80%;
 
- 
-h5 {  
-  width: 100%;  
-  text-align: center;  
-  margin: 0;  /* Remove any default margins */
-  padding: 5px 0;  /* Adjust padding if needed */
-}
+    }
 
-#tableMain {
-width:100%;
-margin:auto;
-box-sizing:border-box;
-  display: flex;
-  flex-direction: column;
-  align-items: center;
-  justify-content: flex-start; /* Prevent unnecessary space */
-padding:0 10em 0 10em;
-}
+    h5 {
+      width: 100%;
+      text-align: center;
+      margin: 0;  /* Remove any default margins */
+      padding: 5px 0;  /* Adjust padding if needed */
+    }
 
-h5 + * { /* Targets the element after h5 */
-  margin-top: 0; /* Ensures no extra space after h5 */
-}
+    #tableMain {
+    width:100%;
+    margin:auto;
+    box-sizing:border-box;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: flex-start; /* Prevent unnecessary space */
+    padding:0 10em 0 10em;
+    }
 
+    h5 + * { /* Targets the element after h5 */
+      margin-top: 0; /* Ensures no extra space after h5 */
+    }
 
-      table { border-spacing: 0; width: 70%; margin: auto;   }
-      th { font-size: 0.8em; background-color: #f9f9f9; }
-      td { font-size: 12px; }
-      th, td { border: 1px solid gray; padding: 8px; text-align: center; }
-      .student-photo {
-        width: 30px !important; 
-        height: 30px !important;
-        object-fit: cover;
-        border-radius: 50%;
-      }
-    </style>
-  </head>
-  <body>
-    ${printContent}
-  </body>
-  </html>`);
+          table { border-spacing: 0; width: 70%; margin: auto;   }
+          th { font-size: 0.8em; background-color: #f9f9f9; }
+          td { font-size: 12px; }
+          th, td { border: 1px solid gray; padding: 8px; text-align: center; }
+          .student-photo {
+            width: 30px !important;
+            height: 30px !important;
+            object-fit: cover;
+            border-radius: 50%;
+          }
+          </style>
+        </head>
+           <body>
+          <div id="printContainer">
+              ${printContent}
+          </div>
+      </body>
+      </html>
+    `);
+
     printWindow.document.close();
-    printWindow.print();
+
+    // Ensure content is fully loaded before printing
+    printWindow.onload = function () {
+      printWindow.focus();
+      printWindow.print();
+      printWindow.close(); // Optional: close after printing
+    };
   };
 
   const handleDownloadEXL = () => {
@@ -296,7 +305,7 @@ h5 + * { /* Targets the element after h5 */
   const displayedSections = filteredSections.slice(currentPage * pageSize);
   return (
     <>
-      <div className="w-full md:w-[80%] mx-auto p-4 ">
+      <div className="w-full md:w-[70%] mx-auto p-4 ">
         <ToastContainer />
         <div className="card p-4 rounded-md ">
           <div className=" card-header mb-4 flex justify-between items-center ">
@@ -449,7 +458,7 @@ h5 + * { /* Targets the element after h5 */
                         }}
                       >
                         <table className="min-w-full leading-normal table-auto">
-                          <thead>
+                          {/* <thead>
                             <tr className="bg-gray-100">
                               {[
                                 "Sr No.",
@@ -465,6 +474,25 @@ h5 + * { /* Targets the element after h5 */
                                   {header}
                                 </th>
                               ))}
+                            </tr>
+                          </thead> */}
+                          <thead>
+                            <tr className="bg-gray-100">
+                              <th className="px-2 text-center lg:px-3 py-2 border border-gray-950 text-sm font-semibold text-gray-900 tracking-wider">
+                                Sr No.
+                              </th>
+                              <th className="px-2 text-center lg:px-3 py-2 border border-gray-950 text-sm font-semibold text-gray-900 tracking-wider">
+                                Class
+                              </th>
+                              <th className="px-2 text-center lg:px-3 py-2 border border-gray-950 text-sm font-semibold text-gray-900 tracking-wider">
+                                Gender
+                              </th>
+                              <th className="px-2 text-center lg:px-3 py-2 border border-gray-950 text-sm font-semibold text-gray-900 tracking-wider">
+                                Category
+                              </th>
+                              <th className="px-2 text-center lg:px-3 py-2 border border-gray-950 text-sm font-semibold text-gray-900 tracking-wider w-[150px]">
+                                No. of Students
+                              </th>
                             </tr>
                           </thead>
 
@@ -492,7 +520,7 @@ h5 + * { /* Targets the element after h5 */
                                     {student.category || " "}
                                   </td>
                                   <td className="px-2 py-2 text-nowrap text-center border border-gray-300">
-                                    {student.counts || " "}
+                                    {student.counts}
                                   </td>
                                 </tr>
                               ))

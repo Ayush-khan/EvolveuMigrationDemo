@@ -32,7 +32,7 @@ const StudentReport = () => {
 
   useEffect(() => {
     fetchExams();
-    // handleSearch();
+    handleSearch();
   }, []);
 
   const fetchExams = async () => {

@@ -117,7 +117,7 @@ function HolidayList() {
     fetchSessionData();
     console.log("session.data", fetchSessionData);
 
-    fetchHolidays();
+    // fetchHolidays();
 
     // If data is posted successfully, reset the flag and refetch
     if (isDataPosted) {
@@ -159,6 +159,7 @@ function HolidayList() {
     if (formHasErrors) {
       setFieldErrors(errorMessages);
       setIsSubmitting(false);
+      toast.dismiss();
       toast.error("Please fill required fields.");
       return;
     }
@@ -275,6 +276,7 @@ function HolidayList() {
     if (formHasErrors) {
       setFieldErrors(errorMessages);
       setIsSubmitting(false);
+      toast.dismiss();
       toast.error("Please fill required fields.");
       return;
     }
@@ -347,6 +349,7 @@ function HolidayList() {
     if (formHasErrors) {
       setFieldErrors(errorMessages);
       setIsSubmittingandPublishing(false);
+      toast.dismiss();
       toast.error("Please fill required fields.");
       return;
     }
@@ -725,6 +728,7 @@ function HolidayList() {
         toast.success("Data posted successfully!");
         setIsDataPosted(true);
         setSelectedFile(null);
+        fetchHolidays();
       }
     } catch (error) {
       setLoading(false); // Hide loader

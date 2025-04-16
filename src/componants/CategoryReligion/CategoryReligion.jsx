@@ -57,11 +57,11 @@ const CategoryReligion = () => {
 
   const [optionalSubjects, setOptionalSubjects] = useState([
     { religion: "Hindu", name: "Hindu" },
-    { religion: "Muslims", name: "Muslims" },
+    { religion: "Muslim", name: "Muslim" },
     { religion: "Sikh", name: "Sikh" },
     { religion: "Jain", name: "Jain" },
     { religion: "Christian", name: "Christian" },
-    { religion: "Buddhism", name: "Buddhism" },
+    { religion: "Buddhist", name: "Buddhist" },
   ]);
 
   const [gender] = useState([
