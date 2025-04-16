@@ -785,6 +785,7 @@ const CreateTimetablePlanner = () => {
   const [usedPeriods, setUsedPeriods] = useState(null); // Store used periods
   const [checkUsedPeriods, setCheckUsedPeriods] = useState("");
   const [occupiedPeriods, setOccupiedPeriods] = useState(0); // Store occupied periods
+  const [showNoDataMessage, setShowNoDataMessage] = useState(false);
 
   const [activeTab, setActiveTab] = useState("");
 
@@ -835,6 +836,7 @@ const CreateTimetablePlanner = () => {
 
   const handleSearch = async () => {
     setLoadingForSearch(false);
+    setShowNoDataMessage(false); // Hide error on load
     // setSelectedStudent("");
     // setSelectedStudentId("");
     if (!selectedStudentId) {
@@ -891,10 +893,14 @@ const CreateTimetablePlanner = () => {
       );
 
       if (!response?.data?.data || response?.data?.data?.length === 0) {
-        toast.error("Time Table Planner for selected teacher not found.");
+        // toast.error("Time Table Planner for selected teacher not found.");
+        setShowNoDataMessage(true); // ✅ Show error message
+
         setTimetable([]);
       } else {
         setTimetable(response?.data?.data);
+        setShowNoDataMessage(false); // ✅ Hide error if data is available
+
         setPageCount(Math.ceil(response?.data?.data?.length / pageSize));
       }
       const formattedTabs = response.data.data.map((item) => ({
@@ -1330,8 +1336,7 @@ const CreateTimetablePlanner = () => {
                 </div>
               </div>
             </div>
-
-            {timetable.length > 0 && (
+            {timetable.length > 0 ? (
               <>
                 <div className="card mx-auto lg:w-full shadow-lg mt-3">
                   <div className="card-body bg-gray-100 border-none w-full border-3 border-black flex">
@@ -1442,7 +1447,13 @@ const CreateTimetablePlanner = () => {
                   </div>
                 </div>
               </>
-            )}
+            ) : showNoDataMessage ? (
+              <div className=" w-[100%]  text-center flex justify-center items-center mt-4">
+                <div className="p-5 text-center font-semibold text-xl text-red-600 ">
+                  Oops! Time Table Planner for selected teacher not found..
+                </div>
+              </div>
+            ) : null}
           </>
         </div>
       </div>
