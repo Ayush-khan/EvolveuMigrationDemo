@@ -7,6 +7,7 @@ import { useNavigate, useLocation } from "react-router-dom";
 import { RxCross1 } from "react-icons/rx";
 import "react-datepicker/dist/react-datepicker.css";
 import EditCommonTimeTable from "./EditCommonTimeTable";
+import LoaderStyle from "../../common/LoaderFinal/LoaderStyle";
 
 const EditTimetablePlanner = () => {
   const API_URL = import.meta.env.VITE_API_URL;
@@ -18,7 +19,7 @@ const EditTimetablePlanner = () => {
 
   const navigate = useNavigate();
   const [loadingExams, setLoadingExams] = useState(false);
-  const [studentError, setStudentError] = useState("");
+  const [timeTableDataError, setTimeTableDataError] = useState("");
   const [isSubmitting, setIsSubmitting] = useState(false);
 
   const [timetable, setTimetable] = useState([]);
@@ -43,6 +44,8 @@ const EditTimetablePlanner = () => {
   const [occupiedPeriods, setOccupiedPeriods] = useState(0); // Store occupied periods
   const [activeTab, setActiveTab] = useState("");
   const location = useLocation();
+  const [showNoDataMessage, setShowNoDataMessage] = useState(false);
+
   const { staff } = location.state || {};
   console.log("TeacherData is: ", staff);
   useEffect(() => {
@@ -83,6 +86,8 @@ const EditTimetablePlanner = () => {
 
   const handleSearch = async () => {
     setLoadingForSearch(false);
+    setShowNoDataMessage(false); // Hide error on load
+
     // setSelectedStudent("");
     // setSelectedStudentId("");
 
@@ -105,6 +110,7 @@ const EditTimetablePlanner = () => {
 
       setLoadingForSearch(true); // Start loading
       setTimetable([]);
+      setTimeTableDataError("");
       if (!staff?.teacher_id) {
         console.log(
           "Teacher ID is missing. Please select a teacher.",
@@ -145,9 +151,16 @@ const EditTimetablePlanner = () => {
       );
 
       if (!response?.data?.data || response?.data?.data?.length === 0) {
-        toast.error("Time Table Planner for selected teacher not found.");
+        // toast.error("Time Table Planner for selected teacher not found.");
+        setTimeTableDataError(
+          "Time Table Planner for selected teacher not found."
+        );
+        setShowNoDataMessage(true); // ✅ Show error message
+
         setTimetable([]);
       } else {
+        setTimeTableDataError("");
+        setShowNoDataMessage(false); // Hide error on load
         setTimetable(response?.data?.data);
         setPageCount(Math.ceil(response?.data?.data?.length / pageSize));
       }
@@ -452,7 +465,22 @@ const EditTimetablePlanner = () => {
           ></div>
 
           <>
-            {timetable.length > 0 && (
+            {loadingForSearch ? (
+              <>
+                {" "}
+                <div className="flex flex-col justify-center items-center p-10 space-y-5">
+                  {/* Spinner */}
+                  <div className="w-14 h-14 border-[5px] border-indigo-500 border-t-transparent rounded-full animate-spin shadow-lg"></div>
+
+                  {/* Glowing Animated Text */}
+                  <div className="text-2xl font-bold bg-gradient-to-r from-pink-500 via-purple-500 to-indigo-500 bg-clip-text text-transparent animate-pulse">
+                    Please wait while Loading timetable...
+                  </div>
+
+                  {/* Optional Subtitle */}
+                </div>
+              </>
+            ) : timetable.length > 0 ? (
               <>
                 <div className="card mx-auto lg:w-full shadow-lg mt-3">
                   <div className="card-body bg-gray-100 border-none w-full border-3 border-black flex">
@@ -544,7 +572,13 @@ const EditTimetablePlanner = () => {
                   </div>
                 </div>
               </>
-            )}
+            ) : showNoDataMessage ? (
+              <div className=" w-[100%]  text-center flex justify-center items-center mt-4">
+                <div className="p-5 text-center font-semibold text-xl text-red-600 ">
+                  Oops! Time Table Planner for selected teacher not found..
+                </div>
+              </div>
+            ) : null}
           </>
         </div>
       </div>

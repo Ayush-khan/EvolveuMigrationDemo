@@ -1,4 +1,4 @@
-import CommonTable from "./CommonTableForAllTable/CommonTableForTableOnly";
+import CommonTable from "./CommonTableForTableOnly";
 
 const SamplePage = () => {
   const headers = [

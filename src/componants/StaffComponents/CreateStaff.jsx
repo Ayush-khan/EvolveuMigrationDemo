@@ -2316,9 +2316,9 @@ function CreateStaff() {
                   <option className=" bg-gray-300" value="">
                     Select
                   </option>
-                  <option value="M">Male</option>
-                  <option value="F">Female</option>
-                  <option value="O">Other</option>
+                  <option value="male">Male</option>
+                  <option value="female">Female</option>
+                  <option value="other">Other</option>
                 </select>
                 {errors.sex && (
                   <span className="text-red-500 text-xs">{errors.sex}</span>

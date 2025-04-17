@@ -863,7 +863,14 @@ export default function EditCommonTimeTable({
 
   const renderTable = () => {
     if (!periods?.length || !subjects.length || !rowCounts?.mon_fri) {
-      return <div className="p-5">No data available.</div>;
+      return (
+        <div className="flex w-[100%]  text-center  justify-center mt-14 flex-col items-center space-y-2">
+          <span className="text-4xl animate-bounce">⚠️</span>
+          <p className="text-xl font-medium text-red-700 tracking-wide drop-shadow-md">
+            Oops! No data found..
+          </p>
+        </div>
+      );
     }
 
     return (

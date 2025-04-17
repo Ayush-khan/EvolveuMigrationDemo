@@ -446,78 +446,7 @@ const CreateTimeTable = () => {
         num_lec: monFriLectureCount,
       };
       console.log("TimeTable before Submit...", timetableData);
-      //   timetable.forEach((day, dayIndex) => {
-      //     day.lectures.forEach((lecture, index) => {
-      //       let i = index + 1;
-
-      //       console.log(
-      //         `Checking before lecture structure for ${day.day}, Lecture ${i}:`,
-      //         lecture
-      //       );
-
-      //       let timeIn = lecture["Time In"] ?? "N/A";
-      //       let timeOut = lecture["Time Out"] ?? "N/A";
-      //       let satTimeIn = lecture["Sat Time In"] ?? "N/A";
-      //       let satTimeOut = lecture["Sat Time Out"] ?? "N/A";
-      //       console.log("Lectures are:", lecture["Time In"]);
-      //       console.log(`Checking ${timeIn}`);
-      //       console.log(
-      //         "timeIn",
-      //         timeIn,
-      //         "timeOut",
-      //         timeOut,
-      //         "satTimeIn",
-      //         satTimeIn,
-      //         "satTimeOut",
-      //         satTimeOut
-      //       );
-
-      //       switch (day.day) {
-      //         case "Monday":
-      //           timetableData[`mon${i}`] =
-      //             selectedSubjects[dayIndex]?.lectures[index]?.subject
-      //               .map((s) => s.name)
-      //               .join(", ") || "";
-      //           timetableData[`time_in${i}`] = timeIn;
-      //           timetableData[`time_out${i}`] = timeOut;
-      //           break;
-      //         case "Tuesday":
-      //           timetableData[`tue${i}`] =
-      //             selectedSubjects[dayIndex]?.lectures[index]?.subject
-      //               .map((s) => s.name)
-      //               .join(", ") || "";
-      //           break;
-      //         case "Wednesday":
-      //           timetableData[`wed${i}`] =
-      //             selectedSubjects[dayIndex]?.lectures[index]?.subject
-      //               .map((s) => s.name)
-      //               .join(", ") || "";
-      //           break;
-      //         case "Thursday":
-      //           timetableData[`thu${i}`] =
-      //             selectedSubjects[dayIndex]?.lectures[index]?.subject
-      //               .map((s) => s.name)
-      //               .join(", ") || "";
-      //           break;
-      //         case "Friday":
-      //           timetableData[`fri${i}`] =
-      //             selectedSubjects[dayIndex]?.lectures[index]?.subject
-      //               .map((s) => s.name)
-      //               .join(", ") || "";
-      //           break;
-      //         case "Saturday":
-      //           timetableData[`sat${i}`] =
-      //             selectedSubjects[dayIndex]?.lectures[index]?.subject
-      //               .map((s) => s.name)
-      //               .join(", ") || "";
-      //           timetableData[`sat_in${i}`] = satTimeIn;
-      //           timetableData[`sat_out${i}`] = satTimeOut;
-      //           break;
-      //       }
-      //     });
-      //   });
-
-      timetable.forEach((day, dayIndex) => {
+    timetable.forEach((day, dayIndex) => {
         day.lectures.forEach((lecture, index) => {
           let i = index + 1;
 

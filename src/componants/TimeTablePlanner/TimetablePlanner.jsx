@@ -39,7 +39,7 @@ function TimetablePlanner() {
       }
 
       const response = await axios.get(
-        `${API_URL}/api/get_teacherslistbyperiod`,
+        `${API_URL}/api/get_teacherlistbyperiodallocation`,
         {
           headers: {
             Authorization: `Bearer ${token}`,
