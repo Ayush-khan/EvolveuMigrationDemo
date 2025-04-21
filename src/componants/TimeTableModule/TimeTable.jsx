@@ -365,6 +365,20 @@ const TimeTable = () => {
     };
   };
 
+  useEffect(() => {
+    if (!timetable || Object.keys(timetable).length === 0) return;
+
+    const today = new Date();
+    const dayName = today.toLocaleDateString("en-US", { weekday: "long" });
+
+    if (timetable.hasOwnProperty(dayName)) {
+      setSelectedDay(dayName);
+    } else {
+      const firstDay = Object.keys(timetable)[0];
+      setSelectedDay(firstDay);
+    }
+  }, [timetable]);
+
   return (
     <>
       <ToastContainer />
@@ -557,62 +571,6 @@ const TimeTable = () => {
                   ))}
                 </div>
               </div>
-
-              {/* Timetable Display */}
-              {/* {selectedDay && (
-                <div className="p-4 text-center mx-auto">
-                  <div className="space-y-2">
-                    <div className="border rounded-lg px-6 py-2 shadow-sm bg-gray-300 text-left">
-                      <div className="flex flex-col sm:flex-row items-center text-md font-medium gap-2 ">
-                        {" "}
-                       
-                        <span className="w-[30%] font-bold"></span>
-                        <span className="font-bold">Assembly</span>
-                        <span className="font-bold">8.00 - 8.30</span>
-                      </div>
-                    </div>
-
-                    {timetable[selectedDay].map((lecture, index) => (
-                      <React.Fragment key={index}>
-                        
-                        <div className="border rounded-lg px-4 py-2 shadow-sm bg-gray-100 text-left min-h-[60px] flex items-center">
-                          <div className="flex flex-row justify-between items-center text-md font-medium w-full">
-                            <span className="w-[17%] text-left pl-3">
-                              {lecture.period_no}
-                            </span>
-                            <span className="w-[25%] text-center">
-                              {lecture.subject}
-                            </span>
-                            <span className="w-[35%] text-right">
-                              {lecture.teacher?.[0]?.t_name || ""}
-                            </span>
-                          </div>
-                        </div>
-
-                        
-                        {index === 1 && (
-                          <div className="border rounded-lg px-6 py-2 shadow-sm bg-gray-300 text-left">
-                            <div className="flex flex-col sm:flex-row items-center text-md font-medium gap-2">
-                              <span className="w-[30%] font-bold"></span>
-                              <span className="font-bold">Short Break</span>
-                              <span className="font-bold">9.45 - 10.00</span>
-                            </div>
-                          </div>
-                        )}
-                        {index === 4 && (
-                          <div className="border rounded-lg px-6 py-2 shadow-sm bg-gray-300 text-left">
-                            <div className="flex flex-col sm:flex-row items-center text-md font-medium gap-2">
-                              <span className="w-[30%] font-bold"></span>
-                              <span className="font-bold">Long Break</span>
-                              <span className="font-bold">11.45 - 12.15</span>
-                            </div>
-                          </div>
-                        )}
-                      </React.Fragment>
-                    ))}
-                  </div>
-                </div>
-              )} */}
 
               {selectedDay && (
                 <>

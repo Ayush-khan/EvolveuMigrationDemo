@@ -1,15 +1,3 @@
-// import React from "react";
-
-// const MonthlyAttendenceReport = () => {
-//   return (
-//     <div>
-//       <h1>Monthly Attendencce</h1>
-//     </div>
-//   );
-// };
-
-// export default MonthlyAttendenceReport;
-
 import { useState, useEffect, useMemo } from "react";
 import axios from "axios";
 import Select from "react-select";

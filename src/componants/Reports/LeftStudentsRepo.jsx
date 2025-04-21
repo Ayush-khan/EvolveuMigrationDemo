@@ -560,22 +560,26 @@ const LeftStudentsRepo = () => {
                                 return (
                                   <th
                                     key={index}
-                                    className="px-2 text-center lg:px-3 py-2 border border-gray-950 text-sm font-semibold text-gray-900 tracking-wider"
+                                    className={`px-2 text-center lg:px-3 py-2 border border-gray-950 text-sm font-semibold text-gray-900 tracking-wider ${
+                                      header === "Leaving Remark"
+                                        ? "w-[300px]"
+                                        : ""
+                                    }`}
                                   >
                                     {header === "Last Date" ? (
                                       <>
                                         Last Date
                                         <br />
-                                        <span className="px-2 text-center lg:px-3 py-2  text-sm font-semibold text-gray-900 tracking-wider">
-                                          (mm/dd/yyyy)
+                                        <span className="px-2 text-center lg:px-3 py-2 text-sm font-semibold text-gray-900 tracking-wider">
+                                          (dd/mm/yyyy)
                                         </span>
                                       </>
                                     ) : header === "LC Issued Date" ? (
                                       <>
                                         LC Issued Date
                                         <br />
-                                        <span className="px-2 text-center lg:px-3 py-2  text-sm font-semibold text-gray-900 tracking-wider">
-                                          (mm/dd/yyyy)
+                                        <span className="px-2 text-center lg:px-3 py-2 text-sm font-semibold text-gray-900 tracking-wider">
+                                          (dd/mm/yyyy)
                                         </span>
                                       </>
                                     ) : (

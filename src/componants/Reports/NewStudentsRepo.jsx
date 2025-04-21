@@ -585,10 +585,10 @@ const NewStudentsRepo = () => {
                                 "Student Name",
                                 "Class",
                                 "Division",
-                                "Date of Admission (mm/dd/yyyy)",
+                                "Date of Admission (dd/mm/yyyy)",
                               ].map((header, index) => {
                                 const isAdmissionDate =
-                                  header === "Date of Admission (mm/dd/yyyy)";
+                                  header === "Date of Admission (dd/mm/yyyy)";
                                 return (
                                   <th
                                     key={index}
@@ -599,7 +599,7 @@ const NewStudentsRepo = () => {
                                         Date of Admission
                                         <br />
                                         <span className="px-2 text-center lg:px-3 py-2  text-sm font-semibold text-gray-900 tracking-wider">
-                                          (mm/dd/yyyy)
+                                          (dd/mm/yyyy)
                                         </span>
                                       </>
                                     ) : (

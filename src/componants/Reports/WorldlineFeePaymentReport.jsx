@@ -708,7 +708,7 @@ const WorldlineFeePaymentReport = () => {
 
   return (
     <>
-      <div className="w-full md:w-[95%] mx-auto p-4 ">
+      <div className="w-full md:w-[96%] mx-auto p-4 ">
         <ToastContainer />
         <div className="card p-4 rounded-md ">
           <div className=" card-header mb-4 flex justify-between items-center ">
@@ -731,7 +731,7 @@ const WorldlineFeePaymentReport = () => {
 
           <>
             <div className="container mx-auto px-4">
-              <div className="w-full flex flex-wrap items-start gap-6 p-2">
+              <div className="w-full md:w-[110%] relative right-0 md:right-[5%] mx-auto   flex flex-wrap items-start gap-6 p-2">
                 {/* Order ID */}
                 <div className="flex flex-col h-[80px]">
                   <label className="text-md mb-1" htmlFor="orderId">

@@ -775,6 +775,7 @@ const CreateTimetablePlanner = () => {
     subjects: [],
     rowCounts: { mon_fri: 0, sat: 0 }, // Initialize rowCounts state
   }); // To hold transformed data
+  const [classSection, setClassSection] = useState([]);
   const [loadingForTabSwitch, setLoadingForTabSwitch] = useState(false); // Loading state
   const [storeWholeData, setStoreWholeData] = useState([]);
   const [weekRange, setWeekRange] = useState("");
@@ -791,8 +792,28 @@ const CreateTimetablePlanner = () => {
 
   useEffect(() => {
     fetchExams();
+    fetchClassSection();
   }, []);
+  const fetchClassSection = async () => {
+    try {
+      setLoadingExams(true);
+      const token = localStorage.getItem("authToken");
 
+      const response = await axios.get(
+        `${API_URL}/api/get_sectionwithclassname`,
+        {
+          headers: { Authorization: `Bearer ${token}` },
+        }
+      );
+      console.log("ClassSection", response.data);
+      setClassSection(response?.data?.data || []);
+    } catch (error) {
+      toast.error("Error fetching class and section name");
+      console.error("Error fetching class and section name:", error);
+    } finally {
+      setLoadingExams(false);
+    }
+  };
   const fetchExams = async () => {
     try {
       setLoadingExams(true);
@@ -1431,6 +1452,7 @@ const CreateTimetablePlanner = () => {
                             (message, type) =>
                               console.log(`${type}: ${message}`) // Example toast handler
                           }
+                          classSectionNames={classSection}
                         />
                       </div>
                     </div>
