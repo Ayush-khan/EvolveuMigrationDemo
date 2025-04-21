@@ -953,9 +953,9 @@ const CreateTimetablePlanner = () => {
         "Error fetching Time Table Planner for selected teacher :",
         error
       );
-      toast.error(
-        "Error fetching Time Table Planner for selected teacher. Please try again."
-      );
+      // toast.error(
+      //   "Error fetching Time Table Planner for selected teacher. Please try again."
+      // );
     } finally {
       setIsSubmitting(false);
       setLoadingForSearch(false);
