@@ -139,7 +139,7 @@ const MonthlyAttendenceReport = () => {
     }
 
     if (!selectedMonthId) {
-      setClassError("Please select Month.");
+      setMonthError("Please select Month.");
       setLoadingForSearch(false);
       return;
     }

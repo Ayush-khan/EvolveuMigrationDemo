@@ -34,7 +34,7 @@ const Balanceleave = () => {
 
   useEffect(() => {
     fetchExams();
-    handleSearch();
+    // handleSearch();
   }, []);
 
   const fetchExams = async () => {
@@ -74,6 +74,11 @@ const Balanceleave = () => {
 
   const handleSearch = async () => {
     setLoadingForSearch(false);
+    if (!selectedStudentId) {
+      setStudentError("Please select Staff Name.");
+      setLoadingForSearch(false);
+      return;
+    }
 
     setSearchTerm("");
     try {
@@ -451,7 +456,7 @@ const Balanceleave = () => {
                       className="md:w-[40%] text-md pl-0 md:pl-5 mt-1.5"
                       htmlFor="studentSelect"
                     >
-                      Staff Name
+                      Staff Name <span className="text-red-500">*</span>
                     </label>
                     <div className=" w-full md:w-[65%]">
                       <Select
