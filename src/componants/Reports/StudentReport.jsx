@@ -540,7 +540,8 @@ const StudentReport = () => {
                                     {student.reg_no || " "}
                                   </td>
                                   <td className="px-2 py-2 text-center border border-gray-300">
-                                    {student.admission_class || " "}
+                                    {student.classname || " "}{" "}
+                                    {student.sectionname}
                                   </td>
                                   <td className="px-2 py-2 text-center border border-gray-300">
                                     {student.first_name}{" "}

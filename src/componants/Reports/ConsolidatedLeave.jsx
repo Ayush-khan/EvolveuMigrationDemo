@@ -56,8 +56,8 @@ const ConsolidatedLeave = () => {
   };
 
   const statusMap = {
-    P: "Pending",
-    A: "Approv",
+    P: "Approve",
+    A: "Apply",
     R: "Reject",
     H: "Hold",
     S: "Scheduled",
@@ -84,7 +84,7 @@ const ConsolidatedLeave = () => {
   const handleSearch = async () => {
     setLoadingForSearch(false);
     if (!selectedStudentId) {
-      setStudentError("Please select staff name.");
+      setStudentError("Please select Staff Name.");
       setLoadingForSearch(false);
       return;
     }
@@ -165,11 +165,21 @@ const ConsolidatedLeave = () => {
                 <td class="px-2 text-center py-2 border border-black">${
                   subject?.LeaveType || " "
                 }</td>
-                <td class="px-2 text-center py-2 border border-black">${
-                  subject?.leave_start_date || " "
+                <td class="px-2 text-center py-2 border border-black">
+                ${
+                  subject?.leave_start_date
+                    ? new Date(subject?.leave_start_date).toLocaleDateString(
+                        "en-GB"
+                      )
+                    : ""
                 }</td>
-                 <td class="px-2 text-center py-2 border border-black">${
-                   subject?.leave_end_date || " "
+                 <td class="px-2 text-center py-2 border border-black">
+                 ${
+                   subject?.leave_start_date
+                     ? new Date(subject?.leave_start_date).toLocaleDateString(
+                         "en-GB"
+                       )
+                     : ""
                  }</td>
                   <td class="px-2 text-center py-2 border border-black">${
                     subject?.no_of_days || " "
@@ -365,8 +375,16 @@ const ConsolidatedLeave = () => {
       student?.StaffName || " ",
       student?.phone || " ",
       student?.LeaveType || " ",
-      student?.leave_start_date || " ",
-      student?.leave_end_date || " ",
+      `${
+        student?.leave_start_date
+          ? new Date(student?.leave_start_date).toLocaleDateString("en-GB")
+          : ""
+      }`,
+      `${
+        student?.leave_end_date
+          ? new Date(student?.leave_end_date).toLocaleDateString("en-GB")
+          : ""
+      }`,
       student?.no_of_days || " ",
       statusMap[student?.status] || " ",
       student?.ApprovedBy || " ",
@@ -676,11 +694,19 @@ const ConsolidatedLeave = () => {
                                     {student?.LeaveType || " "}
                                   </td>
                                   <td className="px-2 py-2 text-center border border-gray-300">
-                                    {student?.leave_start_date || " "}
+                                    {student?.leave_start_date
+                                      ? new Date(
+                                          student?.leave_start_date
+                                        ).toLocaleDateString("en-GB")
+                                      : ""}
                                   </td>
 
                                   <td className="px-2 py-2 text-center border border-gray-300">
-                                    {student?.leave_end_date || ""}
+                                    {student?.leave_end_date
+                                      ? new Date(
+                                          student?.leave_end_date
+                                        ).toLocaleDateString("en-GB")
+                                      : ""}
                                   </td>
 
                                   <td className="px-2 py-2 text-center border border-gray-300">

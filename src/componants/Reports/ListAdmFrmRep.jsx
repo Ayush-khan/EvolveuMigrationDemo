@@ -798,13 +798,21 @@ const ListAdmFrmRep = () => {
                                     {student.classname}
                                   </td>
                                   <td className="px-2 py-2 text-center border border-gray-300">
-                                    {student.application_date}
+                                    {student.application_date
+                                      ? new Date(
+                                          student.application_date
+                                        ).toLocaleDateString("en-GB")
+                                      : ""}
                                   </td>
                                   <td className="px-2 py-2 text-center border border-gray-300">
                                     {student.admission_form_status}
                                   </td>
                                   <td className="px-2 py-2 text-center border border-gray-300">
-                                    {student.dob}
+                                    {student.dob
+                                      ? new Date(
+                                          student.dob
+                                        ).toLocaleDateString("en-GB")
+                                      : ""}
                                   </td>
                                   <td className="px-2 py-2 text-center border border-gray-300">
                                     {student.birth_place}

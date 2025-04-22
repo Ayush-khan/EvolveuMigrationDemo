@@ -596,10 +596,14 @@ const TimeTable = () => {
                                   {lecture.period_no}
                                 </span>
                                 <span className="w-[25%] text-center">
-                                  {lecture.subject}
+                                  {lecture.subject == null
+                                    ? "-"
+                                    : lecture.subject}
                                 </span>
                                 <span className="w-[35%] text-right">
-                                  {lecture.teacher?.[0]?.t_name || ""}
+                                  {lecture.teacher?.[0]?.t_name == null
+                                    ? "-"
+                                    : lecture.teacher?.[0]?.t_name}
                                 </span>
                               </div>
                             </div>
